@@ -42,7 +42,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 
 
 % biblatex %
-  \addbibresource{Library20211112.bib} 
+  \addbibresource{Library20211226.bib} 
 
 % hyperref %
   \hypersetup{final}
@@ -367,13 +367,13 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 In this paper we ground the notion of dependent types in the theory of polynomial functors. The syntax and rules will all emerge from two pieces of data:
 \begin{enumerate}
 	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
-	\item a certain functor $\Phi\coloneqq\Phi_u$ defined in terms of $u$, of the form
+	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form%
+\footnote{This can be phrased as an \emph{right-biased oplax monoidal structure} \cite{nlab.lax_monoidal} on $\polycart$, but we will only briefly mention this again.}
 \[
-\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
-\]	
-which is lax monoidal with respect to $\tri$, and for which the lax coherence maps are cartesian.
+\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\polycart),\id,\circ\Big)
+\]
 \end{enumerate}
-The lax monoidality with respect to $\tri$ give cartesian maps of the form 
+The lax monoidality gives cartesian maps of the form 
 \[
 \Phi(p_1)\circ\Phi(p_2)
 \Too{\aleph_{p_1,p_2}}
@@ -485,9 +485,9 @@ Using the Yoneda lemma, we can understand a morphism $p\to q$ in $\poly$ to cons
 \begin{equation}\label{eqn.mapsharp}
   \varphi_1\colon p(1)\to q(1)
   \qqand
-  \varphi^\sharp(i,-)\colon q[j]\to p[i]
+  \varphi^\sharp_i\colon q[j]\to p[i]
 \end{equation}
-that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp(i,-)$ is a function on directions, \emph{depending on a position $i\in p(1)$}.
+that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a function on directions, \emph{depending on a position $i\in p(1)$}.
 where $\varphi_1(i)=j$.
 \end{remark}
 
@@ -529,11 +529,11 @@ and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and
 \chapter{The monoidal functor $\Phi_u$}
 
 \section{The requirements on $\Phi_u$}
-By this point, the type of $\Phi\coloneqq\Phi_u$ 
+By this point, the type 
 \[
-\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
+\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\polycart),\id,\circ\Big)
 \]	
-can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are maps as follows:
+of the lax monoidal functor $\Phi\coloneqq\Phi_u$ can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\polycart)$, the category of functors $\polycart\to\polycart$. The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are cartesian maps
 \[
 q\to\Phi(\yon)(q)
 \qqand
@@ -567,14 +567,14 @@ and
 
 Our next step is to propose such a functor
 \[
-\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big).
+\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\polycart),\id,\circ\Big).
 \]
 It may look a bit underwhelming, but here it is:%
 \footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$. The expression $p_1\tri q+p_2\tri q$ parses as $(p_1\tri q)+(p_2\tri q)$.}
 \begin{equation}\label{eqn.define_phi}
 \Phi_u(p)(q)\coloneqq u\otimes p\tri q.
 \end{equation}
-This is clearly functorial in $p$ and $q$, though for $p$ we are only asking it to be functorial with respect to maps in $\polycart$.
+This is functorial in $p$ and $q$ by \cref{**}.
 
 Let $u\in\poly$ be a polynomial and let $\1\colon\yon\to u$ and $\Sigma\colon u\tri u\to u$ be a cartesian monad structure on it. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monad structure $\1\colon\yon\to u$ and 
 \[
@@ -614,7 +614,7 @@ Moreover, the following diagrams commute:
 \end{gather*}
 \end{lemma}
 \begin{proof}
-We first define the map, then show it is natural, and finally check the two diagrams. 
+We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. 
 \end{proof}
 
 \begin{theorem}
