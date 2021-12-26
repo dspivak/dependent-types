@@ -369,9 +369,9 @@ In this paper we ground the notion of dependent types in the theory of polynomia
 	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
 	\item a certain functor $\Phi\coloneqq\Phi_u$ defined in terms of $u$, of the form
 \[
-\Phi_u\colon\Big(\polycart,0,+,\yon,\tri\Big)\too\Big(\en(\poly),0,+,\id,\circ\Big)
+\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]	
-which is strong monoidal with respect to $+$, lax monoidal with respect to $\tri$, and for which the lax coherence maps are cartesian.
+which is lax monoidal with respect to $\tri$, and for which the lax coherence maps are cartesian.
 \end{enumerate}
 The lax monoidality with respect to $\tri$ give cartesian maps of the form 
 \[
@@ -506,7 +506,7 @@ In this case $u_\kappa\coloneqq \sum_{N\leq\kappa}\yon^N$ will be a universe.
 \end{example}
 
 
-Polynomial functors are closed under coproduct, product, and composition; we denote these by $+$, $\times,$ and $\tri$. The monoidal units are $0$, $1$, and $\yon$ respectively. There is another monoidal product called \emph{Dirichlet product} and denoted $\otimes$; it is given by
+Polynomial functors are closed under composition, which we denote by $\tri$; the monoidal unit is $\yon$. There is another monoidal product called \emph{Dirichlet product} and denoted $\otimes$; it is given by
 \[
 \left(\sum_{i\in p(1)}\yon^{p[i]}\right)\otimes
 \left(\sum_{j\in q(1)}\yon^{q[j]}\right)\coloneqq
@@ -514,61 +514,28 @@ Polynomial functors are closed under coproduct, product, and composition; we den
 \]
 Its monoidal unit is again $\yon$. 
 
-These four monoidal structures together form a \emph{$(+,\times)$-distributive, $(+,\otimes)$-distributive, and $(+,\tri)$-left colax-distributive category}. That is, for any $p,q,r\in\poly$ there are isomorphisms and maps
-\begin{gather*}
-(p\times r)+(q\times r)\cong (p+q)\times r
-\qqand
- (p\times q)+(p\times r)\cong p\times (q+r)
-\\
-(p\otimes r)+(q\otimes r)\cong (p+q)\otimes r
-\qqand
- (p\otimes q)+(p\otimes r)\cong p\otimes (q+r)
-\\
-(p\tri r)+(q\tri r)\cong (p+q)\tri r
-\qqand
-(p\tri q)+(p\tri r)\to p\tri(q+r)
-\end{gather*}
-satisfying all the expected equations. The $+$, $\times$ and $\otimes$ products are symmetric. All four monoidal structures restrict to monoidal structures on $\polycart$; in other words any sum, product, composite, or Dirichlet product of cartesian morphisms is again cartesian.
+The $\otimes$ structure is symmetric. Both monoidal structures restrict to monoidal structures on $\polycart$; in other words any composite or Dirichlet product of cartesian morphisms is again cartesian.
 
 There is an identity-on-objects lax monoidal functor
-\[\indep\colon(\poly,\yon,\otimes)\to(\poly,\yon,\tri).\]
-Given polynomials $p,q\in\poly$ and a set $X\in\smset$, the map $(p\otimes q)(X)\To{\indep(X)} (p\tri q)(X)$ is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep(X)$ is Cartesian for all $X$.
+\begin{equation}\label{eqn.indep}
+(\poly,\yon,\tri)\to(\poly,\yon,\otimes),
+\end{equation}
+or equivalently an identity-on-objects oplax monoidal functor $(\poly,\yon,\otimes)\to(\poly,\yon,\tri)$. Given polynomials $p,q\in\poly$ and a set $X\in\smset$, we refer to the laxator (lax coherence maps) as
+\[\indep\colon (p\otimes q)\to (p\tri q)\]
+and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep$ is Cartesian.
 
 \chapter{The monoidal functor $\Phi_u$}
 
 \section{The requirements on $\Phi_u$}
 By this point, the type of $\Phi\coloneqq\Phi_u$ 
 \[
-\Phi\colon\Big(\polycart,0,+,\yon,\tri\Big)\too\Big(\en(\poly),0,+,\id,\circ\Big)
+\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]	
-can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. Polynomials can be added and composed. Similarly, functors $\poly\to\poly$ can be added $(F+G)(p)\coloneqq F(p)+G(p)$ and composed $(F\circ G)(p)\coloneqq F(G(p))$. The functor being strong monoidal with respect to $(0,+)$ means that there are isomorphisms as follows:
-\[
-0\cong\Phi(0)(q)
-\qqand
-\Phi(p_1)(q)+\Phi(p_2)(q)\cong \Phi(p_1+p_2)(q).
-\]
-natural in $p_1,p_2,q$. These must satisfy two commutative diagrams:
-\[
-\begin{tikzcd}
-	\Phi(p_1)+\Phi(p_2)+\Phi(p_3)\ar[r]\ar[d]&
-	\Phi(p_1)+\Phi(p_2+ p_3)\ar[d]\\
-	\Phi(p_1+ p_2)+\Phi(p_3)\ar[r]&
-	\Phi(p_1+ p_2+ p_3)
-\end{tikzcd}
-\]
-and
-\[
-\begin{tikzcd}
-	0+\Phi(p)\ar[r]\ar[d, equal]&
-	\Phi(0)+\Phi(p)\ar[d]\\
-	\Phi(p)&\Phi(0+p)\ar[l]
-\end{tikzcd}
-\]
-The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are maps as follows:
+can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are maps as follows:
 \[
 q\to\Phi(\yon)(q)
 \qqand
-(\Phi(p_1)(q)\circ\Phi(p_2))(q)\cong \Phi(p_1\tri p_2)(q).
+(\Phi(p_1)\circ\Phi(p_2))(q)\to \Phi(p_1\tri p_2)(q).
 \]
 natural in $p_1,p_2,q$.  These must satisfy three commutative diagrams:
 \[
@@ -598,7 +565,7 @@ and
 
 Our next step is to propose such a functor
 \[
-\Phi\colon\Big(\polycart,0,+,\yon,\tri\Big)\too\Big(\en(\poly),0,+,\id,\circ\Big).
+\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big).
 \]
 It may look a bit underwhelming, but here it is:%
 \footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$. The expression $p_1\tri q+p_2\tri q$ parses as $(p_1\tri q)+(p_2\tri q)$.}
@@ -606,18 +573,6 @@ It may look a bit underwhelming, but here it is:%
 \Phi_u(p)(q)\coloneqq u\otimes p\tri q.
 \end{equation}
 This is clearly functorial in $p$ and $q$, though for $p$ we are only asking it to be functorial with respect to maps in $\polycart$.
-
-\begin{proposition}
-The functor $\Phi_u$ from \eqref{eqn.define_phi} is strong monoidal with respect to $(0,+)$.
-\end{proposition}
-\begin{proof}
-For any polynomials $p_1,p_2,q$ we have $u\otimes 0\tri q\cong u\otimes 0\cong u$ and
-\[
-	u\otimes (p_1+p_2)\tri q\cong 
-	u\otimes(p_1\tri q+p_2\tri q)\cong
-	(u\otimes p_1\tri q)+(u\otimes p_2\tri q).
-\]
-\end{proof}
 
 \begin{proposition}
 The functor $\Phi_u$ from \eqref{eqn.define_phi} is lax monoidal with respect to $(\yon,\tri)$.
