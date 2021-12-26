@@ -440,11 +440,23 @@ The rules for types are only top-to-bottom, but the cartesianness of the map \eq
 	\item Suppose given a dependent sequence of terms $(a,c):[(A,B\to C)]$, $(b,d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. Then there are terms $a:[A]$, $b:[B]$, $cb:[Cb]$, $db:[Db]$, and $e(b,db):[E b d]$.
 \end{enumerate}
 
-The goal of this paper is to derive these and the other rules from one place: the structure of the functor $\Phi$.
+The germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors, an explication of ideas in work of Awodey and Newstead \cite{awodey2018polynomial}. Indeed, their paper contains much of what will be said here. The present work adds two things:
+\begin{enumerate}
+	\item Explicit syntax and rules for pair types, and
+	\item a law---which seems to be missing from \cite{awodey2018polynomial}---that in their language would say%
+	\footnote{In our language it would say 
+	\[
+	A\to\Sigma(B,C)\cong \Sigma(A\to B,A\to C).
+	\]
+	}
+	\[
+	\prod_{x:A}\sum_{y:B(x)}C(x,y)\cong\sum_{y:\prod_{x:A}B(x)}\prod_{x:A}C(x,y(x))
+	\]
+\end{enumerate}
+such that everything in sight is derived from the structure of $\Phi_u(u)(u)$ (rather than a certain pseudomonad, as in Awodey-Newstead).
 
 \section{Acknowledgments}
 
-This project would not have been possible without Steve Awodey's talk at the 2021 Workshop on Polynomial Functors.
 
 This material is based upon work supported by the Air Force Office of Scientific Research under award number FA9550-20-1-0348.
 
