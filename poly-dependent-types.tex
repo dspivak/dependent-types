@@ -31,6 +31,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 \usepackage{mathrsfs}
 \usepackage{dutchcal}
 \usepackage{fontawesome}
+\usepackage{ebproof}
 
 
 
@@ -131,7 +132,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
   
   % amsthm %
 \theoremstyle{definition}
-\newtheorem{definitionx}{Definition}[section]
+\newtheorem{definitionx}{Definition}[chapter]
 \newtheorem{examplex}[definitionx]{Example}
 \newtheorem{remarkx}[definitionx]{Remark}
 \newtheorem{notation}[definitionx]{Notation}
@@ -298,18 +299,12 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\ppoly}{\mathbb{P}\Cat{oly}}
 \newcommand{\0}{\textsf{0}}
 \newcommand{\1}{\tn{\textsf{1}}}
-\newcommand{\2}{\tn{\textsf{2}}}
-\newcommand{\3}{\tn{\textsf{3}}}
-\newcommand{\4}{\tn{\textsf{4}}}
-\newcommand{\5}{\tn{\textsf{5}}}
-\newcommand{\6}{\tn{\textsf{6}}}
-\newcommand{\7}{\tn{\textsf{7}}}
-\newcommand{\8}{\tn{\textsf{8}}}
-\newcommand{\9}{\tn{\textsf{9}}}
+\newcommand{\U}{\tn{\textsf{U}}}
 \newcommand{\tri}{\mathbin{\triangleleft}}
 \newcommand{\triright}{\mathbin{\triangleright}}
 \newcommand{\tripow}[1]{^{\tri #1}}
 \newcommand{\indep}{\Fun{Indep}}
+
 
 
 % lenses
@@ -365,38 +360,87 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \begin{abstract}
 \end{abstract}
 
-\tableofcontents*
 
 %-------- Chapter --------%
 \chapter{Introduction}
 
 In this paper we ground the notion of dependent types in the theory of polynomial functors. The syntax and rules will all emerge from two pieces of data:
 \begin{enumerate}
-	\item A cartesian polynomial monad $(u,1,\Sigma)$ and
-	\item a certain functor, defined in terms of $u$, of the form
+	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
+	\item a certain functor $\Phi\coloneqq\Phi_u$ defined in terms of $u$, of the form
 \[
 \Phi_u\colon\Big(\polycart,0,+,\yon,\tri\Big)\too\Big(\en(\poly),0,+,\id,\circ\Big)
 \]	
-which is strong monoidal with respect to $+$ and lax monoidal with respect to $\tri$.
+which is strong monoidal with respect to $+$, lax monoidal with respect to $\tri$, and for which the lax coherence maps are cartesian.
 \end{enumerate}
-It is the lax monoidality with respect to $\tri$, which gives maps of the form 
+The lax monoidality with respect to $\tri$ give cartesian maps of the form 
 \[
-\Phi_u(p_1)\circ\Phi_u(p_2)
+\Phi(p_1)\circ\Phi(p_2)
 \Too{\aleph_{p_1,p_2}}
-\Phi_u(p_1\tri p_2)
+\Phi(p_1\tri p_2).
 \]
-which performs a kind of switching operation that does most of the work. In particular, we will apply this functor to the monad $u$ itself and compose with $\Sigma$ to obtain a map
-\[
-\Phi_u(u)\circ\Phi_u(u)
-\Too{\aleph_{u,u}}
-\Phi_u(u\tri u)
-\Too{\Sigma}
-u.
-\]
-which contains within it the most important structural rules of dependent type theory.
-We do not provide intuition for this functor, because we do not yet have it. But we will explain how it gives dependent types and their rules.
+These perform a kind of switching operation, which in fact does most of the work. In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a cartesian map
+\begin{equation}\label{eqn.main}
+\Phi(u)\circ\Phi(u)(u)
+\Too{\aleph_{u,u}(u)}
+\Phi(u\tri u)(u)
+\Too{\Sigma(u)}
+\Phi(u)(u)
+\end{equation}
+which contains within it the most important structural rules of dependent type theory. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-The reader does not need to know anything about dependent types in order to understand this paper; they will be defined.
+From \cref{eqn.main} we obtain the following sort of syntax and rules.%
+\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\vdash$ binds the tightest, so $A,B\vdash C$ parses as $A,(B\vdash C)$. Thus, the expression $A, B\vdash (C, D\vdash E)$ parses as $A,(B\vdash(C, (D\vdash E)))$.}
+\begin{equation}\label{eqn:premise_axiom}
+  \begin{prooftree}
+    \Hypo{A}
+    \Infer1{\1\vdash A}
+  \end{prooftree}
+\hspace{.5in}
+  \begin{prooftree}
+    \Hypo{A, B\vdash (C, D\vdash E)}
+    \Infer1{(A,B\to C),\Sigma(B,D)\vdash E}
+  \end{prooftree}
+\end{equation}
+The first says that for any type $A:\U$, one can form the unit type $\1$ and for any term $():[\1]$ a type $A():\U$ depending on it.%
+\footnote{Here, $1$ denotes the one-element set and $\1$ denotes a certain element of $u$. We hope the reader can bear with us until we explain $u$ in the main text.}
+ The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. 
+
+The typing rules come along with term rules. 
+\begin{equation}\label{eqn.premise_axiom}
+  \begin{prooftree}
+    \Hypo{a}
+    \Infer1{(),a}
+  \end{prooftree}
+\hspace{.5in}
+  \begin{prooftree}
+    \Hypo{a, b, (c, d, e)}
+    \Infer1{(a,c), (b,d), e}
+  \end{prooftree}
+\hspace{.5in}
+  \begin{prooftree}
+    \Hypo{(),a}
+    \Infer1{a()}
+  \end{prooftree}
+\hspace{.5in}
+  \begin{prooftree}
+    \Hypo{(a,c), (b,d), e}
+    \Infer1{a,b,(cb, db ,e(b, db))}
+  \end{prooftree}
+\end{equation}
+
+These are opaque---indeed, they are derived from the structure, not chosen---so we unpack them. Because the map in \eqref{eqn.main} is cartesian, all of the rules are bijections: any term on top has a unique one on the bottom. We have chosen two write both directions. Here's what the top-to-bottom rules in \eqref{eqn.premise_axiom} say:
+\begin{enumerate}
+	\item Suppose given a term $a:[A]$. Then there is a term $():\1$ and, depending on it a term $\lambda ().a:[A()]$. We usually denote $\lambda ().a$ simply by $a$.
+	\item Suppose given a dependent sequence of terms $a:[A]$, $b:[B]$, $c:[C b]$, $d:[D b]$, $e: [E b d]$. Then there are terms $(a,\lambda b.cb):[(A,B\to C)]$, $(b, d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. We usually denote $\lambda b.cb$ simply by $c$.
+\end{enumerate}
+The rules for types are only top-to-bottom, but the cartesianness of the map \eqref{eqn.main} means that there is a bijection between the associated sets of terms. Here's what the bottom-to-top rules in \eqref{eqn.premise_axiom} say
+\begin{enumerate}[resume]
+	\item Suppose given a dependent sequence of terms $():\1$, $a:[A()]$. Then there is a term $a():[A]$. We usually denote $a()$ simply by $a$.
+	\item Suppose given a dependent sequence of terms $(a,c):[(A,B\to C)]$, $(b,d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. Then there are terms $a:[A]$, $b:[B]$, $cb:[Cb]$, $db:[Db]$, and $e(b,db):[E b d]$.
+\end{enumerate}
+
+The goal of this paper is to derive these and the other rules from one place: the structure of the functor $\Phi$.
 
 \section{Acknowledgments}
 
@@ -408,7 +452,7 @@ This material is based upon work supported by the Air Force Office of Scientific
 \chapter{Background}
 
 
-\begin{definition}[Polynomial functor]
+\begin{definition}[Polynomial functor]\label{def.poly}
 Given a set $S$, we denote the corresponding representable functor by
 \[\yon^S\coloneqq\smset(S,-)\colon\smset\to\smset,\]
 e.g. $\yon^S(X)\coloneqq X^S$. In particular $\yon=\yon^1$ is the identity and $\yon^0=1$ is constant singleton.
@@ -429,14 +473,38 @@ A \emph{morphism} $\varphi\colon p\to q$ of polynomial functors is simply a natu
 is a pullback of sets. We denote the wide subcategory of polynomials and cartesian maps by $\polycart$.
 \end{definition}
 
-\begin{remark}
-Note that there is already some dependency in this definition: we need a set $I$ and then, \emph{for each $i$ in $I$}, we need a representable functor. In order to get the present paper off the ground, this much needs to be granted.
-\end{remark}
-
 For any polynomial $p=\sum_{i\in I}\yon^{p[i]}$, we have a canonical isomorphism $p(1)\cong I$; hence we generally denote $p$ by
 \begin{equation}\label{eqn.poly_notation}
 p=\sum_{i\in p(1)}\yon^{p[i]}.
 \end{equation}
+
+\begin{remark}
+Note that there is already some dependency in \cref{def.poly}; in order to define a polynomial we need a set $I$ and then, \emph{for each $i$ in $I$}, we need a representable functor. In order to get the present paper off the ground, this much and a bit more---the following combinatorial description of morphisms---need to be granted.
+
+Using the Yoneda lemma, we can understand a morphism $p\to q$ in $\poly$ to consist of two pieces $(\varphi_1,\varphi^\sharp)$ as follows:
+\begin{equation}\label{eqn.mapsharp}
+  \varphi_1\colon p(1)\to q(1)
+  \qqand
+  \varphi^\sharp(i,-)\colon q[j]\to p[i]
+\end{equation}
+that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp(i,-)$ is a function on directions, \emph{depending on a position $i\in p(1)$}.
+where $\varphi_1(i)=j$.
+\end{remark}
+
+\begin{example}
+The main player in our paper will be 
+\[u_\omega\coloneqq\sum_{N\in\nn}\yon^{N}\]
+which will correspond to the universe of finite sets. 
+
+Suppose $\kappa$ is an ordinal with the following properties for any ordinals $A$ and $B_1,\ldots,B_A$ with disjoint union $S\coloneqq\coprod_{a\in A}B_a$ and cartesian product $P\coloneqq\prod_{a\in A}B_a$:
+\begin{enumerate}
+	\item it is nonempty $1\leq\kappa$;
+	\item it is closed under its own sums: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $S\leq\kappa$;
+	\item it is closed under its own products: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $P\leq\kappa$.
+\end{enumerate}
+In this case $u_\kappa\coloneqq \sum_{N\leq\kappa}\yon^N$ will be a universe.
+\end{example}
+
 
 Polynomial functors are closed under coproduct, product, and composition; we denote these by $+$, $\times,$ and $\tri$. The monoidal units are $0$, $1$, and $\yon$ respectively. There is another monoidal product called \emph{Dirichlet product} and denoted $\otimes$; it is given by
 \[
@@ -466,6 +534,97 @@ There is an identity-on-objects lax monoidal functor
 \[\indep\colon(\poly,\yon,\otimes)\to(\poly,\yon,\tri).\]
 Given polynomials $p,q\in\poly$ and a set $X\in\smset$, the map $(p\otimes q)(X)\To{\indep(X)} (p\tri q)(X)$ is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep(X)$ is Cartesian for all $X$.
 
+\chapter{The monoidal functor $\Phi_u$}
+
+\section{The requirements on $\Phi_u$}
+By this point, the type of $\Phi\coloneqq\Phi_u$ 
+\[
+\Phi\colon\Big(\polycart,0,+,\yon,\tri\Big)\too\Big(\en(\poly),0,+,\id,\circ\Big)
+\]	
+can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. Polynomials can be added and composed. Similarly, functors $\poly\to\poly$ can be added $(F+G)(p)\coloneqq F(p)+G(p)$ and composed $(F\circ G)(p)\coloneqq F(G(p))$. The functor being strong monoidal with respect to $(0,+)$ means that there are isomorphisms as follows:
+\[
+0\cong\Phi(0)(q)
+\qqand
+\Phi(p_1)(q)+\Phi(p_2)(q)\cong \Phi(p_1+p_2)(q).
+\]
+natural in $p_1,p_2,q$. These must satisfy two commutative diagrams:
+\[
+\begin{tikzcd}
+	\Phi(p_1)+\Phi(p_2)+\Phi(p_3)\ar[r]\ar[d]&
+	\Phi(p_1)+\Phi(p_2+ p_3)\ar[d]\\
+	\Phi(p_1+ p_2)+\Phi(p_3)\ar[r]&
+	\Phi(p_1+ p_2+ p_3)
+\end{tikzcd}
+\]
+and
+\[
+\begin{tikzcd}
+	0+\Phi(p)\ar[r]\ar[d, equal]&
+	\Phi(0)+\Phi(p)\ar[d]\\
+	\Phi(p)&\Phi(0+p)\ar[l]
+\end{tikzcd}
+\]
+The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are maps as follows:
+\[
+q\to\Phi(\yon)(q)
+\qqand
+(\Phi(p_1)(q)\circ\Phi(p_2))(q)\cong \Phi(p_1\tri p_2)(q).
+\]
+natural in $p_1,p_2,q$.  These must satisfy three commutative diagrams:
+\[
+\begin{tikzcd}
+	\Phi(p_1)\circ\Phi(p_2)\circ\Phi(p_3)\ar[r]\ar[d]&
+	\Phi(p_1)\circ\Phi(p_2\tri p_3)\ar[d]\\
+	\Phi(p_1\tri p_2)\circ\Phi(p_3)\ar[r]&
+	\Phi(p_1\tri p_2\tri p_3)
+\end{tikzcd}
+\]
+and
+\[
+\begin{tikzcd}
+	\id\circ\Phi(p)\ar[r]\ar[d, equal]&
+	\Phi(\yon)\circ\Phi(p)\ar[d]\\
+	\Phi(p)&\Phi(\yon\tri p)\ar[l]
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}
+	\Phi(p)\circ\id\ar[r]\ar[d, equal]&
+	\Phi(p)\circ\Phi(\yon)\ar[d]\\
+	\Phi(p)&\Phi(p\tri\yon)\ar[l]
+\end{tikzcd}
+\]
+
+\section{The action of $\Phi_u$ on objects and morphisms}
+
+Our next step is to propose such a functor
+\[
+\Phi\colon\Big(\polycart,0,+,\yon,\tri\Big)\too\Big(\en(\poly),0,+,\id,\circ\Big).
+\]
+It may look a bit underwhelming, but here it is:%
+\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$. The expression $p_1\tri q+p_2\tri q$ parses as $(p_1\tri q)+(p_2\tri q)$.}
+\begin{equation}\label{eqn.define_phi}
+\Phi_u(p)(q)\coloneqq u\otimes p\tri q.
+\end{equation}
+This is clearly functorial in $p$ and $q$, though for $p$ we are only asking it to be functorial with respect to maps in $\polycart$.
+
+\begin{proposition}
+The functor $\Phi_u$ from \eqref{eqn.define_phi} is strong monoidal with respect to $(0,+)$.
+\end{proposition}
+\begin{proof}
+For any polynomials $p_1,p_2,q$ we have $u\otimes 0\tri q\cong u\otimes 0\cong u$ and
+\[
+	u\otimes (p_1+p_2)\tri q\cong 
+	u\otimes(p_1\tri q+p_2\tri q)\cong
+	(u\otimes p_1\tri q)+(u\otimes p_2\tri q).
+\]
+\end{proof}
+
+\begin{proposition}
+The functor $\Phi_u$ from \eqref{eqn.define_phi} is lax monoidal with respect to $(\yon,\tri)$.
+\end{proposition}
+\begin{proof}
+**
+\end{proof}
 
 \printbibliography
 \end{document}
