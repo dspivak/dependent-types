@@ -491,18 +491,20 @@ that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp(i,-)$ is a 
 where $\varphi_1(i)=j$.
 \end{remark}
 
-\begin{example}
-The main player in our paper will be 
+\begin{example}\label{ex.u_kappa}
+The easiest intuitive example to keep in mind for our paper will be 
 \[u_\omega\coloneqq\sum_{N\in\nn}\yon^{N}\]
 which will correspond to the universe of finite sets. 
 
-Suppose $\kappa$ is an ordinal with the following properties for any ordinals $A$ and $B_1,\ldots,B_A$ with disjoint union $S\coloneqq\coprod_{a\in A}B_a$ and cartesian product $P\coloneqq\prod_{a\in A}B_a$:
+Suppose $\kappa$ is an ordinal with the following properties for any ordinals $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $P(A,B)\coloneqq\prod_{a\in A}B_a$:
 \begin{enumerate}
 	\item it is nonempty $1\leq\kappa$;
-	\item it is closed under its own sums: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $S\leq\kappa$;
-	\item it is closed under its own products: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $P\leq\kappa$.
+	\item it is closed under its own sums: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $S(A,B)\leq\kappa$;
+	\item it is closed under its own products: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $P(A,B)\leq\kappa$.
 \end{enumerate}
 In this case $u_\kappa\coloneqq \sum_{N\leq\kappa}\yon^N$ will be a universe.
+
+Note that $1$ satisfies the above properties, so $u_1=1+\yon$ is also an example, though it is a bit to easy to get much intuition from.
 \end{example}
 
 
@@ -574,9 +576,50 @@ It may look a bit underwhelming, but here it is:%
 \end{equation}
 This is clearly functorial in $p$ and $q$, though for $p$ we are only asking it to be functorial with respect to maps in $\polycart$.
 
-\begin{proposition}
+Let $u\in\poly$ be a polynomial and let $\1\colon\yon\to u$ and $\Sigma\colon u\tri u\to u$ be a cartesian monad structure on it. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monad structure $\1\colon\yon\to u$ and 
+\[
+u\otimes u\to u\tri u\To{\Sigma}u.
+\]
+We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
+
+\begin{example}
+We resume our previous example, \cref{ex.u_kappa}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
+
+The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordinal $1$. This map is cartesian. 
+
+The function $\Sigma_1\colon u\tri u(1)\to u(1)$ is defined on tuples $(A,B)\in u_\kappa\tri u_\kappa(1)$. Here $B$ denotes a function $B\colon u_\kappa[A]\to u(1)$. We define it to the coproduct $\Sigma_1(A,B)\coloneqq S(A,B)$. The map $\Sigma_{(A,B)}^\sharp\colon S(A,B)\to (u\tri u)[(A,B)]$ sends $x\in \Sigma(A,B)$ to the pair $(x_A,x_B)$, where $x_A\in A$ and $x_B\in B x_A$; it is a bijection by definition, so $\Sigma$ is cartesian as well.
+
+We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not likely. Note that $\Sigma(\1,B)=B$; on positions it is literal equality, since the ordinal $\kappa$ has one element for every ordinal less than it. On directions it is also literal equality between the two functions. Similarly, $\Sigma(B,\1)=B$ and $\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)$. 
+\end{example}
+
+We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
+
+\begin{lemma}[Key lemma]
+For any polynomials $p\in\polycart$ and $q\in\poly$, there is a natural map 
+\[\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.\] 
+Moreover, the following diagrams commute:
+\begin{gather*}
+\begin{tikzcd}[column sep=0, ampersand replacement=\&]
+	\&p\tri q\ar[dl, "p\tri(\1\otimes q)"']\ar[dr,"\1\otimes p\tri q"]\\
+	p\tri(u\otimes q)\ar[rr, "\varphi_{p,q}"']\&\&u\otimes p\tri q
+\end{tikzcd}
+\\
+\begin{tikzcd}[, ampersand replacement=\&, column sep=large]
+	p\tri(u\otimes u\otimes q)\ar[r, "\varphi_{p,u\otimes q}"]\ar[d, "p\tri{((-,-)\otimes q)}"']\&
+	u\otimes p\tri(u\otimes q)\ar[r, "u\otimes\varphi_{p,q}"]\&
+	u\otimes u\otimes p\tri q\ar[d, "{(-,-)}\otimes p\tri q"]\\
+	p\tri (u\otimes q)\ar[rr, "\varphi_{p,q}"']\&\&
+	u\otimes p\tri q
+\end{tikzcd}
+\end{gather*}
+\end{lemma}
+\begin{proof}
+We first define the map, then show it is natural, and finally check the two diagrams. 
+\end{proof}
+
+\begin{theorem}
 The functor $\Phi_u$ from \eqref{eqn.define_phi} is lax monoidal with respect to $(\yon,\tri)$.
-\end{proposition}
+\end{theorem}
 \begin{proof}
 **
 \end{proof}
