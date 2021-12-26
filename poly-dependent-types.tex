@@ -367,22 +367,23 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 In this paper we ground the notion of dependent types in the theory of polynomial functors. The syntax and rules will all emerge from two pieces of data:
 \begin{enumerate}
 	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
-	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form%
-\footnote{This can be phrased as an \emph{right-biased oplax monoidal structure} \cite{nlab.lax_monoidal} on $\polycart$, but we will only briefly mention this again.}
+	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form
+	%
+%\footnote{This can be phrased as an \emph{right-biased oplax monoidal structure} \cite{nlab.lax_monoidal} on $\polycart$, but we will only briefly mention this again.}
 \[
-\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\polycart),\id,\circ\Big)
+\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]
 \end{enumerate}
 The lax monoidality gives cartesian maps of the form 
 \[
 \Phi(p_1)\circ\Phi(p_2)
-\Too{\aleph_{p_1,p_2}}
+\Too{\phi_{p_1,p_2}}
 \Phi(p_1\tri p_2).
 \]
-These perform a kind of switching operation, which in fact does most of the work. In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a cartesian map
+These perform a kind of switching operation, which in fact does most of the work. In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a map
 \begin{equation}\label{eqn.main}
 \Phi(u)\circ\Phi(u)(u)
-\Too{\aleph_{u,u}(u)}
+\Too{\phi_{u,u}(u)}
 \Phi(u\tri u)(u)
 \Too{\Sigma(u)}
 \Phi(u)(u)
@@ -429,12 +430,12 @@ The typing rules come along with term rules.
   \end{prooftree}
 \end{equation}
 
-These are opaque---indeed, they are derived from the structure, not chosen---so we unpack them. Because the map in \eqref{eqn.main} is cartesian, all of the rules are bijections: any term on top has a unique one on the bottom. We have chosen two write both directions. Here's what the top-to-bottom rules in \eqref{eqn.premise_axiom} say:
+These are opaque---indeed, they are derived from the structure, not chosen---so we unpack them. All of the rules are bijections(WHY?): any term on top has a unique one on the bottom. We have chosen two write both directions. Here's what the top-to-bottom rules in \eqref{eqn.premise_axiom} say:
 \begin{enumerate}
 	\item Suppose given a term $a:[A]$. Then there is a term $():\1$ and, depending on it a term $\lambda ().a:[A()]$. We usually denote $\lambda ().a$ simply by $a$.
 	\item Suppose given a dependent sequence of terms $a:[A]$, $b:[B]$, $c:[C b]$, $d:[D b]$, $e: [E b d]$. Then there are terms $(a,\lambda b.cb):[(A,B\to C)]$, $(b, d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. We usually denote $\lambda b.cb$ simply by $c$.
 \end{enumerate}
-The rules for types are only top-to-bottom, but the cartesianness of the map \eqref{eqn.main} means that there is a bijection between the associated sets of terms. Here's what the bottom-to-top rules in \eqref{eqn.premise_axiom} say
+The rules for types are only top-to-bottom, but there is a bijection between the associated sets of terms. Here's what the bottom-to-top rules in \eqref{eqn.premise_axiom} say
 \begin{enumerate}[resume]
 	\item Suppose given a dependent sequence of terms $():\1$, $a:[A()]$. Then there is a term $a():[A]$. We usually denote $a()$ simply by $a$.
 	\item Suppose given a dependent sequence of terms $(a,c):[(A,B\to C)]$, $(b,d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. Then there are terms $a:[A]$, $b:[B]$, $cb:[Cb]$, $db:[Db]$, and $e(b,db):[E b d]$.
@@ -506,19 +507,35 @@ that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a fun
 where $\varphi_1(i)=j$.
 \end{remark}
 
-\begin{definition}[Sum-product ordinal]\label{def.sum_prod_ord}
-Let $\kappa$ be an ordinal number. We say that it is a \emph{sum-product ordinal} if it satisfies the following properties for any ordinals $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $P(A,B)\coloneqq\prod_{a\in A}B_a$:
+
+\begin{definition}[Sum-product sets and associated polynomials]\label{def.sum_prod_ord}
+Let $\kappa$ be a set. We say that it is a \emph{sum-product set} if it satisfies the following properties for any sets $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $\Pi(A,B)\coloneqq\prod_{a\in A}B_a$:%
+\footnote{We write $S(A,B)$ rather than $\Sigma(A,B)$ because we already have used that symbol for a monad structure.}
 \begin{enumerate}[label=(\roman*)]
 	\item $\kappa$ is nonempty $0<\kappa$;
 	\item $\kappa$ is closed under its own sums: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $S(A,B)<\kappa$;
-	\item $\kappa$ is closed under its own products: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $P(A,B)<\kappa$.
+	\item $\kappa$ is closed under its own products: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $\Pi(A,B)<\kappa$;
+	\item there exists a set $C_\kappa$ containing exactly one set of each cardinality $N<\kappa$.%
+	\footnote{The set $C_\kappa$ is structure, not property, but any two choices will yield isomorphic associated polynomials, so we are not concerned with the distinction here.}
 \end{enumerate}
+
+Given a sum-product set $\kappa$, we define the \emph{associated polynomial} to be
+\[
+  u_\kappa\coloneqq\sum_{N\in C_\kappa}\yon^N
+\qedhere
+\]
 \end{definition}
 
 \begin{example}\label{ex.sum_prod_ordinal}
-There is only one finite ordinal with the above properties, namely $\kappa=2$. Indeed, $0$ fails condition (i), $1$ fails condition (iii) because $P(0,!)=1\not<1$, and any $2<\kappa<\omega$ fails condition (ii) because by induction $P(\kappa-1,(\kappa-1,\kappa-1))\not<\kappa$.
+Given the axiom of choice, any Grothendieck universe is a sum-product set; indeed conditions (i) -- (iii) are satisfied for any Grothendieck universe, and (iv) is satisfied assuming the axiom of choice.
 
-The easiest intuitive example to keep in mind for our paper is $\kappa=\omega$, where $N<\omega$ iff $N$ is finite.
+There is only one finite ordinal with the above properties, namely $\kappa=2$. Indeed, $0$ fails condition (i), $1$ fails condition (iii) because $\Pi(0,!)=1\not<1$, and any $2<\kappa<\omega$ fails condition (ii) because by induction $\Pi(\kappa-1,(\kappa-1,\kappa-1))\not<\kappa$.
+
+The easiest intuitive example to keep in mind for our paper is $\kappa=\omega$, where $N<\omega$ iff $N$ is finite. In this case the associated polynomial is
+\[
+  u_\omega\coloneqq\sum_{N\in\nn}\yon^N.
+\qedhere
+\]
 \end{example}
 
 
@@ -538,7 +555,8 @@ There is an identity-on-objects lax monoidal functor
 \end{equation}
 or equivalently an identity-on-objects oplax monoidal functor $(\poly,\yon,\otimes)\to(\poly,\yon,\tri)$. Given polynomials $p,q\in\poly$ and a set $X\in\smset$, we refer to the laxator (lax coherence maps) as
 \[\indep\colon (p\otimes q)\to (p\tri q)\]
-and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep$ is Cartesian.
+and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep$ is cartesian.
+
 
 \begin{proposition}
 For any ordinal $\kappa$ as in \cref{ex.sum_prod_ordinal}, there is a cartesian monad structure $(\1,\Sigma)$ on $u_\kappa\in\polycart$.
@@ -555,9 +573,9 @@ The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, consider
 \section{The requirements on $\Phi_u$}
 By this point, the type 
 \[
-\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\polycart),\id,\circ\Big)
+\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]	
-of the lax monoidal functor $\Phi\coloneqq\Phi_u$ can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\polycart)$, the category of functors $\polycart\to\polycart$. The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are cartesian maps
+of the lax monoidal functor $\Phi\coloneqq\Phi_u$ can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
 \[
 q\to\Phi(\yon)(q)
 \qqand
@@ -606,7 +624,7 @@ This is functorial in $p$ and $q$ by \cref{**}.
 We say that a cartesian monad $(u,\1,\Sigma)$ is a \emph{universe} if there exists a lax monoidal functor of the form in \eqref{eqn.define_phi}.
 \end{definition}
 
-We now give a supply of universe monads, namely those that come from sum-product ordinals, as in \cref{def.sum_prod_ord}.
+We now give a supply of universe monads, namely those that come from sum-product sets, as in \cref{def.sum_prod_ord}.
 
 \begin{definition}[Ordinal polynomial]
 For any ordinal $\kappa$, define
@@ -636,7 +654,7 @@ We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not like
 We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $\kappa$ be a sum-product ordinal. For any polynomials $p\in\polycart$ and $q\in\poly$, there is a natural map 
+Let $\kappa$ be a sum-product set. For any polynomials $p\in\polycart$, $q\in\poly$, there is a natural map 
 \[\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.\] 
 Moreover, the following diagrams commute:
 \begin{gather*}
@@ -655,15 +673,38 @@ Moreover, the following diagrams commute:
 \end{gather*}
 \end{lemma}
 \begin{proof}
-We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A\in xxxx$
+We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$ under $\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
-Fix $p,q$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\varphi_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. A position of $u\otimes p\tri q$ consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
+Fix $p,q\in\polycart$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\varphi_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
 \[
   A'\coloneqq
   \begin{cases}
-  	d
+  	\Pi(p[i],A)&\tn{ if }\Pi(p[i],A)<\kappa\\
+		0&\tn{ otherwise}
   \end{cases}
 \]
+In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}.
+
+For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+\[
+\prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
+\]
+and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
+\footnote{Note that the map $\varphi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian.}
+
+The map $\varphi$ is clearly natural in $q\in\poly$. It would not be natural for arbitrary polynomial maps $\psi\colon p\to p'$ because of the overflow; however, it is natural when $\psi$ is cartesian. Indeed if $\psi_1(i)=i'$ then the bijection $\psi_i^\sharp$ extends to a bijection
+\[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
+and $\varphi$ overflows for one iff it does for the other.
+
+We now check the two diagrams. For the first diagram, suppose given $(i,j)\in p\tri q(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i,j)$ and under the right-hand map it is sent to $(\1,i,j)$; these are the same since $\Pi(p[i],\1)$ is defined to be the ordinal isomorphic to a product of $\1$'s, which is $\1$. The maps on directions are also identical.
+
+For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$, where $A,B\colon p[i]\to u(1)$ and $j\colon p[i]\to q(1)$. It is easy to check that under the left-hand composite map it is sent to $(A',i,j)$ and under the right-hand composite map it is sent to $(A'',i,j)$, for some $A',A''\in u(1)$. Assuming neither overflows, these are 
+\[
+  A'\cong\Pi(p[i],\Sigma(A,B))
+  \qqand
+	A''\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))
+\] 
+respectively, and these ordinals are equal. 
 \end{proof}
 
 \begin{theorem}
