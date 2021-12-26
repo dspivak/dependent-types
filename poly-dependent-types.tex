@@ -403,7 +403,7 @@ From \cref{eqn.main} we obtain the following sort of syntax and rules.%
   \end{prooftree}
 \end{equation}
 The first says that for any type $A:\U$, one can form the unit type $\1$ and for any term $():[\1]$ a type $A():\U$ depending on it.%
-\footnote{Here, $1$ denotes the one-element set and $\1$ denotes a certain element of $u$. We hope the reader can bear with us until we explain $u$ in the main text.}
+\footnote{Here, $1$ denotes the one-element set and $\1$ denotes a certain element of $U$. In fact, they will turn out to somehow be the same, but we distinguish them for the reader's sake.}
  The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. 
 
 The typing rules come along with term rules. 
@@ -442,8 +442,8 @@ The rules for types are only top-to-bottom, but the cartesianness of the map \eq
 
 The germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors, an explication of ideas in work of Awodey and Newstead \cite{awodey2018polynomial}. Indeed, their paper contains much of what will be said here. The present work adds two things:
 \begin{enumerate}
-	\item Explicit syntax and rules for pair types, and
-	\item a law---which seems to be missing from \cite{awodey2018polynomial}---that in their language would say%
+	\item explicit syntax and rules for pair types, and
+	\item the distributive law of $\Pi$ over $\Sigma$, which in their language would say%
 	\footnote{In our language it would say 
 	\[
 	A\to\Sigma(B,C)\cong \Sigma(A\to B,A\to C).
@@ -452,6 +452,9 @@ The germination of this idea came from \href{https://www.youtube.com/watch?v=RDu
 	\[
 	\prod_{x:A}\sum_{y:B(x)}C(x,y)\cong\sum_{y:\prod_{x:A}B(x)}\prod_{x:A}C(x,y(x))
 	\]
+	They have derived the other law connecting $\Sigma$ and $\Pi$ (see \cite[Remark 4.2]{awodey2018polynomial}), but seem to be missing this one.%
+	\footnote{\href{https://youtu.be/RDuNIP4icKI?t=13898}{Andr\'{e} Joyal's question following Steve Awodey's talk} was ``what happened to the distributivity law that we love between sum and product?" Steve said that he believed it was of the same form as the other laws they had derived, and that they get it for free. I have not seen this derivation; if it does arise for free from the structure of a pseudoalgebra in the sense of their paper, then this paper would lose most of its value.
+	}
 \end{enumerate}
 such that everything in sight is derived from the structure of $\Phi_u(u)(u)$ (rather than a certain pseudomonad, as in Awodey-Newstead).
 
@@ -503,20 +506,19 @@ that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a fun
 where $\varphi_1(i)=j$.
 \end{remark}
 
-\begin{example}\label{ex.u_kappa}
-The easiest intuitive example to keep in mind for our paper will be 
-\[u_\omega\coloneqq\sum_{N\in\nn}\yon^{N}\]
-which will correspond to the universe of finite sets. 
-
-Suppose $\kappa$ is an ordinal with the following properties for any ordinals $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $P(A,B)\coloneqq\prod_{a\in A}B_a$:
-\begin{enumerate}
-	\item it is nonempty $1\leq\kappa$;
-	\item it is closed under its own sums: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $S(A,B)\leq\kappa$;
-	\item it is closed under its own products: if $A\leq\kappa$ and $B_1,\ldots,B_A\leq\kappa$, then $P(A,B)\leq\kappa$.
+\begin{definition}[Sum-product ordinal]\label{def.sum_prod_ord}
+Let $\kappa$ be an ordinal number. We say that it is a \emph{sum-product ordinal} if it satisfies the following properties for any ordinals $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $P(A,B)\coloneqq\prod_{a\in A}B_a$:
+\begin{enumerate}[label=(\roman*)]
+	\item $\kappa$ is nonempty $0<\kappa$;
+	\item $\kappa$ is closed under its own sums: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $S(A,B)<\kappa$;
+	\item $\kappa$ is closed under its own products: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $P(A,B)<\kappa$.
 \end{enumerate}
-In this case $u_\kappa\coloneqq \sum_{N\leq\kappa}\yon^N$ will be a universe.
+\end{definition}
 
-Note that $1$ satisfies the above properties, so $u_1=1+\yon$ is also an example, though it is a bit to easy to get much intuition from.
+\begin{example}\label{ex.sum_prod_ordinal}
+There is only one finite ordinal with the above properties, namely $\kappa=2$. Indeed, $0$ fails condition (i), $1$ fails condition (iii) because $P(0,!)=1\not<1$, and any $2<\kappa<\omega$ fails condition (ii) because by induction $P(\kappa-1,(\kappa-1,\kappa-1))\not<\kappa$.
+
+The easiest intuitive example to keep in mind for our paper is $\kappa=\omega$, where $N<\omega$ iff $N$ is finite.
 \end{example}
 
 
@@ -538,7 +540,17 @@ or equivalently an identity-on-objects oplax monoidal functor $(\poly,\yon,\otim
 \[\indep\colon (p\otimes q)\to (p\tri q)\]
 and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep$ is Cartesian.
 
-\chapter{The monoidal functor $\Phi_u$}
+\begin{proposition}
+For any ordinal $\kappa$ as in \cref{ex.sum_prod_ordinal}, there is a cartesian monad structure $(\1,\Sigma)$ on $u_\kappa\in\polycart$.
+\end{proposition}
+\begin{proof}
+Recall that $u_\kappa=\sum_{N<\kappa}\yon^N$, where $N$ ranges over all ordinals below $\kappa$, and that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, the ordinal $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
+
+The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position for each cardinality $N<\kappa$. 
+\end{proof}
+
+\chapter{The lax monoidal functor $\Phi_u$ for a universe $u$}
+
 
 \section{The requirements on $\Phi_u$}
 By this point, the type 
@@ -575,6 +587,7 @@ and
 \end{tikzcd}
 \]
 
+
 \section{The action of $\Phi_u$ on objects and morphisms}
 
 Our next step is to propose such a functor
@@ -586,7 +599,23 @@ It may look a bit underwhelming, but here it is:%
 \begin{equation}\label{eqn.define_phi}
 \Phi_u(p)(q)\coloneqq u\otimes p\tri q.
 \end{equation}
+
 This is functorial in $p$ and $q$ by \cref{**}.
+
+\begin{definition}[Universe monads]\label{def.universe}
+We say that a cartesian monad $(u,\1,\Sigma)$ is a \emph{universe} if there exists a lax monoidal functor of the form in \eqref{eqn.define_phi}.
+\end{definition}
+
+We now give a supply of universe monads, namely those that come from sum-product ordinals, as in \cref{def.sum_prod_ord}.
+
+\begin{definition}[Ordinal polynomial]
+For any ordinal $\kappa$, define
+\[
+	u_\kappa\coloneqq\sum_{N<\kappa}\yon^N.
+\]
+\end{definition}
+
+Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_ordinal},  $u_\kappa$ is a universe in the sense of \label{def.universe}.
 
 Let $u\in\poly$ be a polynomial and let $\1\colon\yon\to u$ and $\Sigma\colon u\tri u\to u$ be a cartesian monad structure on it. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monad structure $\1\colon\yon\to u$ and 
 \[
@@ -595,7 +624,7 @@ u\otimes u\to u\tri u\To{\Sigma}u.
 We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
 
 \begin{example}
-We resume our previous example, \cref{ex.u_kappa}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
+We resume our previous example, \cref{ex.sum_prod_ordinal}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
 
 The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordinal $1$. This map is cartesian. 
 
@@ -606,8 +635,8 @@ We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not like
 
 We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
-\begin{lemma}[Key lemma]
-For any polynomials $p\in\polycart$ and $q\in\poly$, there is a natural map 
+\begin{lemma}[Key lemma]\label{lemma.key}
+Let $\kappa$ be a sum-product ordinal. For any polynomials $p\in\polycart$ and $q\in\poly$, there is a natural map 
 \[\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.\] 
 Moreover, the following diagrams commute:
 \begin{gather*}
@@ -626,7 +655,15 @@ Moreover, the following diagrams commute:
 \end{gather*}
 \end{lemma}
 \begin{proof}
-We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. 
+We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A\in xxxx$
+
+Fix $p,q$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\varphi_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. A position of $u\otimes p\tri q$ consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
+\[
+  A'\coloneqq
+  \begin{cases}
+  	d
+  \end{cases}
+\]
 \end{proof}
 
 \begin{theorem}
