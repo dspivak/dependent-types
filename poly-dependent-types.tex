@@ -390,9 +390,9 @@ These perform a kind of switching operation, which in fact does most of the work
 \end{equation}
 which contains within it the most important structural rules of dependent type theory. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-From \cref{eqn.main} we obtain the following sort of syntax and rules.%
-\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\vdash$ binds the tightest, so $A,B\vdash C$ parses as $A,(B\vdash C)$. Thus, the expression $A, B\vdash (C, D\vdash E)$ parses as $A,(B\vdash(C, (D\vdash E)))$.}
-\begin{equation}\label{eqn:premise_axiom}
+From \cref{eqn.main} we obtain the following sort of constructors.%
+\footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition, e.g.\ in \eqref{eqn.premise_axiom}. All of our symbols relate to some aspect of the underlying polynomial formalism, so some such notation seems forced on us, even though this convention appears to be uncommon. For typographical reasons, we are sparing with our parentheses. We use the convention that $\vdash$ binds the tightest, so $A,B\vdash C$ parses as $A,(B\vdash C)$. Thus, the expression $A, B\vdash (C, D\vdash E)$ parses as $A,(B\vdash(C, (D\vdash E)))$.}
+\begin{equation}\label{eqn.premise_axiom}
   \begin{prooftree}
     \Hypo{A}
     \Infer1{\1\vdash A}
@@ -405,20 +405,11 @@ From \cref{eqn.main} we obtain the following sort of syntax and rules.%
 \end{equation}
 The first says that for any type $A:\U$, one can form the unit type $\1$ and for any term $():[\1]$ a type $A():\U$ depending on it.%
 \footnote{Here, $1$ denotes the one-element set and $\1$ denotes a certain element of $U$. In fact, they will turn out to somehow be the same, but we distinguish them for the reader's sake.}
- The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. 
+ The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. We denote $\Sigma$ types, where the second type may depend on the first, by $\Sigma(A,B)$; we denote product types---a special case of $\Sigma$ types where the second type does not depend on the first---by $(A,B)$.
 
-The typing rules come along with term rules. 
+The typing constructors come along with term constructors going in the opposite direction. 
 \begin{equation}\label{eqn.premise_axiom}
-  \begin{prooftree}
-    \Hypo{a}
-    \Infer1{(),a}
-  \end{prooftree}
-\hspace{.5in}
-  \begin{prooftree}
-    \Hypo{a, b, (c, d, e)}
-    \Infer1{(a,c), (b,d), e}
-  \end{prooftree}
-\hspace{.5in}
+	\hspace{.5in}
   \begin{prooftree}
     \Hypo{(),a}
     \Infer1{a()}
@@ -429,17 +420,34 @@ The typing rules come along with term rules.
     \Infer1{a,b,(cb, db ,e(b, db))}
   \end{prooftree}
 \end{equation}
-
-These are opaque---indeed, they are derived from the structure, not chosen---so we unpack them. All of the rules are bijections(WHY?): any term on top has a unique one on the bottom. We have chosen two write both directions. Here's what the top-to-bottom rules in \eqref{eqn.premise_axiom} say:
-\begin{enumerate}
-	\item Suppose given a term $a:[A]$. Then there is a term $():\1$ and, depending on it a term $\lambda ().a:[A()]$. We usually denote $\lambda ().a$ simply by $a$.
-	\item Suppose given a dependent sequence of terms $a:[A]$, $b:[B]$, $c:[C b]$, $d:[D b]$, $e: [E b d]$. Then there are terms $(a,\lambda b.cb):[(A,B\to C)]$, $(b, d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. We usually denote $\lambda b.cb$ simply by $c$.
+These are opaque---indeed, they are derived from the structure, not chosen---so we unpack them. Here's what they say
+\begin{enumerate}[label=(\roman*)]
+	\item Suppose given a dependent sequence of terms $():\1$, $a:[A()]$. Then we can construct a term $a():[A]$. By forthcoming conversions, we denote $a()$ simply by $a$.
+	\item Suppose given a dependent sequence of terms $(a,c):[(A,B\to C)]$, $(b,d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. Then we can construct terms $a:[A]$, $b:[B]$, $cb:[Cb]$, $db:[Db]$, and $e(b,db):[E b d]$.
 \end{enumerate}
-The rules for types are only top-to-bottom, but there is a bijection between the associated sets of terms. Here's what the bottom-to-top rules in \eqref{eqn.premise_axiom} say
-\begin{enumerate}[resume]
-	\item Suppose given a dependent sequence of terms $():\1$, $a:[A()]$. Then there is a term $a():[A]$. We usually denote $a()$ simply by $a$.
-	\item Suppose given a dependent sequence of terms $(a,c):[(A,B\to C)]$, $(b,d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. Then there are terms $a:[A]$, $b:[B]$, $cb:[Cb]$, $db:[Db]$, and $e(b,db):[E b d]$.
-\end{enumerate}
+There are also equalities between types, e.g.
+\[
+\begin{array}{lll}
+	A=\1\to A&
+		A\to(B,C)=(A\to B,A\to C)&
+			A\to\Sigma(B,C)=\Sigma(A\to B,A\to C)\\
+	()=A\to ()&
+		(A,B)\to C=A\to B\to C&
+			\Sigma(A,B)\to C=A\to B\to C
+\end{array}
+\]
+which come with conversion rules for terms%
+\footnote{In case it isn't clear, we denote the terms of product types and $\Sigma$-types in the same way, namely as pairs $(a,b):(A,B)$ or $(a,b):\Sigma(A,B)$. We denote terms of a function type $A\to B$ simply by the codomain, e.g. $b:A\to B$; we leave it implicit that $b$ is waiting for an input $a:A$ to obtain $ba:B$.}
+\[\arraycolsep=1cm
+\begin{array}{lll}
+	a\equiv a()&
+		(b,c)(a)\equiv (b(a),c(a))&
+			(b,c)(a)\equiv (b(a),c(a))\\
+	()\equiv()(a)&
+		c(a,b)\equiv c a b&
+			c(a,b)\equiv c a b
+\end{array}
+\]
 
 The germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors, an explication of ideas in work of Awodey and Newstead \cite{awodey2018polynomial}. Indeed, their paper contains much of what will be said here. The present work adds two things:
 \begin{enumerate}
@@ -632,6 +640,8 @@ We now give the key lemma. It is defined by multiplying together types in $u$. T
 %---- Section ----%
 \section{The lax monoidal structure on $\Phi_u$}
 
+Discussion of overflow and using $\kappa$-bounded polynomials...
+
 \begin{lemma}[Key lemma]\label{lemma.key}
 Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. For any polynomials $p\in\polycart$, $q\in\poly$, there is a natural map 
 \[\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.\] 
@@ -671,33 +681,71 @@ Fix $p,q\in\polycart$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tr
 In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
 For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
-\[
+\begin{equation}\label{eqn.not_injective}
 \prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
-\]
+\end{equation}
 and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
-\footnote{Note that the map $\varphi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian.}
+\footnote{Note that the map $\varphi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
 
 The map $\varphi$ is clearly natural in $q\in\poly$. It would not be natural for arbitrary polynomial maps $\psi\colon p\to p'$ because of the overflow; however, it is natural when $\psi$ is cartesian. Indeed if $\psi_1(i)=i'$ then the bijection $\psi_i^\sharp$ extends to a bijection
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
 and $\varphi$ overflows for one iff it does for the other.
 
-It is easy to check that $\varphi_{\yon,q}=\id_{u\otimes q}$. The statement $\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'})$ reduces to the statement that for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, there is a bijection
+It is easy to check that $\varphi_{\yon,q}=\id_{u\otimes q}$. The statement $\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'})$ is shorthand for the commutativity of the following diagram, natural in $q$:
 \[
-	\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))
+\begin{tikzcd}[column sep=-10pt]
+	&p\tri p'\tri(u\otimes q)\ar[dl, bend right=20pt, "p\tri\varphi_{p',q}"']\ar[dr, bend left=20pt, "\varphi_{p\tri p',q}"]\\
+	p\tri (u\otimes p'\tri q)\ar[rr, "\varphi_{p,p'\tri q}"']&&
+	u\otimes p\tri p'\tri q
+\end{tikzcd}
 \]
-which there is, and that the overflow handling agrees. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$.
+It suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
+\[
+	\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A)),
+\]
+which there is, and that second the overflow handling agrees, as we now argue. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$.
 
 It remains to check the two diagrams. For the first diagram, suppose given $(i,j)\in p\tri q(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i,j)$ and under the right-hand map it is sent to $(\1,i,j)$; these are the same element of $C_\kappa$  since $\Pi(p[i],\1)$ is defined to be the isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
 For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$, where $A,B\colon p[i]\to u(1)$ and $j\colon p[i]\to q(1)$. It is easy to check that under the left-hand composite map it is sent to $(A_1,i,j)$ and under the right-hand composite map it is sent to $(A_2,i,j)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
 \[
-  A_1\cong\Pi(p[i],\Sigma(A,B))
+  A_1\cong\Pi(p[i],A\times B)
   \qqand
-	A_2\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))
+	A_2\cong\Pi(p[i],A)\times\Pi(p[i],B)
 \] 
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
-Note that $\Pi(p[i],\Sigma(A,B))\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],\Sigma(A,B))$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,!)$ and in the second case we will have $A_2=\Sigma(\Pi(p[i],A),0)$; either way, the result is $0$. Hence the diagram commutes.
+Note that $\Pi(p[i],A\times B)\cong\Pi(p[i],A)\times\Pi(p[i],B)$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=0\times\Pi(p[i],B)$ and in the second case we will have $A_2=\Pi(p[i],A\times 0)$; either way, the result is $0$. Hence the diagram commutes.
+\end{proof}
+
+\begin{corollary}\label{cor.key}
+With notation as in \cref{lemma.key}, there is a map
+\begin{equation}\label{eqn.corkey}
+	\ol{\varphi_{p_1,p_2,q}}\colon (p_1\otimes p_2)\tri(u\otimes q)\to
+	p_1\tri(u\otimes p_2\tri q)
+\end{equation}
+natural in $p_1,p_2\in\polycart$ and $q\in\poly$, such that the following diagram commutes:
+\begin{equation}\label{eqn.corkey_diag}
+\begin{tikzcd}[column sep=large]
+	(p_1\otimes p_2)\tri(u\otimes q)\ar[r, "\ol\varphi_{p_1,p_2,q}"]\ar[d, "\varphi_{p_1\otimes p_2,q}"']&
+	p_1\tri(u\otimes p_2\tri q)\ar[d, "\varphi_{p_1,p_2\tri q}"]\\
+	u\otimes(p_1\otimes p_2)\tri q\ar[r, "u\otimes\indep"']&
+	u\otimes p_1\tri p_2\tri q
+\end{tikzcd}
+\end{equation}
+\end{corollary}
+\begin{proof}
+We define the map $\ol\varphi_{p_1,p_2,q}$ simply as composite of the top two maps in the following diagram:
+\[
+\begin{tikzcd}[column sep=50pt]
+	(p_1\otimes p_2)\tri(u\otimes q)\ar[r, "\indep\tri(u\otimes q)"]\ar[d, "\varphi_{p_1\otimes p_2,q}"']&
+	p_1\tri p_2\tri(u\otimes q)\ar[r, "p_1\tri\varphi_{p_2,q}"]\ar[dr, "\varphi_{p_1\tri p_2,q}"']&
+	p_1\tri(u\otimes p_2\tri q)\ar[d, "\varphi_{p_1,p_2\tri q}"]\\
+	u\otimes(p_1\otimes p_2)\tri q\ar[rr, "u\otimes\indep"']&&
+	u\otimes p_1\tri p_2\tri q
+\end{tikzcd}
+\]
+We see that this diagram commutes by using two facts from \cref{lemma.key}, namely naturality of $\varphi$, applied to $\indep\colon p_1\otimes p_2\to p_1\tri p_2$, and $\varphi_{p_1\tri p_2}=\varphi_{p_1}\circ (p_1\tri\varphi_{p_2})$. 
 \end{proof}
 
 \begin{theorem}
@@ -764,7 +812,7 @@ By \cref{lemma.key}, these reduce as follows:
 and both commute by the unit laws for the $\otimes$ monoid structure on $u$. We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
-	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q)
+	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q))
 		\ar[r, "u\otimes p_1\tri\phi_{p_2,p_3,q}"]
 		\ar[d, "\phi_{p_1,p_2,u\otimes p_3\tri q}"']\&
 	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)
@@ -785,13 +833,104 @@ Unpacking this, we obtain the following diagram, where the four sides above agre
 	u\otimes u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)\ar[dd, "{(-,-)}"']\ar[ur, bend left=5pt, start anchor={north east}, "\varphi"]\ar[dr, bend right=5pt, start anchor={south east}, "\varphi_{p_1\tri p_2}"']&&
 	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[dd, "{(-,-)}"]\\[-12pt]&
 	u\otimes u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[d, "{(-,-)}\otimes u"]\ar[ur, bend right=5pt, start anchor={east}, end anchor={south west}, "u\otimes{(-,-)}"']\\
-	u\otimes(p_1\tri p_2\tri(u\otimes p_3\tri q)\ar[r, "\varphi_{p_1\tri p_2}"']&
+	u\otimes(p_1\tri p_2\tri(u\otimes p_3\tri q))\ar[r, "\varphi_{p_1\tri p_2}"']&
 	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[r, "{(-,-)}"]&
 	u\otimes p_1\tri p_2\tri p_3\tri q
 \end{tikzcd}
 \]
 The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by associativity of the $\otimes$-monoid structure on $u$. The rest is \cref{lemma.key}: the little triangle commutes by the statement $\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'})$ and the pentagon commutes by the pentagon shown there.
 \end{proof}
+
+%-------- Chapter --------%
+\chapter{Consequences in the language of dependent types}
+
+The main theorem really just packages the story. The real heart of the matter---at least for dependent types---are what we call the key results. These are \cref{lemma.key} and its corollary, \cref{cor.key}, applied to $u$ across the board, where $u$ is a universe monad as in \cref{def.universe}. So fix a universe monad $(u,\1,\Sigma)$ for the rest of this section.
+
+%---- Section ----%
+\section{Notation}
+
+Let $\U\coloneqq u(1)$. We denote each element of $\U$ using an upper-case letter, $A,B$, etc., and call it a \emph{base type}, or simply a \emph{type}. Given a base type $A\in u(1)$, we denote $u[A]$ simply by $[A]$, since $u$ is fixed. We denote each element of $[A]$ using the same letter in lower-case, $a,a':[A]$, etc., and call it a \emph{term of type $A$}. 
+
+An element of $u\tri\U=u\tri u(1)=(u\tri u)(1)$ consists of an element $A\in\U$, and an element $B\, a\in\U$ for every $a\in [A]$. We denote it by $(A\vdash B)\in u\tri \U$ and call it a \emph{once-dependent type};. Similarly we can have $(n+1)$-fold dependent types
+\[(A_1\vdash\cdots\vdash A_n\vdash B)\in u\tripow{n}\tri\U.\]
+An element in $u\tripow{n}\tri u[A_1\vdash\cdots\vdash A_n\vdash B]$ consists of a term $a_1:A_1$, \dots, a term $a_n:A_n\, a_1\,\ldots\, a_n$, and a term $b\, a_1\,\ldots\, a_n:B\, a_1\,\ldots\, a_n$.
+
+An element of $(u\otimes u)(1)$ consists of a pair $(A,B)\in\U\times\U$; we call it a \emph{product type}. An element of $(u\otimes u)[(A,B)]$ consists of a pair $(a,b)\in [A]\times[B]$. There is exactly one element of $\yon(1)$; we denote it $\1$. The set $\yon[\1]$ has a unique element, and we denote it $()$.
+
+The cartesian monoid structures $(u,\1,\Sigma)$ and $(u,\1,(-,-))$, and the map $\indep\colon u\otimes u\to u\tri u$, are denoted as follows. The map $\1\colon\yon\to u$ provides a certain type, which we again call $\1\in U$. Its cartesianness means that $\1$ has a single term, which we again call $():[\1]$.
+
+The map $\Sigma\colon u\tri u\to u$ provides a function $u\tri\U\to\U$, which we again call $\Sigma$. Thus for any dependent type $A\vdash B:u\tri\U$, we can form $\Sigma(A,B):\U$. Similarly the map $(-,-)\colon u\otimes u\to u$ provides a function $\U\times \U\to\U$, which we again denote $(-,-)$. Thus for any pair of types $(A,B):\U\times \U$ we can form $(A,B):\U$. The cartesianness of $\Sigma$ means that a term of $\Sigma(A,B)$ consists of an element of $u\tri u[(A\vdash B)]$, i.e.\ a term $a:[A]$ and a term $b:[Ba]$. Similarly, a term of $(A,B)$ consists of an element $(a,b):[A]\times[B]$. 
+
+Note that only the notation is being created here; the rest just emerges from the meaning of $\tri$ and $\otimes$. If we leave some case out of our notation, e.g.\ how to denote an element of $u\tri(\U\otimes\U)$, one can simply make it up, as long as they understand how it corresponds to the relevant theory of polynomial functors.
+
+The map $\varphi_{u,u}\colon u\tri (u\otimes u)\to u\otimes u\tri u$ from \cref{lemma.key} provides a function%
+\footnote{As usual, $\tri$ binds the tightest, so $\U\times u\tri \U$ denotes $\U\times(u\tri \U)$.}
+\begin{equation}\label{eqn.key_types}
+	u\tri(\U\times\U)\to \U\times u\tri \U.
+\end{equation}
+For any dependent type $A\vdash B,C:u\tri(\U\times\U)$, we can form $A\to B,A\vdash C$, where $A\to B$ is an element of $\U$, and $A\vdash C$ is a dependent type. It is clear from the form of \eqref{eqn.key_types} that $C$ is not dependent on $A\to B$ here. Given a term $(b,a,c):(A\to B,A\vdash C)$, one can construct a term $(a,ba,c):u\tri(u\otimes u)[A\vdash B,C]$. Unlike the case for $\1$ and $\Sigma$, this construction is not a bijection because $\varphi_{u,u}$ is not cartesian, as explained in the footnote below \eqref{eqn.not_injective}.
+
+It will be convenient to also have notation for the map from \eqref{eqn.corkey}, namely
+\[\ol\varphi_{u,u,u}\colon (u\otimes u)\tri(u\otimes u)\to u\tri(u\otimes u\tri u).\]
+Given a dependent type $(A,B)\vdash(C,D):(u\otimes u)\tri(\U\times \U)$, we can form a type which we denote 
+\[A\vdash(B\to C,B\vdash D):u\tri(\U\otimes u\tri \U).\]
+A term in it consists of $a:[A]$, $c:[B\to C]$, $b:[B]$, and $d:[Db]$. From any such term we can construct a term of the original type, namely
+\[((a,ba),(c(ba), d(ba))):(u\otimes u)\tri(u\otimes u)[(A,B)\vdash(C,D)].\]
+
+%---- Section ----%
+\section{Unpacking the key results}
+
+
+Before we start, note that we already have the pairing laws from the fact that $(-,-)$ and $\Sigma$ are cartesian monads.
+\[
+\begin{array}{cc}
+	(A,\1)=A=(\1,A)&(A,(B,C))=((A,B),C)\\
+	\Sigma(A,\1)=A=\Sigma(\1,A)&
+		\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)
+\end{array}
+\]
+
+We now unpack the equations from \cref{lemma.key,cor.key}, with $u$ in place of all $p$'s and $q$'s. Rather than read the equations off as is, we derive more human-readable, or expected results from them. We begin with commutative diagram \eqref{eqn.corkey_diag}
+\[
+\begin{tikzcd}[column sep=large]
+	(u\otimes u)\tri(u\otimes u)\ar[r, "\ol\varphi_{u,u,u}"]\ar[d, "\varphi_{u\otimes u,u}"']&
+	u\tri(u\otimes u\tri u)\ar[d, "\varphi_{u,u\tri u}"]\\
+	u\otimes(u\otimes u)\tri u\ar[r, "u\otimes\indep"']&
+	u\otimes u\tri u\tri u
+\end{tikzcd}
+\]
+It says that for any dependent type $(A,B)\vdash(C,D)$, we can either form $((A,B)\to C),(A,B)\vdash D$ or $A\vdash (B\to C, B\vdash D)$; then applying $\indep$ to both sides we have
+\[
+((A,B)\to C)\vdash (A,B)\vdash D\equiv A\vdash (B\to C)\vdash B\vdash D
+\]
+There is an attendant conversion between terms: we can interchange $c,(a,b),d$ with $a,ca,b,d$.
+
+
+
+
+%\[
+%\begin{tabular}{p{3in}|p{2in}}
+%	naturality with respect to $p\in\polycart$,\\applied to $\Sigma\colon u\tri u\to u$&
+%		\\
+%	naturality with respect to $\indep$&
+%		\\
+%	commutation with composition&
+%		\\
+%	the first diagram&
+%		\\
+%	the second diagram&
+%		
+%\end{tabular}
+%\]
+
+
+
+
+
+
+
+
+
 
 \printbibliography
 \end{document}
