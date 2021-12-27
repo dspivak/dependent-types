@@ -510,12 +510,12 @@ where $\varphi_1(i)=j$.
 
 
 \begin{definition}[Sum-product sets and list polynomials]\label{def.sum_prod_set}
-Let $\kappa$ be a set. We say that it is a \emph{sum-product set} if it satisfies the following properties for any sets $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $\Pi(A,B)\coloneqq\prod_{a\in A}B_a$:%
+Let $\kappa$ be a set. We say that it is a \emph{sum-product set} if it satisfies the following properties for any sets $A$ and $(B_a)_{a\in A}$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $\Pi(A,B)\coloneqq\prod_{a\in A}B_a$:%
 \footnote{We write $S(A,B)$ rather than $\Sigma(A,B)$ because we already have used that symbol for a monad structure. Later we will define $\Sigma(A,B)$ to be this $S(A,B)$, so the distinction is not important.}
 \begin{enumerate}[label=(\roman*)]
 	\item $\kappa$ is nonempty $0<\kappa$;
-	\item $\kappa$ is closed under its own sums: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $S(A,B)<\kappa$;
-	\item $\kappa$ is closed under its own products: if $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, then $\Pi(A,B)<\kappa$;
+	\item $\kappa$ is closed under its own sums: if $A<\kappa$ and each $B_a<\kappa$, then $S(A,B)<\kappa$;
+	\item $\kappa$ is closed under its own products: if $A<\kappa$ and each $B_a<\kappa$, then $\Pi(A,B)<\kappa$;
 	\item there exists a set $C_\kappa$ containing exactly one set of each cardinality $N<\kappa$.%
 	\footnote{The set $C_\kappa$ is structure, not property, but any two choices will yield isomorphic list polynomials, so we are not concerned with the distinction here.}
 \end{enumerate}
@@ -563,7 +563,7 @@ and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and
 For any set $\kappa$ as in \cref{ex.sum_prod_set}, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
 \end{proposition}
 \begin{proof}
-Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice of one set for every cardinality $N<\kappa$, and that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, the set $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
+Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice of one set for every cardinality $N<\kappa$, and that for any $A<\kappa$ and $B_a<\kappa$ for each set in $(B_a)_{a\in A}$, the set $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
 
 The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position (element in $C_\kappa$) for each cardinality $N<\kappa$. 
 \end{proof}
@@ -573,8 +573,6 @@ For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ f
 %-------- Chapter --------%
 \chapter{The lax monoidal functor $\Phi_u$ for a universe $u$}
 
-%---- Section ----%
-\section{The requirements on $\Phi_u$}
 By this point, the type 
 \[
 \Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
@@ -585,29 +583,7 @@ q\to\Phi(\yon)(q)
 \qqand
 (\Phi(p_1)\circ\Phi(p_2))(q)\to \Phi(p_1\tri p_2)(q).
 \]
-natural in $p_1,p_2,q$.  These must satisfy three commutative diagrams:
-\begin{equation}\label{eqn.lax_monoidal1}
-\begin{tikzcd}
-	\Phi(p_1)\circ\Phi(p_2)\circ\Phi(p_3)\ar[r]\ar[d]&
-	\Phi(p_1)\circ\Phi(p_2\tri p_3)\ar[d]\\
-	\Phi(p_1\tri p_2)\circ\Phi(p_3)\ar[r]&
-	\Phi(p_1\tri p_2\tri p_3)
-\end{tikzcd}
-\end{equation}
-and
-\begin{equation}\label{eqn.lax_monoidal2}
-\begin{tikzcd}
-	\id\circ\Phi(p)\ar[r]\ar[d, equal]&
-	\Phi(\yon)\circ\Phi(p)\ar[d]\\
-	\Phi(p)&\Phi(\yon\tri p)\ar[l]
-\end{tikzcd}
-\hspace{.6in}
-\begin{tikzcd}
-	\Phi(p)\circ\id\ar[r]\ar[d, equal]&
-	\Phi(p)\circ\Phi(\yon)\ar[d]\\
-	\Phi(p)&\Phi(p\tri\yon)\ar[l]
-\end{tikzcd}
-\end{equation}
+natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams.
 
 %---- Section ----%
 \section{The action of $\Phi_u$ on objects and morphisms}
@@ -652,10 +628,20 @@ We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not like
 
 We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
+
+%---- Section ----%
+\section{The lax monoidal structure on $\Phi_u$}
+
 \begin{lemma}[Key lemma]\label{lemma.key}
 Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. For any polynomials $p\in\polycart$, $q\in\poly$, there is a natural map 
 \[\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.\] 
-Moreover, the following diagrams commute:
+Moreover, it commutes properly with composition
+\[
+	\varphi_{\yon}=\id
+	\qqand
+	\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'}),
+\]
+and the following diagrams commute:
 \begin{gather*}
 \begin{tikzcd}[column sep=0, ampersand replacement=\&]
 	\&p\tri q\ar[dl, "p\tri(\1\otimes q)"']\ar[dr,"\1\otimes p\tri q"]\\
@@ -672,7 +658,7 @@ Moreover, the following diagrams commute:
 \end{gather*}
 \end{lemma}
 \begin{proof}
-We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$ under $\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
+We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 Fix $p,q\in\polycart$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\varphi_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
 \begin{equation}\label{eqn.overflow}
@@ -682,7 +668,7 @@ Fix $p,q\in\polycart$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tr
 		0&\tn{ otherwise}
   \end{cases}
 \end{equation}
-In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}.
+In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
 For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
 \[
@@ -695,7 +681,13 @@ The map $\varphi$ is clearly natural in $q\in\poly$. It would not be natural for
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
 and $\varphi$ overflows for one iff it does for the other.
 
-We now check the two diagrams. For the first diagram, suppose given $(i,j)\in p\tri q(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i,j)$ and under the right-hand map it is sent to $(\1,i,j)$; these are the same element of $C_\kappa$  since $\Pi(p[i],\1)$ is defined to be the isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
+It is easy to check that $\varphi_{\yon,q}=\id_{u\otimes q}$. The statement $\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'})$ reduces to the statement that for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, there is a bijection
+\[
+	\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))
+\]
+which there is, and that the overflow handling agrees. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$.
+
+It remains to check the two diagrams. For the first diagram, suppose given $(i,j)\in p\tri q(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i,j)$ and under the right-hand map it is sent to $(\1,i,j)$; these are the same element of $C_\kappa$  since $\Pi(p[i],\1)$ is defined to be the isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
 For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$, where $A,B\colon p[i]\to u(1)$ and $j\colon p[i]\to q(1)$. It is easy to check that under the left-hand composite map it is sent to $(A_1,i,j)$ and under the right-hand composite map it is sent to $(A_2,i,j)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
 \[
@@ -722,20 +714,83 @@ given by $\Phi(p): q\mapsto u\otimes p\tri q$, has a lax monoidal structure. Giv
 	\qqand
 	\phi_{p_1,p_2}\colon\Phi(p_1)\circ\Phi(p_2)\to\Phi(p_1\tri p_2),
 \]
-i.e. maps $q\To{\phi(q)} u\otimes q$ and $u\otimes p_1\tri(u\otimes p_2\tri q)\To{\phi_{p_1,p_2}(q)}u\otimes(p_1\tri p_2\tri q)$, natural in $q\in\poly$. Recall from \eqref{eqn.otimes_monoid} that $u$ has a $\otimes$-monoid structure given by $\1$ and $(-,-)$. The ingredients to the lax monoidal structure are these and the maps $\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$ from the key lemma, \ref{lemma.key}. We define them to be the dashed maps:
+i.e. component maps $q\To{\phi_q} u\otimes q$ and $u\otimes p_1\tri(u\otimes p_2\tri q)\To{\phi_{p_1,p_2,q}}u\otimes(p_1\tri p_2\tri q)$, natural in $q\in\poly$. Recall from \eqref{eqn.otimes_monoid} that $u$ has a $\otimes$-monoid structure given by $\1$ and $(-,-)$. The ingredients to the lax monoidal structure are these and the maps $\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$ from the key lemma, \ref{lemma.key}. We define them to be the dashed maps:
 \[
 \begin{tikzcd}
-	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\phi(q)"']&\yon\tri q\ar[d, "\1\otimes q"]\\&
+	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\phi_q"']&\yon\tri q\ar[d, "\1\otimes q"]\\&
 	u\otimes q
 \end{tikzcd}
 \qqand
 \begin{tikzcd}[column sep=50pt]
-	u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\varphi_{p_1,p_2\tri q}"]\ar[dr, bend right=18pt, dashed, "\phi_{p_1,p_2}(q)"']&
-	u\otimes u\otimes(p_1\tri p_2\tri q)\ar[d, "{(-,-)}\otimes(p_1\tri p_2\tri q)"]\\&
-	u\otimes(p_1\tri p_2\tri q)
+	u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\varphi_{p_1,p_2\tri q}"]\ar[dr, bend right=18pt, dashed, "\phi_{p_1,p_2,q}"']&
+	u\otimes u\otimes p_1\tri p_2\tri q\ar[d, "{(-,-)}\otimes p_1\tri p_2\tri q"]\\&
+	u\otimes p_1\tri p_2\tri q
 \end{tikzcd}
 \]
-It remains to show that these satisfy the commutative diagrams in \cref{eqn.lax_monoidal1,eqn.lax_monoidal2}.
+It remains to show that these satisfy the three commutative diagrams of a lax monoidal functor.
+
+We begin by showing that the unit diagrams commute for any $q\in\poly$:
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\otimes p\tri q\ar[r, "\phi_{u\otimes p\tri q}"]\ar[dr, bend right=20pt, equal]\&
+	u\otimes u\otimes p\tri q \ar[d, "\phi_{\yon,p,q}"]\\
+	\&
+	u\otimes p\tri q
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\otimes p\tri q\ar[r, "u\otimes p\tri(\phi_q)"]\ar[dr, bend right=20pt, equal]\&
+	u\otimes p\tri(u\otimes q)\ar[d, "\phi_{p,\yon,q}"]\\
+	\&
+	u\otimes p\tri q
+\end{tikzcd}
+\]
+By \cref{lemma.key}, these reduce as follows:
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\otimes p\tri q\ar[r, "\1\otimes u\otimes p\tri q"]\ar[dr, bend right=20pt, equal]\&
+	u\otimes u\otimes p\tri q \ar[d, "{(-,-)}\otimes p\tri q"]\\
+	\&
+	u\otimes p\tri q
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}[ampersand replacement=\&, column sep=50pt]
+	u\otimes p\tri q\ar[r, "u\otimes p\tri(\1\otimes q)"]\ar[d, equal]\ar[rd, "u\otimes\1\otimes p\tri q" description]\&
+	u\otimes p\tri(u\otimes q)\ar[d, "u\otimes\varphi_{p,q}"]\\
+	u\otimes p\tri q\&
+	u\otimes u\otimes p\tri q\ar[l, "{(-,-)}\otimes p\tri q"]
+\end{tikzcd}
+\]
+and both commute by the unit laws for the $\otimes$ monoid structure on $u$. We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
+	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q)
+		\ar[r, "u\otimes p_1\tri\phi_{p_2,p_3,q}"]
+		\ar[d, "\phi_{p_1,p_2,u\otimes p_3\tri q}"']\&
+	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)
+		\ar[d, "\phi_{p_1,p_2\tri p_3,q}"]\\
+	u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)
+		\ar[r, "\phi_{p_1\tri p_2,p_3,q}"']\&
+	u\otimes p_1\tri p_2\tri p_3\tri q
+\end{tikzcd}
+\]
+Unpacking this, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
+\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\varphi$ and $(-,-)$ are fully written as $u\otimes p_1\tri(u\otimes p_2\tri\varphi_{p_2,p_3\tri q})$ and $u\otimes p_1\tri((-,-)\otimes p_2\tri p_2\tri p_3)$.}
+\[\fontsize{9.6pt}{9.6pt}\selectfont
+\begin{tikzcd}
+	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q))\ar[r, "\varphi"]\ar[dd, "\varphi"']&
+	u\otimes p_1\tri(u\otimes u\otimes p_2\tri p_3\tri q)\ar[r, "{(-,-)}"]\ar[d, "\varphi"]&
+	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)\ar[dd, "\varphi"]\\&
+	u\otimes u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)\ar[dd, "\varphi"]\\[-12pt]
+	u\otimes u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)\ar[dd, "{(-,-)}"']\ar[ur, bend left=5pt, start anchor={north east}, "\varphi"]\ar[dr, bend right=5pt, start anchor={south east}, "\varphi_{p_1\tri p_2}"']&&
+	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[dd, "{(-,-)}"]\\[-12pt]&
+	u\otimes u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[d, "{(-,-)}\otimes u"]\ar[ur, bend right=5pt, start anchor={east}, end anchor={south west}, "u\otimes{(-,-)}"']\\
+	u\otimes(p_1\tri p_2\tri(u\otimes p_3\tri q)\ar[r, "\varphi_{p_1\tri p_2}"']&
+	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[r, "{(-,-)}"]&
+	u\otimes p_1\tri p_2\tri p_3\tri q
+\end{tikzcd}
+\]
+The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by associativity of the $\otimes$-monoid structure on $u$. The rest is \cref{lemma.key}: the little triangle commutes by the statement $\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'})$ and the pentagon commutes by the pentagon shown there.
 \end{proof}
 
 \printbibliography
