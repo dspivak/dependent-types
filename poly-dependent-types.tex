@@ -508,7 +508,7 @@ where $\varphi_1(i)=j$.
 \end{remark}
 
 
-\begin{definition}[Sum-product sets and associated polynomials]\label{def.sum_prod_ord}
+\begin{definition}[Sum-product sets and associated polynomials]\label{def.sum_prod_set}
 Let $\kappa$ be a set. We say that it is a \emph{sum-product set} if it satisfies the following properties for any sets $A$ and $B_1,\ldots,B_A$ with disjoint union $S(A,B)\coloneqq\coprod_{a\in A}B_a$ and cartesian product $\Pi(A,B)\coloneqq\prod_{a\in A}B_a$:%
 \footnote{We write $S(A,B)$ rather than $\Sigma(A,B)$ because we already have used that symbol for a monad structure.}
 \begin{enumerate}[label=(\roman*)]
@@ -526,7 +526,7 @@ Given a sum-product set $\kappa$, we define the \emph{associated polynomial} to 
 \]
 \end{definition}
 
-\begin{example}\label{ex.sum_prod_ordinal}
+\begin{example}\label{ex.sum_prod_set}
 Given the axiom of choice, any Grothendieck universe is a sum-product set; indeed conditions (i) -- (iii) are satisfied for any Grothendieck universe, and (iv) is satisfied assuming the axiom of choice.
 
 There is only one finite ordinal with the above properties, namely $\kappa=2$. Indeed, $0$ fails condition (i), $1$ fails condition (iii) because $\Pi(0,!)=1\not<1$, and any $2<\kappa<\omega$ fails condition (ii) because by induction $\Pi(\kappa-1,(\kappa-1,\kappa-1))\not<\kappa$.
@@ -559,12 +559,12 @@ and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and
 
 
 \begin{proposition}
-For any ordinal $\kappa$ as in \cref{ex.sum_prod_ordinal}, there is a cartesian monad structure $(\1,\Sigma)$ on $u_\kappa\in\polycart$.
+For any set $\kappa$ as in \cref{ex.sum_prod_set}, there is a cartesian monad structure $(\1,\Sigma)$ on $u_\kappa\in\polycart$.
 \end{proposition}
 \begin{proof}
-Recall that $u_\kappa=\sum_{N<\kappa}\yon^N$, where $N$ ranges over all ordinals below $\kappa$, and that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, the ordinal $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
+Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice of one set for every cardinality $N<\kappa$, and that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$, the set $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
 
-The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position for each cardinality $N<\kappa$. 
+The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position (element in $C_\kappa$) for each cardinality $N<\kappa$. 
 \end{proof}
 
 \chapter{The lax monoidal functor $\Phi_u$ for a universe $u$}
@@ -624,16 +624,9 @@ This is functorial in $p$ and $q$ by \cref{**}.
 We say that a cartesian monad $(u,\1,\Sigma)$ is a \emph{universe} if there exists a lax monoidal functor of the form in \eqref{eqn.define_phi}.
 \end{definition}
 
-We now give a supply of universe monads, namely those that come from sum-product sets, as in \cref{def.sum_prod_ord}.
+We now give a supply of universe monads, namely those that come from sum-product sets, as in \cref{def.sum_prod_set}.
 
-\begin{definition}[Ordinal polynomial]
-For any ordinal $\kappa$, define
-\[
-	u_\kappa\coloneqq\sum_{N<\kappa}\yon^N.
-\]
-\end{definition}
-
-Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_ordinal},  $u_\kappa$ is a universe in the sense of \label{def.universe}.
+Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the associated polynomial $u_\kappa$ is a universe in the sense of \label{def.universe}.
 
 Let $u\in\poly$ be a polynomial and let $\1\colon\yon\to u$ and $\Sigma\colon u\tri u\to u$ be a cartesian monad structure on it. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monad structure $\1\colon\yon\to u$ and 
 \[
@@ -642,7 +635,7 @@ u\otimes u\to u\tri u\To{\Sigma}u.
 We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
 
 \begin{example}
-We resume our previous example, \cref{ex.sum_prod_ordinal}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
+We resume our previous example, \cref{ex.sum_prod_set}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
 
 The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordinal $1$. This map is cartesian. 
 
@@ -662,7 +655,7 @@ Moreover, the following diagrams commute:
 	\&p\tri q\ar[dl, "p\tri(\1\otimes q)"']\ar[dr,"\1\otimes p\tri q"]\\
 	p\tri(u\otimes q)\ar[rr, "\varphi_{p,q}"']\&\&u\otimes p\tri q
 \end{tikzcd}
-\\
+\\[15pt]
 \begin{tikzcd}[, ampersand replacement=\&, column sep=large]
 	p\tri(u\otimes u\otimes q)\ar[r, "\varphi_{p,u\otimes q}"]\ar[d, "p\tri{((-,-)\otimes q)}"']\&
 	u\otimes p\tri(u\otimes q)\ar[r, "u\otimes\varphi_{p,q}"]\&
@@ -676,13 +669,13 @@ Moreover, the following diagrams commute:
 We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $B_1,\ldots,B_A<\kappa$ under $\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 Fix $p,q\in\polycart$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\varphi_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
-\[
+\begin{equation}\label{eqn.overflow}
   A'\coloneqq
   \begin{cases}
   	\Pi(p[i],A)&\tn{ if }\Pi(p[i],A)<\kappa\\
 		0&\tn{ otherwise}
   \end{cases}
-\]
+\end{equation}
 In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}.
 
 For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
@@ -696,15 +689,17 @@ The map $\varphi$ is clearly natural in $q\in\poly$. It would not be natural for
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
 and $\varphi$ overflows for one iff it does for the other.
 
-We now check the two diagrams. For the first diagram, suppose given $(i,j)\in p\tri q(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i,j)$ and under the right-hand map it is sent to $(\1,i,j)$; these are the same since $\Pi(p[i],\1)$ is defined to be the ordinal isomorphic to a product of $\1$'s, which is $\1$. The maps on directions are also identical.
+We now check the two diagrams. For the first diagram, suppose given $(i,j)\in p\tri q(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i,j)$ and under the right-hand map it is sent to $(\1,i,j)$; these are the same element of $C_\kappa$  since $\Pi(p[i],\1)$ is defined to be the isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
-For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$, where $A,B\colon p[i]\to u(1)$ and $j\colon p[i]\to q(1)$. It is easy to check that under the left-hand composite map it is sent to $(A',i,j)$ and under the right-hand composite map it is sent to $(A'',i,j)$, for some $A',A''\in u(1)$. Assuming neither overflows, these are 
+For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$, where $A,B\colon p[i]\to u(1)$ and $j\colon p[i]\to q(1)$. It is easy to check that under the left-hand composite map it is sent to $(A_1,i,j)$ and under the right-hand composite map it is sent to $(A_2,i,j)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
 \[
-  A'\cong\Pi(p[i],\Sigma(A,B))
+  A_1\cong\Pi(p[i],\Sigma(A,B))
   \qqand
-	A''\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))
+	A_2\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))
 \] 
-respectively, and these ordinals are equal. 
+respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
+
+Note that $\Pi(p[i],\Sigma(A,B))\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],\Sigma(A,B))$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,!)$ and in the second case we will have $A_2=\Sigma(\Pi(p[i],A),0)$; either way, the result is $0$. Hence the diagram commutes.
 \end{proof}
 
 \begin{theorem}
