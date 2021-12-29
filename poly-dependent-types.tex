@@ -687,12 +687,12 @@ What we need to understand is the lax monoidality of $\Phi_u$ and $\Psi_u$, and 
 
 We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
-To define all this, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
+\cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. Everything else in the paper is shuffling and unpacking these formal consequences. 
 
-\begin{definition}[Switching map $\sigma$]
+\begin{definition}[Switching map $\sigma$]\label{def.switching}
 Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ define the map $\sigma_p\colon p\tri u\to u\otimes p$ as follows on positions and directions.
 
-A position of $p\tri u$ consists of a pair $(i,A)$ where $i\in p(1)$ and $A\colon p[i]\to u(1)$. We want to define a position of $u\otimes p$, which consists of a pair $(A',i')$ where $A'\in u(1)$ and $i'\in p(1)$. We define $i'\coloneqq i$ and $A'$ as follows:
+A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
 \begin{equation}\label{eqn.overflow}
   A'\coloneqq
   \begin{cases}
@@ -700,15 +700,17 @@ A position of $p\tri u$ consists of a pair $(i,A)$ where $i\in p(1)$ and $A\colo
 		0&\tn{ otherwise}
   \end{cases}
 \end{equation}
-In a case of $(i,A)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
+In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
-For the backwards map $\varphi^\sharp_{(i,A)}\colon (u\otimes p)[(A',i)]\to(p\tri u)[(i,A)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p)[(A',i)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
 \begin{equation}\label{eqn.not_injective}
-\prod_{s\in p[i]}A_s\times p[i]\to\sum_{s\in p[i]} A s
+\prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
 \end{equation}
-and it is given by $(a,s)\mapsto(s,as)$.%
-\footnote{Note that the map $\varphi^\sharp_{(i,A)}$ is not generally injective, because for a given input $(a,s)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
+and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
+\footnote{Note that the map $\varphi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
 \end{definition}
+
+The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 \begin{lemma}[Key lemma]\label{lemma.key}
 Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. For any polynomials $p\in\polycart$, $q\in\poly$, there are natural maps 
