@@ -623,9 +623,16 @@ For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ f
 \end{equation}
 We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
 
+\begin{example}
+We resume our previous example, \cref{ex.sum_prod_set}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
+
+The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordinal $1$. This map is cartesian. The function $\Sigma_1\colon u\tri u(1)\to u(1)$ is defined on tuples $(A,B)\in u_\kappa\tri u_\kappa(1)$. Here $B$ denotes a function $B\colon u_\kappa[A]\to u(1)$. We define it to the coproduct $\Sigma_1(A,B)\coloneqq S(A,B)$. The map $\Sigma_{(A,B)}^\sharp\colon S(A,B)\to (u\tri u)[(A,B)]$ sends $x\in \Sigma(A,B)$ to the pair $(x_A,x_B)$, where $x_A\in A$ and $x_B\in B x_A$; it is a bijection by definition, so $\Sigma$ is cartesian as well.
+
+We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not likely. Note that $\Sigma(\1,B)=B$; on positions it is literal equality, since the ordinal $\kappa$ has one element for every ordinal less than it. On directions it is also literal equality between the two functions. Similarly, $\Sigma(B,\1)=B$ and $\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)$. 
+\end{example}
 
 %-------- Chapter --------%
-\chapter{The lax monoidal functor $\Phi_u$ for a universe $u$}
+\chapter{Universe monads}
 
 We repeat the diagram from \eqref{eqn.aux} for convenience.
 \[
@@ -636,9 +643,12 @@ We repeat the diagram from \eqref{eqn.aux} for convenience.
 	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
 \end{tikzcd}
 \]
-By this point, the types of everything in it can be understood for any polynomial $u\in\poly$. We already have the left-hand map $\indep$ from \cref{prop.indep}; as a functor it is identity on objects. 
+By this point, the types of everything in it can be understood for any polynomial $u\in\poly$. We already have the left-hand map $\indep$ from \cref{prop.indep}; as a functor it is identity on objects. Let's examine the functors $\Phi_u$ and $\Psi_u$. 
 
-Let's examine the functors $\Phi_u$ and $\Psi_u$. First of all, the domain in each case is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
+%---- Section ----%
+\section{The functors $\Phi_u$ and $\Psi_u$}
+
+First of all, the domain in each case is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
 \begin{align*}
   q&\to\Phi(\yon)(q)
   &(\Phi(p_1)\circ\Phi(p_2))(q)&\to \Phi(p_1\tri p_2)(q)\\
@@ -649,8 +659,6 @@ natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams.
 
 The natural transformation $\indep$ will give maps $\Phi_u(p)\to\Psi_u(p)$ for each $p\in\poly$, and these will be satisfy an additional commutative diagram.
 
-%---- Section ----%
-\section{The action of $\Phi_u$ and $\Psi_u$ on objects and morphisms}
 
 For any polynomial $u$, our next step is to propose functors
 \begin{align*}
@@ -673,19 +681,8 @@ We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{unive
 We say it has \emph{support for pair types} if there is additionally a lax monoidal structure on $\Psi_u$ and a lax natural transformation as shown in \eqref{eqn.aux} above.
 \end{definition}
 
-We now give a supply of universe monads, namely those that come from sum-product sets, as in \cref{def.sum_prod_set}.
+Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} is a universe in the sense of \cref{def.universe}.
 
-Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list polynomial $u_\kappa$ is a universe in the sense of \cref{def.universe}.
-
-\begin{example}
-We resume our previous example, \cref{ex.sum_prod_set}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
-
-The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordinal $1$. This map is cartesian. 
-
-The function $\Sigma_1\colon u\tri u(1)\to u(1)$ is defined on tuples $(A,B)\in u_\kappa\tri u_\kappa(1)$. Here $B$ denotes a function $B\colon u_\kappa[A]\to u(1)$. We define it to the coproduct $\Sigma_1(A,B)\coloneqq S(A,B)$. The map $\Sigma_{(A,B)}^\sharp\colon S(A,B)\to (u\tri u)[(A,B)]$ sends $x\in \Sigma(A,B)$ to the pair $(x_A,x_B)$, where $x_A\in A$ and $x_B\in B x_A$; it is a bijection by definition, so $\Sigma$ is cartesian as well.
-
-We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not likely. Note that $\Sigma(\1,B)=B$; on positions it is literal equality, since the ordinal $\kappa$ has one element for every ordinal less than it. On directions it is also literal equality between the two functions. Similarly, $\Sigma(B,\1)=B$ and $\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)$. 
-\end{example}
 
 We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
