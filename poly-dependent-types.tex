@@ -491,8 +491,12 @@ I greatly appreciate the clarity of delivery and the insight behind Steve Awodey
 This material is based upon work supported by the Air Force Office of Scientific Research under award number FA9550-20-1-0348.
 
 %-------- Chapter --------%
-\chapter{Background}
+\chapter{Background and key examples}
 
+The main purpose of this section is to fix notation and provide a brief overview of polynomial functors in one variable. But we will also use this section to introduce our main polynomials of interest, which we call $\kappa$-list polynomials.
+
+%---- Section ----%
+\section{Basics}
 
 \begin{definition}[Polynomial functor]\label{def.poly}
 Given a set $S$, we denote the corresponding representable functor by
@@ -520,7 +524,7 @@ For any polynomial $p=\sum_{i\in I}\yon^{p[i]}$, we have a canonical isomorphism
 p=\sum_{i\in p(1)}\yon^{p[i]}.
 \end{equation}
 
-\begin{remark}
+\begin{remark}\label{rem.positions_and_directions}
 Note that there is already some dependency in \cref{def.poly}; in order to define a polynomial we need a set $I$ and then, \emph{for each $i$ in $I$}, we need a representable functor. In order to get the present paper off the ground, this much and a bit more---the following combinatorial description of morphisms---need to be granted.
 
 Using the Yoneda lemma, we can understand a morphism $p\to q$ in $\poly$ to consist of two pieces $(\varphi_1,\varphi^\sharp)$ as follows:
@@ -530,8 +534,11 @@ Using the Yoneda lemma, we can understand a morphism $p\to q$ in $\poly$ to cons
   \varphi^\sharp_i\colon q[j]\to p[i]
 \end{equation}
 that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a function on directions, \emph{depending on a position $i\in p(1)$}.
-where $\varphi_1(i)=j$.
+where $\varphi_1(i)=j$. We refer to $\varphi^\sharp$ as the \emph{on-directions} function.
+
+One can check that a map $\varphi\colon p\to q$ is cartesian iff the on-directions function $\varphi^\sharp_i$ is a bijection $p[i]\cong q[\varphi_1i]$ for each $i\in p(1)$.
 \end{remark}
+
 
 
 \begin{definition}[Sum-product sets and list polynomials]\label{def.sum_prod_set}
@@ -564,8 +571,12 @@ The easiest intuitive example to keep in mind for our paper is $\kappa=\omega$, 
 \]
 \end{example}
 
+%---- Section ----%
+\section{Composition and Dirichlet monoidal structures}
 
-Polynomial functors are closed under composition, which we denote by $\tri$; the monoidal unit is $\yon$. There is another monoidal product called \emph{Dirichlet product} and denoted $\otimes$; it is given by
+Polynomial functors are closed under composition, which we denote by $\tri$; the monoidal unit is $\yon$.
+
+There is another monoidal product called \emph{Dirichlet product} and denoted $\otimes$; it is given by
 \[
 \left(\sum_{i\in p(1)}\yon^{p[i]}\right)\otimes
 \left(\sum_{j\in q(1)}\yon^{q[j]}\right)\coloneqq
@@ -575,17 +586,28 @@ Its monoidal unit is again $\yon$.
 
 The $\otimes$ structure is symmetric. Both monoidal structures restrict to monoidal structures on $\polycart$; in other words any composite or Dirichlet product of cartesian morphisms is again cartesian.
 
-There is an identity-on-objects lax monoidal functor
+\begin{proposition}\label{prop.indep}
+The identity functor $\poly\to\poly$ can be regarded as a lax monoidal functor
 \begin{equation}\label{eqn.indep}
-(\poly,\yon,\tri)\to(\poly,\yon,\otimes),
+	\indep\colon (\poly,\yon,\tri)\to(\poly,\yon,\otimes),
 \end{equation}
-or equivalently an identity-on-objects oplax monoidal functor $(\poly,\yon,\otimes)\to(\poly,\yon,\tri)$. Given polynomials $p,q\in\poly$ and a set $X\in\smset$, we refer to the laxator (lax coherence maps) as
+Moreover the laxators (lax coherence maps), which we denote with the same symbol
 \[\indep\colon (p\otimes q)\to (p\tri q)\]
-and is defined as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that $\indep$ is cartesian.
+are cartesian for any $p,q\in\poly$.
+\end{proposition}
+\begin{proof}
+Suppose given polynomials $p,q\in\poly$ and a set $X\in\smset$; the only data in $\indep$ is in its laxator, which we define as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that the relevant axioms are satisfied and that $\indep$ is cartesian.
+\end{proof}
 
+\begin{proposition}\label{prop.tri_dir_cartesian}
+Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
+\end{proposition}
+\begin{proof}
+Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
+\end{proof}
 
 \begin{proposition}[$\kappa$-list monads]\label{prop.list_monad}
-For any set $\kappa$ as in \cref{ex.sum_prod_set}, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
+For any sum-product set $\kappa$, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
 \end{proposition}
 \begin{proof}
 Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice of one set for every cardinality $N<\kappa$, and that for any $A<\kappa$ and $B_a<\kappa$ for each set in $(B_a)_{a\in A}$, the set $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
@@ -593,53 +615,67 @@ Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice 
 The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position (element in $C_\kappa$) for each cardinality $N<\kappa$. 
 \end{proof}
 
-For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} as the \emph{$\kappa$-list monad}.
-
-%-------- Chapter --------%
-\chapter{The lax monoidal functor $\Phi_u$ for a universe $u$}
-
-By this point, the type 
-\[
-\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
-\]	
-of the lax monoidal functor $\Phi\coloneqq\Phi_u$ can be understood for any polynomial $u\in\poly$. First of all, its domain is the category $\polycart$ of polynomials and cartesian maps between them. Its codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functor being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
-\[
-q\to\Phi(\yon)(q)
-\qqand
-(\Phi(p_1)\circ\Phi(p_2))(q)\to \Phi(p_1\tri p_2)(q).
-\]
-natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams.
-
-%---- Section ----%
-\section{The action of $\Phi_u$ on objects and morphisms}
-
-For any polynomial $u$, our next step is to propose such a functor
-\[
-	\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big).
-\]
-It may look a bit underwhelming, but here it is:%
-\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$. The expression $p_1\tri q+p_2\tri q$ parses as $(p_1\tri q)+(p_2\tri q)$.}
-\begin{equation}\label{eqn.define_phi}
-	\Phi_u(p)(q)\coloneqq u\otimes p\tri q.
-\end{equation}
-
-This is functorial in $p$ and $q$ by \cref{**}.
-
-\begin{definition}[Universe monads]\label{def.universe}
-We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe} if the functor given by \eqref{eqn.define_phi} has a lax monoidal structure.
-\end{definition}
-
-We now give a supply of universe monads, namely those that come from sum-product sets, as in \cref{def.sum_prod_set}.
-
-Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list polynomial $u_\kappa$ is a universe in the sense of \cref{def.universe}.
-
-Let $u\in\poly$ be a polynomial and let $\1\colon\yon\to u$ and $\Sigma\colon u\tri u\to u$ be a cartesian monad structure on it. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monoid structure 
+For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} as the \emph{$\kappa$-list monad}. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monoid structure 
 \begin{equation}\label{eqn.otimes_monoid}
 	\yon\To{\1} u
 	\qqand
 	u\otimes u\To{\indep} u\tri u\To{\Sigma}u.
 \end{equation}
 We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
+
+
+%-------- Chapter --------%
+\chapter{The lax monoidal functor $\Phi_u$ for a universe $u$}
+
+We repeat the diagram from \eqref{eqn.aux} for convenience.
+\[
+\begin{tikzcd}[row sep=0]
+	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi_u", ""' name=Phi]\\&[30pt]
+	\Big(\en(\poly),\id,\circ\Big)\\
+	\Big(\polycart,\yon,\otimes\Big)\ar[ur, bend right=5pt, "\Psi_u"', "" name=Psi]
+	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
+\end{tikzcd}
+\]
+By this point, the types of everything in it can be understood for any polynomial $u\in\poly$. We already have the left-hand map $\indep$ from \cref{prop.indep}; as a functor it is identity on objects. 
+
+Let's examine the functors $\Phi_u$ and $\Psi_u$. First of all, the domain in each case is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
+\begin{align*}
+  q&\to\Phi(\yon)(q)
+  &(\Phi(p_1)\circ\Phi(p_2))(q)&\to \Phi(p_1\tri p_2)(q)\\
+  q&\to\Psi(\yon)(q)
+  &(\Psi(p_1)\circ\Psi(p_2))(q)&\to \Psi(p_1\otimes p_2)(q)
+\end{align*}
+natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams. 
+
+The natural transformation $\indep$ will give maps $\Phi_u(p)\to\Psi_u(p)$ for each $p\in\poly$, and these will be satisfy an additional commutative diagram.
+
+%---- Section ----%
+\section{The action of $\Phi_u$ and $\Psi_u$ on objects and morphisms}
+
+For any polynomial $u$, our next step is to propose functors
+\begin{align*}
+	\Phi_u\colon\Big(\polycart,\yon,\tri\Big)&\too\Big(\en(\poly),\id,\circ\Big)\\
+	\Psi_u\colon\Big(\polycart,\yon,\otimes\Big)&\too\Big(\en(\poly),\id,\circ\Big).
+\end{align*}
+It may look a bit underwhelming, but here they are:%
+\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$. The expression $p_1\tri q+p_2\tri q$ parses as $(p_1\tri q)+(p_2\tri q)$.}
+\begin{equation}\label{eqn.define_phi}
+	\Phi_u(p)(q)\coloneqq u\tri p\tri q
+	\qqand
+	\Psi_u(p)(q)\coloneqq u\otimes p\tri q.
+\end{equation}
+
+Both are functorial in $p\in\polycart$ and $q\in\poly$ by \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ and $\tri$ are monoidal products.
+
+\begin{definition}[Universe monads]\label{def.universe}
+We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe for dependent types} if the functor $\Phi_u$ given by \eqref{eqn.define_phi} has a lax monoidal structure. 
+
+We say it has \emph{support for pair types} if there is additionally a lax monoidal structure on $\Psi_u$ and a lax natural transformation as shown in \eqref{eqn.aux} above.
+\end{definition}
+
+We now give a supply of universe monads, namely those that come from sum-product sets, as in \cref{def.sum_prod_set}.
+
+Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list polynomial $u_\kappa$ is a universe in the sense of \cref{def.universe}.
 
 \begin{example}
 We resume our previous example, \cref{ex.sum_prod_set}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
@@ -733,36 +769,6 @@ For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$,
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
 Note that $\Pi(p[i],A\times B)\cong\Pi(p[i],A)\times\Pi(p[i],B)$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=0\times\Pi(p[i],B)$ and in the second case we will have $A_2=\Pi(p[i],A\times 0)$; either way, the result is $0$. Hence the diagram commutes.
-\end{proof}
-
-\begin{corollary}\label{cor.key}
-With notation as in \cref{lemma.key}, there is a map
-\begin{equation}\label{eqn.corkey}
-	\ol{\varphi_{p_1,p_2,q}}\colon (p_1\otimes p_2)\tri(u\otimes q)\to
-	p_1\tri(u\otimes p_2\tri q)
-\end{equation}
-natural in $p_1,p_2\in\polycart$ and $q\in\poly$, such that the following diagram commutes:
-\begin{equation}\label{eqn.corkey_diag}
-\begin{tikzcd}[column sep=large]
-	(p_1\otimes p_2)\tri(u\otimes q)\ar[r, "\ol\varphi_{p_1,p_2,q}"]\ar[d, "\varphi_{p_1\otimes p_2,q}"']&
-	p_1\tri(u\otimes p_2\tri q)\ar[d, "\varphi_{p_1,p_2\tri q}"]\\
-	u\otimes(p_1\otimes p_2)\tri q\ar[r, "u\otimes\indep"']&
-	u\otimes p_1\tri p_2\tri q
-\end{tikzcd}
-\end{equation}
-\end{corollary}
-\begin{proof}
-We define the map $\ol\varphi_{p_1,p_2,q}$ simply as composite of the top two maps in the following diagram:
-\[
-\begin{tikzcd}[column sep=50pt]
-	(p_1\otimes p_2)\tri(u\otimes q)\ar[r, "\indep\tri(u\otimes q)"]\ar[d, "\varphi_{p_1\otimes p_2,q}"']&
-	p_1\tri p_2\tri(u\otimes q)\ar[r, "p_1\tri\varphi_{p_2,q}"]\ar[dr, "\varphi_{p_1\tri p_2,q}"']&
-	p_1\tri(u\otimes p_2\tri q)\ar[d, "\varphi_{p_1,p_2\tri q}"]\\
-	u\otimes(p_1\otimes p_2)\tri q\ar[rr, "u\otimes\indep"']&&
-	u\otimes p_1\tri p_2\tri q
-\end{tikzcd}
-\]
-We see that this diagram commutes by using two facts from \cref{lemma.key}, namely naturality of $\varphi$, applied to $\indep\colon p_1\otimes p_2\to p_1\tri p_2$, and $\varphi_{p_1\tri p_2}=\varphi_{p_1}\circ (p_1\tri\varphi_{p_2})$. 
 \end{proof}
 
 \begin{theorem}
