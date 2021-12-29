@@ -368,21 +368,21 @@ In this paper we ground the notion of dependent types in the theory of polynomia
 
 The main syntax and rules will emerge from two pieces of data:
 \begin{enumerate}
-	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
-	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form
-	%
-%\footnote{This can be phrased as an \emph{right-biased oplax monoidal structure} \cite{nlab.lax_monoidal} on $\polycart$, but we will only briefly mention this again.}
+	\item a cartesian polynomial monad $(u,\1,\Sigma)$ and
+	\item a lax monoidal functor 
 \[
-\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
+	\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]
 \end{enumerate}
+given by $\Phi(p)(q)\coloneqq u\tri p\tri q$. Roughly speaking, every polynomial $p$ gives a bespoke notion of types on which types in an arbitrary $q$ can be based. The polynomial $u$ is special---as expressed by the lax monoidality of $\Phi$---in that it knows how to absorb any bespoke notion of type dependency into its own. 
+
 The lax monoidality gives cartesian maps of the form 
 \[
 \Phi(p_1)\circ\Phi(p_2)
 \Too{\phi_{p_1,p_2}}
 \Phi(p_1\tri p_2).
 \]
-These perform a kind of switching operation, which in fact does most of the work. In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a map
+In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a map
 \begin{equation}\label{eqn.main}
   \Phi(u)\circ\Phi(u)(u)
   \Too{\phi_{u,u}(u)}
@@ -395,18 +395,30 @@ which contains within it the most important structural rules of dependent type t
 The auxiliary structure is a second lax monoidal functor and lax natural transformation as shown:
 \begin{equation}\label{eqn.aux}
 \begin{tikzcd}[row sep=0]
-	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi_u", ""' name=Phi]\\&[30pt]
+	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi", ""' name=Phi]\\&[30pt]
 	\Big(\en(\poly),\id,\circ\Big)\\
-	\Big(\polycart,\yon,\otimes\Big)\ar[ur, bend right=5pt, "\Psi_u"', "" name=Psi]
+	\Big(\polycart,\yon,\otimes\Big)\ar[ur, bend right=5pt, "\Psi"', "" name=Psi]
 	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
 \end{tikzcd}
 \end{equation}
+The map $\Psi$, again implicitly dependent on $u$, is given by $\Psi(p)(q)\coloneqq u\otimes p\tri q$.%
+\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$.}
 The idea is that a pair type $(A,B)$ can be considered as a dependent type $A\vdash B$; so independent types include into dependent types.%
 \footnote{The fact that the map seems to go the other way---from the $\tri$-structure to the $\otimes$-structure---is just an artifact of how lax monoidal functors work. The map $\indep$ is identity on objects and its laxators give maps $p\otimes q=\indep(p)\otimes\indep(q)\to\indep(p\tri q)=p\tri q$.
 } 
-We will explain all this in the main text; for now, let's move on to what it means.
 
-From these lax monoidal functors we obtain the following sort of constructors.%
+\begin{definition}[Universe monads]\label{def.universe}
+Consider the functors
+\begin{equation}\label{eqn.define_phi}
+	\Phi_u(p)(q)\coloneqq u\tri p\tri q
+	\qqand
+	\Psi_u(p)(q)\coloneqq u\otimes p\tri q.
+\end{equation}
+We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe for dependent types} if the functor $\Phi_u$ has a lax monoidal structure and \emph{support for pair types} if $\Psi_u$ also has a lax monoidal structure and there is a lax natural transformation as shown in \eqref{eqn.aux} above.
+\end{definition}
+
+
+Universe monads with support for pair types give the following sort of constructors.%
 \footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition, e.g.\ in \eqref{eqn.premise_axiom}. All of our symbols relate to some aspect of the underlying polynomial formalism, so some such notation seems forced on us, even though this convention appears to be uncommon. For typographical reasons, we are sparing with our parentheses. We use the convention that $\vdash$ binds the tightest, so $A,B\vdash C$ parses as $A,(B\vdash C)$. Thus, the expression $A, B\vdash (C, D\vdash E)$ parses as $A,(B\vdash(C, (D\vdash E)))$.}
 \begin{equation}\label{eqn.premise_axiom}
   \begin{prooftree}
@@ -419,9 +431,7 @@ From these lax monoidal functors we obtain the following sort of constructors.%
     \Infer1{(A,B\to C),\Sigma(B,D)\vdash E}
   \end{prooftree}
 \end{equation}
-The first says that for any type $A:\U$, one can form the unit type $\1$ and for any term $():[\1]$ a type $A():\U$ depending on it.%
-\footnote{Here, $1$ denotes the one-element set and $\1$ denotes a certain element of $U$. In fact, they will turn out to somehow be the same, but we distinguish them for the reader's sake.}
- The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. We denote $\Sigma$ types, where the second type may depend on the first, by $\Sigma(A,B)$; we denote product types---a special case of $\Sigma$ types where the second type does not depend on the first---by $(A,B)$.
+The first says that for any type $A:\U$, one can form the unit type $\1$ and for any term $():[\1]$ a type $A():\U$ depending on it. The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. We denote $\Sigma$ types, where the second type may depend on the first, by $\Sigma(A,B)$; we denote product types---a special case of $\Sigma$ types where the second type does not depend on the first---by $(A,B)$.
 
 The typing constructors come along with term constructors going in the opposite direction. 
 \begin{equation}\label{eqn.premise_axiom}
@@ -606,6 +616,14 @@ Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
 Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
 \end{proof}
 
+It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ and $\tri$ are monoidal products that for any $u\in\poly$ the maps
+\[
+	\Phi_u(p)(q)\coloneqq u\tri p\tri q
+	\qqand
+	\Psi_u(p)(q)\coloneqq u\otimes p\tri q,
+\]
+defining the functors in \eqref{eqn.aux} are functorial in $p\in\polycart$ and $q\in\poly$.
+
 \begin{proposition}[$\kappa$-list monads]\label{prop.list_monad}
 For any sum-product set $\kappa$, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
 \end{proposition}
@@ -615,6 +633,7 @@ Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice 
 The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position (element in $C_\kappa$) for each cardinality $N<\kappa$. 
 \end{proof}
 
+\begin{definition}[$\kappa$-list monads]
 For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} as the \emph{$\kappa$-list monad}. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monoid structure 
 \begin{equation}\label{eqn.otimes_monoid}
 	\yon\To{\1} u
@@ -622,6 +641,9 @@ For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ f
 	u\otimes u\To{\indep} u\tri u\To{\Sigma}u.
 \end{equation}
 We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
+\end{definition}
+
+Our goal will be to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} is a universe in the sense of \cref{def.universe}. Here are some examples.
 
 \begin{example}
 We resume our previous example, \cref{ex.sum_prod_set}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
@@ -631,10 +653,14 @@ The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordi
 We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not likely. Note that $\Sigma(\1,B)=B$; on positions it is literal equality, since the ordinal $\kappa$ has one element for every ordinal less than it. On directions it is also literal equality between the two functions. Similarly, $\Sigma(B,\1)=B$ and $\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)$. 
 \end{example}
 
-%-------- Chapter --------%
-\chapter{Universe monads}
 
-We repeat the diagram from \eqref{eqn.aux} for convenience.
+%-------- Chapter --------%
+\chapter{List monads are universe monads}
+
+%---- Section ----%
+\section{The functors $\Phi_u$ and $\Psi_u$}
+
+For the reader's convenience, we repeat the diagram from \eqref{eqn.aux}
 \[
 \begin{tikzcd}[row sep=0]
 	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi_u", ""' name=Phi]\\&[30pt]
@@ -643,10 +669,7 @@ We repeat the diagram from \eqref{eqn.aux} for convenience.
 	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
 \end{tikzcd}
 \]
-By this point, the types of everything in it can be understood for any polynomial $u\in\poly$. We already have the left-hand map $\indep$ from \cref{prop.indep}; as a functor it is identity on objects. Let's examine the functors $\Phi_u$ and $\Psi_u$. 
-
-%---- Section ----%
-\section{The functors $\Phi_u$ and $\Psi_u$}
+We have the left-hand map $\indep$ from \cref{prop.indep}; as a functor it is identity on objects. Let's examine the functors $\Phi$ and $\Psi$. 
 
 First of all, the domain in each case is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
 \begin{align*}
@@ -655,46 +678,45 @@ First of all, the domain in each case is the category $\polycart$ of polynomials
   q&\to\Psi(\yon)(q)
   &(\Psi(p_1)\circ\Psi(p_2))(q)&\to \Psi(p_1\otimes p_2)(q)
 \end{align*}
-natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams. 
+natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams. The natural transformation $\indep$ will give maps $\Phi_u(p)\to\Psi_u(p)$ for each $p\in\poly$, and these will be satisfy an additional commutative diagram.
 
-The natural transformation $\indep$ will give maps $\Phi_u(p)\to\Psi_u(p)$ for each $p\in\poly$, and these will be satisfy an additional commutative diagram.
-
-
-For any polynomial $u$, our next step is to propose functors
-\begin{align*}
-	\Phi_u\colon\Big(\polycart,\yon,\tri\Big)&\too\Big(\en(\poly),\id,\circ\Big)\\
-	\Psi_u\colon\Big(\polycart,\yon,\otimes\Big)&\too\Big(\en(\poly),\id,\circ\Big).
-\end{align*}
-It may look a bit underwhelming, but here they are:%
-\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$. The expression $p_1\tri q+p_2\tri q$ parses as $(p_1\tri q)+(p_2\tri q)$.}
-\begin{equation}\label{eqn.define_phi}
-	\Phi_u(p)(q)\coloneqq u\tri p\tri q
-	\qqand
-	\Psi_u(p)(q)\coloneqq u\otimes p\tri q.
-\end{equation}
-
-Both are functorial in $p\in\polycart$ and $q\in\poly$ by \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ and $\tri$ are monoidal products.
-
-\begin{definition}[Universe monads]\label{def.universe}
-We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe for dependent types} if the functor $\Phi_u$ given by \eqref{eqn.define_phi} has a lax monoidal structure. 
-
-We say it has \emph{support for pair types} if there is additionally a lax monoidal structure on $\Psi_u$ and a lax natural transformation as shown in \eqref{eqn.aux} above.
-\end{definition}
-
-Our goal is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} is a universe in the sense of \cref{def.universe}.
-
-
-We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
-
+What we need to understand is the lax monoidality of $\Phi_u$ and $\Psi_u$, and these constrain $u$ for the first time.
 
 %---- Section ----%
 \section{The lax monoidal structure on $\Phi_u$}
 
-Discussion of overflow and using $\kappa$-bounded polynomials...
+We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
+
+To define all this, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
+
+\begin{definition}[Switching map $\sigma$]
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ define the map $\sigma_p\colon p\tri u\to u\otimes p$ as follows on positions and directions.
+
+A position of $p\tri u$ consists of a pair $(i,A)$ where $i\in p(1)$ and $A\colon p[i]\to u(1)$. We want to define a position of $u\otimes p$, which consists of a pair $(A',i')$ where $A'\in u(1)$ and $i'\in p(1)$. We define $i'\coloneqq i$ and $A'$ as follows:
+\begin{equation}\label{eqn.overflow}
+  A'\coloneqq
+  \begin{cases}
+  	\Pi(p[i],A)&\tn{ if }\Pi(p[i],A)<\kappa\\
+		0&\tn{ otherwise}
+  \end{cases}
+\end{equation}
+In a case of $(i,A)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
+
+For the backwards map $\varphi^\sharp_{(i,A)}\colon (u\otimes p)[(A',i)]\to(p\tri u)[(i,A)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p)[(A',i)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+\begin{equation}\label{eqn.not_injective}
+\prod_{s\in p[i]}A_s\times p[i]\to\sum_{s\in p[i]} A s
+\end{equation}
+and it is given by $(a,s)\mapsto(s,as)$.%
+\footnote{Note that the map $\varphi^\sharp_{(i,A)}$ is not generally injective, because for a given input $(a,s)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
+\end{definition}
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. For any polynomials $p\in\polycart$, $q\in\poly$, there is a natural map 
-\[\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.\] 
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. For any polynomials $p\in\polycart$, $q\in\poly$, there are natural maps 
+\[
+	\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.
+	\qqand
+	\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.
+\] 
 Moreover, it commutes properly with composition
 \[
 	\varphi_{\yon}=\id
