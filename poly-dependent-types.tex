@@ -364,7 +364,9 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 %-------- Chapter --------%
 \chapter{Introduction}
 
-In this paper we ground the notion of dependent types in the theory of polynomial functors. The syntax and rules will all emerge from two pieces of data:
+In this paper we ground the notion of dependent types in the theory of polynomial functors. We split it into two pieces: the main structure and the auxiliary structure: the first handles dependent sums, dependent products, and the interaction between them. The second adds explicit support for pair (non-dependent sum) types. 
+
+The main syntax and rules will emerge from two pieces of data:
 \begin{enumerate}
 	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
 	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form
@@ -382,15 +384,29 @@ The lax monoidality gives cartesian maps of the form
 \]
 These perform a kind of switching operation, which in fact does most of the work. In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a map
 \begin{equation}\label{eqn.main}
-\Phi(u)\circ\Phi(u)(u)
-\Too{\phi_{u,u}(u)}
-\Phi(u\tri u)(u)
-\Too{\Sigma(u)}
-\Phi(u)(u)
+  \Phi(u)\circ\Phi(u)(u)
+  \Too{\phi_{u,u}(u)}
+  \Phi(u\tri u)(u)
+  \Too{\Sigma(u)}
+  \Phi(u)(u)
 \end{equation}
 which contains within it the most important structural rules of dependent type theory. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-From \cref{eqn.main} we obtain the following sort of constructors.%
+The auxiliary structure is a second lax monoidal functor and lax natural transformation as shown:
+\begin{equation}\label{eqn.aux}
+\begin{tikzcd}[row sep=0]
+	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi_u", ""' name=Phi]\\&[30pt]
+	\Big(\en(\poly),\id,\circ\Big)\\
+	\Big(\polycart,\yon,\otimes\Big)\ar[ur, bend right=5pt, "\Psi_u"', "" name=Psi]
+	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
+\end{tikzcd}
+\end{equation}
+The idea is that a pair type $(A,B)$ can be considered as a dependent type $A\vdash B$; so independent types include into dependent types.%
+\footnote{The fact that the map seems to go the other way---from the $\tri$-structure to the $\otimes$-structure---is just an artifact of how lax monoidal functors work. The map $\indep$ is identity on objects and its laxators give maps $p\otimes q=\indep(p)\otimes\indep(q)\to\indep(p\tri q)=p\tri q$.
+} 
+We will explain all this in the main text; for now, let's move on to what it means.
+
+From these lax monoidal functors we obtain the following sort of constructors.%
 \footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition, e.g.\ in \eqref{eqn.premise_axiom}. All of our symbols relate to some aspect of the underlying polynomial formalism, so some such notation seems forced on us, even though this convention appears to be uncommon. For typographical reasons, we are sparing with our parentheses. We use the convention that $\vdash$ binds the tightest, so $A,B\vdash C$ parses as $A,(B\vdash C)$. Thus, the expression $A, B\vdash (C, D\vdash E)$ parses as $A,(B\vdash(C, (D\vdash E)))$.}
 \begin{equation}\label{eqn.premise_axiom}
   \begin{prooftree}
@@ -465,11 +481,12 @@ The germination of this idea came from \href{https://www.youtube.com/watch?v=RDu
 	\footnote{\href{https://youtu.be/RDuNIP4icKI?t=13898}{Andr\'{e} Joyal's question following Steve Awodey's talk} was ``what happened to the distributivity law that we love between sum and product?" Steve said that he believed it was of the same form as the other laws they had derived, and that they get it for free. I have not seen this derivation; if it does arise for free from the structure of a pseudoalgebra in the sense of their paper, then this paper would lose most of its value.
 	}
 \end{enumerate}
-such that everything in sight is derived from the structure of $\Phi_u(u)(u)$ (rather than a certain pseudomonad, as in Awodey-Newstead).
+such that everything in sight is derived from the structures in \eqref{eqn.main} and \eqref{eqn.aux} (rather than from a certain pseudomonad, as in Awodey-Newstead).
 
 %---- Section ----%
 \section{Acknowledgments}
 
+I greatly appreciate the clarity of delivery and the insight behind Steve Awodey's talk at the 2021 Workshop on Polynomial Functors. It has been a major source of inspiration for the intervening year.
 
 This material is based upon work supported by the Air Force Office of Scientific Research under award number FA9550-20-1-0348.
 
