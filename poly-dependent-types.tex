@@ -716,64 +716,32 @@ and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
 
 One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\psi_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
 
-\begin{definition}[Weak switching map $\varphi]\label{def.weak_switching}
-Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomials $p\in\polycart$, $q\in\poly$, define
-\[
-	\varphi_{p,q}\colon p\tri u\tri q\to u\tri p\tri q
-\] 
-as the composite of the switching map and the independent inclusion:
-\[
-	p\tri u\tri q\To{\psi_{p,\yon}\tri q}(u\otimes p)\tri q\To{\indep\tri q}u\tri p\tri q.
-	\qedhere
-\]
-\end{definition}
-
 The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. 
- commutes properly with composition
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\psi_u$ be defined as in \ref{def.switching} is natural, commutes properly with composition,
 \[
-	\varphi_{\yon}=\id
+	\psi_{\yon}=\id
 	\qqand
-	\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'}),
+	\psi_{p\tri p'}=\psi_{p}\circ (p\tri\psi_{p'}),
 \]
 and the following diagrams commute:
 \begin{gather*}
 \begin{tikzcd}[column sep=0, ampersand replacement=\&]
 	\&p\tri q\ar[dl, "p\tri(\1\otimes q)"']\ar[dr,"\1\otimes p\tri q"]\\
-	p\tri(u\otimes q)\ar[rr, "\varphi_{p,q}"']\&\&u\otimes p\tri q
+	p\tri(u\otimes q)\ar[rr, "\psi_{p,q}"']\&\&u\otimes p\tri q
 \end{tikzcd}
 \\[15pt]
 \begin{tikzcd}[, ampersand replacement=\&, column sep=large]
-	p\tri(u\otimes u\otimes q)\ar[r, "\varphi_{p,u\otimes q}"]\ar[d, "p\tri{((-,-)\otimes q)}"']\&
-	u\otimes p\tri(u\otimes q)\ar[r, "u\otimes\varphi_{p,q}"]\&
+	p\tri(u\otimes u\otimes q)\ar[r, "\psi_{p,u\otimes q}"]\ar[d, "p\tri{((-,-)\otimes q)}"']\&
+	u\otimes p\tri(u\otimes q)\ar[r, "u\otimes\psi_{p,q}"]\&
 	u\otimes u\otimes p\tri q\ar[d, "{(-,-)}\otimes p\tri q"]\\
-	p\tri (u\otimes q)\ar[rr, "\varphi_{p,q}"']\&\&
+	p\tri (u\otimes q)\ar[rr, "\psi_{p,q}"']\&\&
 	u\otimes p\tri q
 \end{tikzcd}
 \end{gather*}
 \end{lemma}
 \begin{proof}
-We first define the map $\varphi_{p,q}$, then show it is natural, and finally check the two diagrams. To define the map, we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
-
-Fix $p,q\in\polycart$. To give the map $\varphi\coloneqq\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\varphi_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
-\begin{equation}\label{eqn.overflow}
-  A'\coloneqq
-  \begin{cases}
-  	\Pi(p[i],A)&\tn{ if }\Pi(p[i],A)<\kappa\\
-		0&\tn{ otherwise}
-  \end{cases}
-\end{equation}
-In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
-
-For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
-\begin{equation}\label{eqn.not_injective}
-\prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
-\end{equation}
-and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
-\footnote{Note that the map $\varphi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
-
 The map $\varphi$ is clearly natural in $q\in\poly$. It would not be natural for arbitrary polynomial maps $\psi\colon p\to p'$ because of the overflow; however, it is natural when $\psi$ is cartesian. Indeed if $\psi_1(i)=i'$ then the bijection $\psi_i^\sharp$ extends to a bijection
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
 and $\varphi$ overflows for one iff it does for the other.
@@ -803,6 +771,45 @@ For the second diagram, suppose given $(i,A,B,j)\in p\tri(u\otimes u\otimes q)$,
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
 Note that $\Pi(p[i],A\times B)\cong\Pi(p[i],A)\times\Pi(p[i],B)$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=0\times\Pi(p[i],B)$ and in the second case we will have $A_2=\Pi(p[i],A\times 0)$; either way, the result is $0$. Hence the diagram commutes.
+\end{proof}
+
+\begin{definition}[Weak switching map $\varphi$]\label{def.weak_switching}
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomials $p\in\polycart$, $q\in\poly$, define
+\[
+	\varphi_{p,q}\colon p\tri u\tri q\to u\tri p\tri q
+\] 
+as the composite of the switching map and the independent inclusion:
+\[
+	p\tri u\tri q\To{\psi_{p,\yon}\tri q}(u\otimes p)\tri q\To{\indep\tri q}u\tri p\tri q.
+	\qedhere
+\]
+\end{definition}
+
+\begin{corollary}
+The weak switching map $\varphi_{p,q}$ satisfies properties analogous with those of $\psi_{p,q}$, except with $(-,-)$ replaced by $\Sigma$. Namely, it is natural, commutes properly with composition
+\[
+	\varphi_{\yon}=\id
+	\qqand
+	\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'}),
+\]
+and the following diagrams commute:
+\begin{gather*}
+\begin{tikzcd}[column sep=0, ampersand replacement=\&]
+	\&p\tri q\ar[dl, "p\tri(\1\tri q)"']\ar[dr,"\1\tri p\tri q"]\\
+	p\tri u\tri q\ar[rr, "\varphi_{p,q}"']\&\&u\tri p\tri q
+\end{tikzcd}
+\\[15pt]
+\begin{tikzcd}[, ampersand replacement=\&, column sep=large]
+	p\tri u\tri u\tri q)\ar[r, "\varphi_{p,u\tri q}"]\ar[d, "p\tri{\Sigma\tri q}"']\&
+	u\otimes p\tri(u\otimes q)\ar[r, "u\tri\varphi_{p,q}"]\&
+	u \tri u\tri p\tri q\ar[d, "\Sigma\tri p\tri q"]\\
+	p\tri (u\tri q)\ar[rr, "\varphi_{p,q}"']\&\&
+	u\tri p\tri q
+\end{tikzcd}
+\end{gather*}
+\end{corollary}
+\begin{proof}
+**
 \end{proof}
 
 \begin{theorem}
