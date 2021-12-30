@@ -374,7 +374,10 @@ The main syntax and rules will emerge from two pieces of data:
 	\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]
 \end{enumerate}
-given by $\Phi(p)(q)\coloneqq u\tri p\tri q$. Roughly speaking, every polynomial $p$ gives a bespoke notion of types on which types in an arbitrary $q$ can be based. The polynomial $u$ is special---as expressed by the lax monoidality of $\Phi$---in that it knows how to absorb any bespoke notion of type dependency into its own. 
+given by $\Phi(p)(q)\coloneqq u\tri p\tri q$. Roughly speaking, this functor sends a type $J$ to a $u$-then-$p$-dependent type $A\vdash I\vdash J$.%
+\footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. All of our symbols relate to some aspect of the underlying polynomial formalism, so something like this notation seems forced on us.
+}
+ That is, every polynomial $p$ gives a bespoke notion of types on which types in an arbitrary $q$ can be based. The polynomial $u$ is special---as expressed by the lax monoidality of $\Phi$---in that it knows how to absorb the bespoke notion of type dependency for any $p$ into its own. 
 
 The lax monoidality gives cartesian maps of the form 
 \[
@@ -402,9 +405,9 @@ The auxiliary structure is a second lax monoidal functor and lax natural transfo
 \end{tikzcd}
 \end{equation}
 The map $\Psi$, again implicitly dependent on $u$, is given by $\Psi(p)(q)\coloneqq u\otimes p\tri q$.%
-\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri p)$ parses as $u\otimes(u\tri(u\otimes(u\tri p)))$.}
+\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri q)$ parses as $u\otimes(u\tri(u\otimes(u\tri q)))$. Simlarly, we use the convention that $\vdash$ binds the tightest, so $A,I\vdash J$ parses as $A,(I\vdash J)$. Thus, the expression $A, B\vdash (C, D\vdash J)$ parses as $A,(B\vdash(C, (D\vdash J)))$.}
 The idea is that a pair type $(A,B)$ can be considered as a dependent type $A\vdash B$; so independent types include into dependent types.%
-\footnote{The fact that the map seems to go the other way---from the $\tri$-structure to the $\otimes$-structure---is just an artifact of how lax monoidal functors work. The map $\indep$ is identity on objects and its laxators give maps $p\otimes q=\indep(p)\otimes\indep(q)\to\indep(p\tri q)=p\tri q$.
+\footnote{The fact that the map seems to go the other way---from the $\tri$-structure to the $\otimes$-structure---is just an artifact of how lax monoidal functors work. The map $\indep$ is identity on objects and its laxators give maps $p\otimes q=\indep(p)\otimes\indep(q)\to\indep(p\tri q)=p\tri q$. 
 } 
 
 \begin{definition}[Universe monads]\label{def.universe}
@@ -419,7 +422,6 @@ We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{unive
 
 
 Universe monads with support for pair types give the following sort of constructors.%
-\footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition, e.g.\ in \eqref{eqn.premise_axiom}. All of our symbols relate to some aspect of the underlying polynomial formalism, so some such notation seems forced on us, even though this convention appears to be uncommon. For typographical reasons, we are sparing with our parentheses. We use the convention that $\vdash$ binds the tightest, so $A,B\vdash C$ parses as $A,(B\vdash C)$. Thus, the expression $A, B\vdash (C, D\vdash E)$ parses as $A,(B\vdash(C, (D\vdash E)))$.}
 \begin{equation}\label{eqn.premise_axiom}
   \begin{prooftree}
     \Hypo{A}
@@ -689,37 +691,48 @@ We now give the key lemma. It is defined by multiplying together types in $u$. T
 
 \cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. Everything else in the paper is shuffling and unpacking these formal consequences. 
 
-\begin{definition}[Switching map $\sigma$]\label{def.switching}
-Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ define the map $\sigma_p\colon p\tri u\to u\otimes p$ as follows on positions and directions.
+\begin{definition}[Switching map $\psi$]\label{def.switching}
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ define the map
+\[\psi_{p,q}\colon p\tri (u\otimes q)\to u\otimes p\tri q\]
+as follows on positions and directions. Fix $p,q$ and write $\psi\coloneqq\psi_{p,q}$.
 
-A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
+A position of $p\tri(u\otimes q)$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $\psi(i,A,j)\in u\otimes p\tri q(1)$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
 \begin{equation}\label{eqn.overflow}
   A'\coloneqq
   \begin{cases}
   	\Pi(p[i],A)&\tn{ if }\Pi(p[i],A)<\kappa\\
-		0&\tn{ otherwise}
+		0&\tn{ otherwise.}
   \end{cases}
 \end{equation}
-In a case of $(i,A,j)$ for which the second condition is activated, we say that $\varphi$ \emph{overflows}; otherwise we say it \emph{succeeds}.
+In a case of $(i,A,j)$ for which the second condition is activated, we say that $\psi_p$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
-For the backwards map $\varphi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+For the backwards map $\psi^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
 \begin{equation}\label{eqn.not_injective}
 \prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
 \end{equation}
 and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
-\footnote{Note that the map $\varphi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
+\footnote{Note that the map $\psi^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\varphi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting to $\kappa$-bounded polynomials $\polycart_{<\kappa}\ss\polycart$.}
+\end{definition}
+
+One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\psi_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
+
+\begin{definition}[Weak switching map $\varphi]\label{def.weak_switching}
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomials $p\in\polycart$, $q\in\poly$, define
+\[
+	\varphi_{p,q}\colon p\tri u\tri q\to u\tri p\tri q
+\] 
+as the composite of the switching map and the independent inclusion:
+\[
+	p\tri u\tri q\To{\psi_{p,\yon}\tri q}(u\otimes p)\tri q\To{\indep\tri q}u\tri p\tri q.
+	\qedhere
+\]
 \end{definition}
 
 The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. For any polynomials $p\in\polycart$, $q\in\poly$, there are natural maps 
-\[
-	\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.
-	\qqand
-	\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q.
-\] 
-Moreover, it commutes properly with composition
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. 
+ commutes properly with composition
 \[
 	\varphi_{\yon}=\id
 	\qqand
