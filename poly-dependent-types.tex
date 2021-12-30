@@ -773,7 +773,7 @@ respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it r
 Note that $\Pi(p[i],A\times B)\cong\Pi(p[i],A)\times\Pi(p[i],B)$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=0\times\Pi(p[i],B)$ and in the second case we will have $A_2=\Pi(p[i],A\times 0)$; either way, the result is $0$. Hence the diagram commutes.
 \end{proof}
 
-\begin{definition}[Dependent switching map $\varphi$]\label{def.weak_switching}
+\begin{definition}[Dependent switching map $\varphi$]\label{def.dep_switching}
 Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomial $p\in\polycart$, define the \emph{dependent switching map}
 \[
 	\varphi_{p}\colon p\tri u\to u\tri p
@@ -786,30 +786,30 @@ as the composite of the independent switching map and the independent inclusion:
 \end{definition}
 
 \begin{theorem}
-For any sum-product set $\kappa$, the $\kappa$-list monad is a universe monad. 
+For any sum-product set $\kappa$, the $\kappa$-list monad is a universe for dependent types. 
 \end{theorem}
 \begin{proof}
 Let $\kappa$ be a sum-product set, $u\coloneqq u_\kappa$ the associated list polynomial, and $(\1,\Sigma)$ the list monad structure; see \cref{def.sum_prod_set,prop.list_monad}. By \cref{def.universe} we need to show that the functor
 \[
   \Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big),
 \]
-given by $\Phi(p): q\mapsto u\otimes p\tri q$, has a lax monoidal structure. Given $p_1,p_2\in\polycart$, we need to define natural transformations
+given by $\Phi(p): q\mapsto u\tri p\tri q$, has a lax monoidal structure. Given $p_1,p_2\in\polycart$, we need to define natural transformations
 \[
 	\phi\colon\id\to\Phi(\yon)
 	\qqand
 	\phi_{p_1,p_2}\colon\Phi(p_1)\circ\Phi(p_2)\to\Phi(p_1\tri p_2),
 \]
-i.e. component maps $q\To{\phi_q} u\otimes q$ and $u\otimes p_1\tri(u\otimes p_2\tri q)\To{\phi_{p_1,p_2,q}}u\otimes(p_1\tri p_2\tri q)$, natural in $q\in\poly$. Recall from \eqref{eqn.otimes_monoid} that $u$ has a $\otimes$-monoid structure given by $\1$ and $(-,-)$. The ingredients to the lax monoidal structure are these and the maps $\varphi_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$ from the key lemma, \ref{lemma.key}. We define them to be the dashed maps:
+i.e. component maps $q\To{\phi_q} u\tri q$ and $u\tri p_1\tri u\tri p_2\tri q\To{\phi_{p_1,p_2, q}}u\tri p_1\tri p_2\tri q$, natural in $q\in\poly$. The ingredients to the lax monoidal structure are the monad structure $(\1,\Sigma)$ on $u$ and the dependent switching map $\varphi_{p}\colon p\tri u\to u\tri p$ from \cref{def.dep_switching}. We define them to be the dashed maps:
 \[
 \begin{tikzcd}
-	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\phi_q"']&\yon\tri q\ar[d, "\1\otimes q"]\\&
+	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\phi_q"']&\yon\tri q\ar[d, "\1\tri q"]\\&
 	u\otimes q
 \end{tikzcd}
 \qqand
 \begin{tikzcd}[column sep=50pt]
-	u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\varphi_{p_1,p_2\tri q}"]\ar[dr, bend right=18pt, dashed, "\phi_{p_1,p_2,q}"']&
-	u\otimes u\otimes p_1\tri p_2\tri q\ar[d, "{(-,-)}\otimes p_1\tri p_2\tri q"]\\&
-	u\otimes p_1\tri p_2\tri q
+	u\tri p_1\tri u\tri p_2\tri q\ar[r, "u\tri\varphi_{p_1}\tri p_2\tri q"]\ar[dr, bend right=18pt, dashed, "\phi_{p_1,p_2,q}"']&
+	u\tri u\tri p_1\tri p_2\tri q\ar[d, "\Sigma\tri p_1\tri p_2\tri q"]\\&
+	u\tri p_1\tri p_2\tri q
 \end{tikzcd}
 \]
 It remains to show that these satisfy the three commutative diagrams of a lax monoidal functor.
