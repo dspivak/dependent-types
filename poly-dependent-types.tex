@@ -691,12 +691,12 @@ We now give the key lemma. It is defined by multiplying together types in $u$. T
 
 \cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. Everything else in the paper is shuffling and unpacking these formal consequences. 
 
-\begin{definition}[Switching map $\psi$]\label{def.switching}
+\begin{definition}[Switching map $\sigma$]\label{def.switching}
 Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching map} by
-\[\psi_{p}\colon p\tri u\to u\otimes p\]
+\[\sigma_{p}\colon p\tri u\to u\otimes p\]
 as follows.
 
-A position of $p\tri u$ consists of a pair $(i,A)$ where $i\in p(1)$ and $A\colon p[i]\to u(1)$. We want to define a position of $\psi_p(i,A)\in u\otimes p(1)$, which consists of a pair $(A',i')$ where $A'\in u(1)$ and $i'\in p(1)$. We define $i'\coloneqq i$ and $A'$ as follows:
+A position of $p\tri u$ consists of a pair $(i,A)$ where $i\in p(1)$ and $A\colon p[i]\to u(1)$. We want to define a position of $\sigma_p(i,A)\in u\otimes p(1)$, which consists of a pair $(A',i')$ where $A'\in u(1)$ and $i'\in p(1)$. We define $i'\coloneqq i$ and $A'$ as follows:
 \begin{equation}\label{eqn.overflow}
   A'\coloneqq
   \begin{cases}
@@ -704,73 +704,75 @@ A position of $p\tri u$ consists of a pair $(i,A)$ where $i\in p(1)$ and $A\colo
 		0&\tn{ otherwise.}
   \end{cases}
 \end{equation}
-In a case of $(i,A)$ for which the second condition is activated, we say that $\psi_p$ \emph{overflows}; otherwise we say it \emph{succeeds}.
+In a case of $(i,A)$ for which the second condition is activated, we say that $\sigma_p$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
-For the backwards map $\psi^\sharp_{(i,A)}\colon (u\otimes p)[(A',i)]\to(p\tri u)[(i,A)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p)[(A',i)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+For the backwards map $\sigma^\sharp_{(i,A)}\colon (u\otimes p)[(A',i)]\to(p\tri u)[(i,A)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p)[(A',i)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
 \begin{equation}\label{eqn.not_injective}
   \prod_{s\in p[i]}A_s\to\sum_{s\in p[i]}A s
 \end{equation}
 and it is given by $(a,s)\mapsto(s,as)$.%
-\footnote{Note that the map $\psi^\sharp_{(i,A)}$ is not generally injective, because for a given input $(a,s)$, most of the data in $a$ is discarded; hence $\psi$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting to $\kappa$-bounded polynomials $\polycart_{<\kappa}\ss\polycart$.}
+\footnote{Note that the map $\sigma^\sharp_{(i,A)}$ is not generally injective, because for a given input $(a,s)$, most of the data in $a$ is discarded; hence $\sigma$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting to $\kappa$-bounded polynomials $\polycart_{<\kappa}\ss\polycart$.}
 \end{definition}
 
-One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\psi_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
+One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\sigma_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
 
 The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\psi$ be defined as in \cref{def.switching} is natural, commutes properly with composition,
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\sigma$ be defined as in \cref{def.switching} is natural, commutes properly with composition,
 %\[
-%	\psi_{\yon}=\id
+%	\sigma_{\yon}=\id
 %	\qqand
-%	\psi_{p\tri p'}=\psi_{p}\circ (p\tri\psi_{p'}),
+%	\sigma_{p\tri p'}=\sigma_{p}\circ (p\tri\sigma_{p'}),
 %\]
 and the following diagrams commute:
-\begin{gather*}
+\begin{gather}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
-	p\tri u\ar[rr, "\psi_{p}"']\&\&u\otimes p
-\end{tikzcd}
+	p\tri u\ar[rr, "\sigma_{p}"']\&\&u\otimes p
+\end{tikzcd}\label{eqn.key_small}
 \\[15pt]
 \begin{tikzcd}[, ampersand replacement=\&, column sep=large]
-	p\tri(u\otimes u)\ar[r, "p\tri{(-,-)}"]\ar[d, "p\tri \indep"']\&
-	p\tri u\ar[r, "\psi_{p}"]\&
-	u\otimes p\\
-	p\tri u\tri u\ar[r, "\psi_p\tri u"']\&
-	u\otimes p\tri u\ar[r, "u\otimes\psi_{p}"']\&
-	u\otimes u\otimes p\ar[u, "{(-,-)}\otimes p"']
-\end{tikzcd}
-\end{gather*}
+	p\tri u\tri u\ar[r, "\Sigma"]\ar[d, "\sigma\tri u"']\&
+	p\tri u\ar[r, "\sigma"]\&
+	u\otimes p\ar[r, "\indep"]\&
+	u\tri p\\
+	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
+	u\tri p\tri u\ar[r, "u\tri\sigma"']\&
+	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
+	u\tri u\tri p\ar[u, "\Sigma"']
+\end{tikzcd}\label{eqn.key_large}
+\end{gather}
 \end{lemma}
 \begin{proof}
-Though the map $\psi_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
+Though the map $\sigma_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
-and $\psi_p$ overflows iff $\psi_{p'}$ does.
+and $\sigma_p$ overflows iff $\sigma_{p'}$ does.
 
-For the statement that $\psi$ commutes properly with composition we mean that the equation $\psi_{\yon}=\id_{u}$ holds, and that the following diagram commutes:
-\[
+For the statement that $\sigma$ commutes properly with composition we mean that the equation $\sigma_{\yon}=\id_{u}$ holds, and that the following diagram commutes:
+\begin{equation}\label{eqn.key_comp}
 \begin{tikzcd}
-	p\tri p'\tri u\ar[d, "p\tri\psi_{p'}"']\ar[r, "\psi_{p\tri p'}"]&
+	p\tri p'\tri u\ar[d, "p\tri\sigma_{p'}"']\ar[r, "\sigma_{p\tri p'}"]&
 	u\otimes p\tri p'\\
 	p\tri (u\otimes p')\ar[r, "\indep"']&
-	p\tri u\tri p'\ar[u, "\psi_{p}\tri p'"']&
+	p\tri u\tri p'\ar[u, "\sigma_{p}\tri p'"']&
 \end{tikzcd}
-\]
+\end{equation}
 For the first, the map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in$C_\kappa$). For the second it suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
 \[\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))\]
 which there is, and that second the overflow handling agrees, as we now argue. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$.
 
 It remains to check the two diagrams. For the first diagram, suppose given $i\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i)$ and under the right-hand map it is sent to $(\1,i)$; these are the same element of $C_\kappa$, since $\Pi(p[i],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
-For the second diagram, suppose given $(i,A,B)\in p\tri(u\otimes u)$, where $A,B\colon p[i]\to u(1)$. It is easy to check that under the top composite map it is sent to  $(A_1,i)$ and under the right-hand composite map it is sent to $(A_2,i)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
+For the second diagram, suppose given $(i,A,B)\in p\tri(u\tri u)$, where $A\colon p[i]\to u(1)$ and $B\colon\sum_{s:p[i]}As\to u(1)$. It is easy to check that under the top composite map it is sent to  $(A_1,i)$ and under the bottom composite map it is sent to $(A_2,i)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
 \[
-  A_1\cong\Pi(p[i],A\times B)
+  A_1\cong\Pi(p[i],\Sigma(A, B))
   \qqand
-	A_2\cong\Pi(p[i],A)\times\Pi(p[i],B)
+	A_2\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))
 \] 
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
-Note that $\Pi(p[i],A\times B)\cong\Pi(p[i],A)\times\Pi(p[i],B)$ are isomorphic, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)$ or $\Pi(p[i],Ba)$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=0\times\Pi(p[i],B)$ and in the second case we will have $A_2=\Pi(p[i],A\times 0)$; either way, the result is $0$. Hence the diagram commutes.
+Note that $\Pi(p[i],\Sigma(A, B))\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)>\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)>\kappa$ or $\Pi(p[i],Ba)>\kappa$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[i],B))$ and in the second case we will have $A_2=\Pi(p[i],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes.
 \end{proof}
 
 \begin{definition}[Dependent switching map $\varphi$]\label{def.dep_switching}
@@ -780,7 +782,7 @@ Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomial $p\i
 \] 
 as the composite of the independent switching map and the independent inclusion:
 \[
-	p\tri u\To{\psi_{p,\yon}}u\otimes p\To{\indep}u\tri p.
+	p\tri u\To{\sigma_{p,\yon}}u\otimes p\To{\indep}u\tri p.
 	\qedhere
 \]
 \end{definition}
@@ -793,23 +795,101 @@ Let $\kappa$ be a sum-product set, $u\coloneqq u_\kappa$ the associated list pol
 \[
   \Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big),
 \]
-given by $\Phi(p): q\mapsto u\tri p\tri q$, has a lax monoidal structure. Given $p_1,p_2\in\polycart$, we need to define natural transformations
+given by $\Phi(p): q\mapsto u\tri p\tri q$, has a lax monoidal structure. Given $p_1,p_2\in\polycart$, we need to define the laxators, i.e.\ natural transformations
 \[
 	\phi\colon\id\to\Phi(\yon)
 	\qqand
-	\phi_{p_1,p_2}\colon\Phi(p_1)\circ\Phi(p_2)\to\Phi(p_1\tri p_2),
+	\phi_{p_1,p_2}\colon\Phi(p_1)\circ\Phi(p_2)\to\Phi(p_1\tri p_2).
 \]
-i.e. component maps $q\To{\phi_q} u\tri q$ and $u\tri p_1\tri u\tri p_2\tri q\To{\phi_{p_1,p_2, q}}u\tri p_1\tri p_2\tri q$, natural in $q\in\poly$. The ingredients to the lax monoidal structure are the monad structure $(\1,\Sigma)$ on $u$ and the dependent switching map $\varphi_{p}\colon p\tri u\to u\tri p$ from \cref{def.dep_switching}. We define them to be the dashed maps:
+We define their components $q\To{\phi_q} u\tri q$ and $u\tri p_1\tri u\tri p_2\tri q\To{\phi_{p_1,p_2, q}}u\tri p_1\tri p_2\tri q$ to be the dashed maps:
 \[
 \begin{tikzcd}
 	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\phi_q"']&\yon\tri q\ar[d, "\1\tri q"]\\&
-	u\otimes q
+	u\tri q
 \end{tikzcd}
 \qqand
 \begin{tikzcd}[column sep=50pt]
 	u\tri p_1\tri u\tri p_2\tri q\ar[r, "u\tri\varphi_{p_1}\tri p_2\tri q"]\ar[dr, bend right=18pt, dashed, "\phi_{p_1,p_2,q}"']&
 	u\tri u\tri p_1\tri p_2\tri q\ar[d, "\Sigma\tri p_1\tri p_2\tri q"]\\&
 	u\tri p_1\tri p_2\tri q
+\end{tikzcd}
+\]
+
+It remains to show that these satisfy the three commutative diagrams of a lax monoidal functor. The unit diagrams 
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\tri p\tri q\ar[r, "\phi_{u\tri p\tri q}"]\ar[dr, bend right=20pt, equal]\&
+	u\tri u\tri p\tri q \ar[d, "\phi_{\yon,p,q}"]\\
+	\&
+	u\tri p\tri q
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\tri p\tri q\ar[r, "u\tri p\tri\phi_q"]\ar[dr, bend right=20pt, equal]\&
+	u\tri p\tri u\tri q\ar[d, "\phi_{p,\yon,q}"]\\
+	\&
+	u\tri p\tri q
+\end{tikzcd}
+\]
+commute by the monad unit laws and the commutativity of \eqref{eqn.key_small}.
+
+We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
+	u\tri p_1\tri u\tri p_2\tri u\tri p_3\tri q
+		\ar[r, "u\tri p_1\tri\phi_{p_2,p_3,q}"]
+		\ar[d, "\phi_{p_1,p_2,u\tri p_3\tri q}"']\&
+	u\tri p_1\tri u\tri p_2\tri p_3\tri q
+		\ar[d, "\phi_{p_1,p_2\tri p_3,q}"]\\
+	u\tri p_1\tri p_2\tri u\tri p_3\tri q
+		\ar[r, "\phi_{p_1\tri p_2,p_3,q}"']\&
+	u\tri p_1\tri p_2\tri p_3\tri q
+\end{tikzcd}
+\]
+Unpacking this, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
+\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\varphi$ and $\Sigma$ are fully written as $u\otimes p_1\tri(u\tri p_2\tri\varphi_{p_2,p_3\tri q})$ and $u\tri p_1\tri((-,-)\tri p_2\tri p_2\tri p_3)$.}
+\[%\fontsize{11pt}{11pt}\selectfont
+\begin{tikzcd}
+	u\tri p_1\tri u\tri p_2\tri u\tri p_3\tri q\ar[r, "\varphi"]\ar[dd, "\varphi"']&
+	u\tri p_1\tri u\tri u\tri p_2\tri p_3\tri q\ar[r, "\Sigma"]\ar[d, "\varphi"]&
+	u\tri p_1\tri u\tri p_2\tri p_3\tri q\ar[dd, "\varphi"]\\&
+	u\tri u\tri p_1\tri u\tri p_2\tri p_3\tri q\ar[dd, "\varphi"]\\[-12pt]
+	u\tri u\tri p_1\tri p_2\tri u\tri p_3\tri q\ar[dd, "\Sigma"']\ar[ur, bend left=5pt, start anchor={north east}, "\varphi"]\ar[dr, bend right=5pt, start anchor={south east}, "\varphi_{p_1\tri p_2}"']&&
+	u\tri u\tri p_1\tri p_2\tri p_3\tri q\ar[dd, "\Sigma"]\\[-12pt]&
+	u\tri u\tri u\tri p_1\tri p_2\tri p_3\tri q\ar[d, "\Sigma\tri u"]\ar[ur, bend right=5pt, start anchor={east}, end anchor={south west}, "u\tri\Sigma"']\\
+	u\tri p_1\tri p_2\tri u\tri p_3\tri q\ar[r, "\varphi_{p_1\tri p_2}"']&
+	u\tri u\tri p_1\tri p_2\tri p_3\tri q\ar[r, "\Sigma"]&
+	u\tri p_1\tri p_2\tri p_3\tri q
+\end{tikzcd}
+\]
+The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by the monad associativity law. The rest is \cref{lemma.key}: the pentagon commutes by \eqref{eqn.key_large} and the little triangle commutes by \eqref{eqn.key_comp}.
+\end{proof}
+
+\begin{theorem}
+For any sum-product set $\kappa$, the $\kappa$-list monad has support for pair types. 
+\end{theorem}
+\begin{proof}
+Let $\kappa$ be a sum-product set, $u\coloneqq u_\kappa$ the associated list polynomial, and $(\1,\Sigma)$ the list monad structure; see \cref{def.sum_prod_set,prop.list_monad}. By \cref{def.universe} we need to show that the functor
+\[
+  \Psi\colon\Big(\polycart,\yon,\otimes\Big)\too\Big(\en(\poly),\id,\circ\Big),
+\]
+given by $\Psi(p): q\mapsto u\otimes p\tri q$, has a lax monoidal structure and that $\indep$ gives a monoidal transformation. Given $p_1,p_2\in\polycart$, we need to define natural transformations
+\[
+	\psi\colon\id\to\Psi(\yon)
+	\qqand
+	\psi_{p_1,p_2}\colon\Psi(p_1)\circ\Psi(p_2)\to\Psi(p_1\otimes p_2),
+\]
+i.e. component maps $q\To{\psi_q} u\otimes q$ and $u\otimes p_1\tri(u\otimes p_2\tri q)\To{\psi_{p_1,p_2,q}}(u\otimes p_1\otimes p_2)\tri q$, natural in $q\in\poly$. We define them to be the dashed maps:
+\[
+\begin{tikzcd}
+	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\psi_q"']&\yon\tri q\ar[d, "\1\otimes q"]\\&
+	u\otimes q
+\end{tikzcd}
+\qqand
+\begin{tikzcd}[column sep=50pt]
+	u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\sigma_{p_1,p_2\tri q}"]\ar[dr, bend right=18pt, dashed, "\psi_{p_1,p_2,q}"']&
+	u\otimes u\otimes p_1\tri p_2\tri q\ar[d, "{(-,-)}\otimes p_1\tri p_2\tri q"]\\&
+	u\otimes p_1\tri p_2\tri q
 \end{tikzcd}
 \]
 It remains to show that these satisfy the three commutative diagrams of a lax monoidal functor.
