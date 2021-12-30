@@ -690,18 +690,26 @@ The following lemma captures the key formal properties of the switching map. To 
 
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\sigma$ be defined as in \cref{def.switching} is natural, commutes properly with composition,
-%\[
-%	\sigma_{\yon}=\id
-%	\qqand
-%	\sigma_{p\tri p'}=\sigma_{p}\circ (p\tri\sigma_{p'}),
-%\]
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\sigma$ be defined as in \cref{def.switching} is natural
 and the following diagrams commute:
 \begin{gather}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
+	\&u\ar[dl, equal]\ar[dr, equal]\\
+	\yon\tri u\ar[rr, "\sigma_{\yon}"']\&\&u\otimes\yon
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
 	p\tri u\ar[rr, "\sigma_{p}"']\&\&u\otimes p
-\end{tikzcd}\label{eqn.key_small}
+\end{tikzcd}\label{eqn.key_smalls}
+\\[15pt]
+\begin{tikzcd}[column sep=large, ampersand replacement=\&]
+	p\tri p'\tri u\ar[d, "p\tri\sigma_{p'}"']\ar[r, "\sigma_{p\tri p'}"]\&
+	u\otimes p\tri p'\ar[r, "\indep\tri p'"]\&u\tri p\tri p'\\
+	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
+	p\tri u\tri p'\ar[r, "\sigma_{p}\tri p'"']\&
+	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
+\end{tikzcd}\label{eqn.key_med}
 \\[15pt]
 \begin{tikzcd}[, ampersand replacement=\&, column sep=large]
 	p\tri u\tri u\ar[r, "\Sigma"]\ar[d, "\sigma\tri u"']\&
@@ -716,26 +724,18 @@ and the following diagrams commute:
 \end{gather}
 \end{lemma}
 \begin{proof}
-Though the map $\sigma_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
+We begin with naturality. Though the map $\sigma_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
 and $\sigma_p$ overflows iff $\sigma_{p'}$ does.
 
-For the statement that $\sigma$ commutes properly with composition we mean that the equation $\sigma_{\yon}=\id_{u}$ holds, and that the following diagram commutes:
-\begin{equation}\label{eqn.key_comp}
-\begin{tikzcd}
-	p\tri p'\tri u\ar[d, "p\tri\sigma_{p'}"']\ar[r, "\sigma_{p\tri p'}"]&
-	u\otimes p\tri p'\\
-	p\tri (u\otimes p')\ar[r, "\indep"']&
-	p\tri u\tri p'\ar[u, "\sigma_{p}\tri p'"']&
-\end{tikzcd}
-\end{equation}
-For the first, the map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in$C_\kappa$). For the second it suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
+We next consider the commutativity of the maps in \eqref{eqn.key_smalls}. The map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in$C_\kappa$). Thus the left hand triangle commutes. For the right-hand triangle, suppose given $i\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i)$ and under the right-hand map it is sent to $(\1,i)$; these are the same element of $C_\kappa$, since $\Pi(p[i],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
+
+
+To prove that \cref{eqn.key_med} commutes, it suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
 \[\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))\]
 which there is, and that second the overflow handling agrees, as we now argue. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$.
 
-It remains to check the two diagrams. For the first diagram, suppose given $i\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i)$ and under the right-hand map it is sent to $(\1,i)$; these are the same element of $C_\kappa$, since $\Pi(p[i],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
-
-For the second diagram, suppose given $(i,A,B)\in p\tri(u\tri u)$, where $A\colon p[i]\to u(1)$ and $B\colon\sum_{s:p[i]}As\to u(1)$. It is easy to check that under the top composite map it is sent to  $(A_1,i)$ and under the bottom composite map it is sent to $(A_2,i)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
+Finally for \eqref{eqn.key_large}, suppose given $(i,A,B)\in p\tri(u\tri u)$, where $A\colon p[i]\to u(1)$ and $B\colon\sum_{s:p[i]}As\to u(1)$. It is easy to check that under the top composite map it is sent to  $(A_1,i)$ and under the bottom composite map it is sent to $(A_2,i)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
 \[
   A_1\cong\Pi(p[i],\Sigma(A, B))
   \qqand
@@ -802,7 +802,7 @@ It remains to show that these satisfy the three commutative diagrams of a lax mo
 	u\tri p\tri q
 \end{tikzcd}
 \]
-commute by the monad unit laws and the commutativity of \eqref{eqn.key_small}.
+commute by the monad unit laws and the commutativity of the right-hand triangle in \eqref{eqn.key_smalls}.
 
 We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
 \[
@@ -818,7 +818,7 @@ We conclude by showing that the associativity diagram commutes for any $q\in\pol
 \end{tikzcd}
 \]
 Unpacking this, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
-\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\varphi$ and $\Sigma$ are fully written as $u\otimes p_1\tri(u\tri p_2\tri\varphi_{p_2,p_3\tri q})$ and $u\tri p_1\tri((-,-)\tri p_2\tri p_2\tri p_3)$.}
+\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\varphi$ and $\Sigma$ are fully written as $u\tri p_1\tri u\tri p_2\tri\varphi_{p_2}\tri p_3\tri q$ and $u\tri p_1\tri\Sigma\tri p_2\tri p_3\tri q$.}
 \[%\fontsize{11pt}{11pt}\selectfont
 \begin{tikzcd}
 	u\tri p_1\tri u\tri p_2\tri u\tri p_3\tri q\ar[r, "\varphi"]\ar[dd, "\varphi"']&
@@ -833,7 +833,7 @@ Unpacking this, we obtain the following diagram, where the four sides above agre
 	u\tri p_1\tri p_2\tri p_3\tri q
 \end{tikzcd}
 \]
-The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by the monad associativity law. The rest is \cref{lemma.key}: the pentagon commutes by \eqref{eqn.key_large} and the little triangle commutes by \eqref{eqn.key_comp}.
+The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by the monad associativity law. The rest is \cref{lemma.key}: the little triangle commutes by \eqref{eqn.key_med} and the pentagon commutes by \eqref{eqn.key_large}.
 \end{proof}
 
 
