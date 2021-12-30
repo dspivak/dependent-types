@@ -364,20 +364,20 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 %-------- Chapter --------%
 \chapter{Introduction}
 
-In this paper we ground the notion of dependent types in the theory of polynomial functors. We split it into two pieces: the main structure and the auxiliary structure: the first handles dependent sums, dependent products, and the interaction between them. The second adds explicit support for pair (non-dependent sum) types. 
-
-The main syntax and rules will emerge from two pieces of data:
+In this paper we ground the notion of dependent types in the theory of polynomial functors. The syntax and rules will all emerge from two pieces of data:
 \begin{enumerate}
-	\item a cartesian polynomial monad $(u,\1,\Sigma)$ and
-	\item a lax monoidal functor 
-\[
-	\Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
-\]
+	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
+	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form
+	%
+%\footnote{This can be phrased as an \emph{right-biased oplax monoidal structure} \cite{nlab.lax_monoidal} on $\polycart$, but we will only briefly mention this again.}
+\begin{equation}\label{eqn.Phi}
+\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
+\end{equation}
 \end{enumerate}
 given by $\Phi(p)(q)\coloneqq u\tri p\tri q$. Roughly speaking, this functor sends a type $J$ to a $u$-then-$p$-dependent type $A\vdash I\vdash J$.%
 \footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. All of our symbols relate to some aspect of the underlying polynomial formalism, so something like this notation seems forced on us.
 }
- That is, every polynomial $p$ gives a bespoke notion of types on which types in an arbitrary $q$ can be based. The polynomial $u$ is special---as expressed by the lax monoidality of $\Phi$---in that it knows how to absorb the bespoke notion of type dependency for any $p$ into its own. 
+ That is, every polynomial $p$ gives a bespoke notion of types on which other types, from $q$, can be based. The polynomial $u$ is special---as expressed by the lax monoidality of $\Phi$---in that it knows how to absorb the bespoke notion of type dependency for any $p$ into its own. 
 
 The lax monoidality gives cartesian maps of the form 
 \[
@@ -395,33 +395,16 @@ In particular, we will apply this functor to the monad $u$ itself, compose with 
 \end{equation}
 which contains within it the most important structural rules of dependent type theory. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-The auxiliary structure is a second lax monoidal functor and lax natural transformation as shown:
-\begin{equation}\label{eqn.aux}
-\begin{tikzcd}[row sep=0]
-	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi", ""' name=Phi]\\&[30pt]
-	\Big(\en(\poly),\id,\circ\Big)\\
-	\Big(\polycart,\yon,\otimes\Big)\ar[ur, bend right=5pt, "\Psi"', "" name=Psi]
-	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
-\end{tikzcd}
-\end{equation}
-The map $\Psi$, again implicitly dependent on $u$, is given by $\Psi(p)(q)\coloneqq u\otimes p\tri q$.%
-\footnote{For typographical reasons, we are sparing with our parentheses. We use the convention that $\tri$ binds the tightest, so $u\otimes p\tri q$ parses as $u\otimes(p\tri q)$. Thus, an expression such as $u\otimes u\tri(u\otimes u\tri q)$ parses as $u\otimes(u\tri(u\otimes(u\tri q)))$. Simlarly, we use the convention that $\vdash$ binds the tightest, so $A,I\vdash J$ parses as $A,(I\vdash J)$. Thus, the expression $A, B\vdash (C, D\vdash J)$ parses as $A,(B\vdash(C, (D\vdash J)))$.}
-The idea is that a pair type $(A,B)$ can be considered as a dependent type $A\vdash B$; so independent types include into dependent types.%
-\footnote{The fact that the map seems to go the other way---from the $\tri$-structure to the $\otimes$-structure---is just an artifact of how lax monoidal functors work. The map $\indep$ is identity on objects and its laxators give maps $p\otimes q=\indep(p)\otimes\indep(q)\to\indep(p\tri q)=p\tri q$. 
-} 
-
 \begin{definition}[Universe monads]\label{def.universe}
-Consider the functors
+We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe monad} if the functor $\Phi_u$, given by
 \begin{equation}\label{eqn.define_phi}
 	\Phi_u(p)(q)\coloneqq u\tri p\tri q
-	\qqand
-	\Psi_u(p)(q)\coloneqq u\otimes p\tri q.
 \end{equation}
-We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe for dependent types} if the functor $\Phi_u$ has a lax monoidal structure and \emph{support for pair types} if $\Psi_u$ also has a lax monoidal structure and there is a lax natural transformation as shown in \eqref{eqn.aux} above.
+ has a lax monoidal structure.
 \end{definition}
 
 
-Universe monads with support for pair types give the following sort of constructors.%
+Universe monads give the following sort of constructors.%
 \begin{equation}\label{eqn.premise_axiom}
   \begin{prooftree}
     \Hypo{A}
@@ -618,11 +601,9 @@ Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
 Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
 \end{proof}
 
-It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ and $\tri$ are monoidal products that for any $u\in\poly$ the maps
+It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ and $\tri$ are monoidal products that for any $u\in\poly$ the map
 \[
 	\Phi_u(p)(q)\coloneqq u\tri p\tri q
-	\qqand
-	\Psi_u(p)(q)\coloneqq u\otimes p\tri q,
 \]
 defining the functors in \eqref{eqn.aux} are functorial in $p\in\polycart$ and $q\in\poly$.
 
@@ -659,37 +640,24 @@ We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not like
 %-------- Chapter --------%
 \chapter{List monads are universe monads}
 
-%---- Section ----%
-\section{The functors $\Phi_u$ and $\Psi_u$}
-
-For the reader's convenience, we repeat the diagram from \eqref{eqn.aux}
+In this section, we will construct the lax monoidal functor
 \[
-\begin{tikzcd}[row sep=0]
-	\Big(\polycart,\yon,\tri\Big)\ar[dd, "\indep"']\ar[dr, bend left=5pt, "\Phi_u", ""' name=Phi]\\&[30pt]
-	\Big(\en(\poly),\id,\circ\Big)\\
-	\Big(\polycart,\yon,\otimes\Big)\ar[ur, bend right=5pt, "\Psi_u"', "" name=Psi]
-	\ar[from=Phi, to=Psi-|Phi, shorten=2mm, Rightarrow, "\indep"']
-\end{tikzcd}
+	\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
 \]
-We have the left-hand map $\indep$ from \cref{prop.indep}; as a functor it is identity on objects. Let's examine the functors $\Phi$ and $\Psi$. 
-
-First of all, the domain in each case is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
+as we saw in \eqref{eqn.Phi}. The domain is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
 \begin{align*}
   q&\to\Phi(\yon)(q)
-  &(\Phi(p_1)\circ\Phi(p_2))(q)&\to \Phi(p_1\tri p_2)(q)\\
-  q&\to\Psi(\yon)(q)
-  &(\Psi(p_1)\circ\Psi(p_2))(q)&\to \Psi(p_1\otimes p_2)(q)
+  &(\Phi(p_1)\circ\Phi(p_2))(q)&\to \Phi(p_1\tri p_2)(q)
 \end{align*}
-natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams. The natural transformation $\indep$ will give maps $\Phi_u(p)\to\Psi_u(p)$ for each $p\in\poly$, and these will be satisfy an additional commutative diagram.
-
-What we need to understand is the lax monoidality of $\Phi_u$ and $\Psi_u$, and these constrain $u$ for the first time.
+natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams.
+What we need to understand is the lax monoidality of $\Phi_u$; these constrain $u$ for the first time.
 
 %---- Section ----%
 \section{The lax monoidal structure on $\Phi_u$}
 
-We now give the key lemma. It is defined by multiplying together types in $u$. The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
-
 \cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. Everything else in the paper is shuffling and unpacking these formal consequences. 
+
+The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
 \begin{definition}[Switching map $\sigma$]\label{def.switching}
 Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching map} by
@@ -717,6 +685,9 @@ and it is given by $(a,s)\mapsto(s,as)$.%
 One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\sigma_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
 
 The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
+
+
+
 
 \begin{lemma}[Key lemma]\label{lemma.key}
 Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\sigma$ be defined as in \cref{def.switching} is natural, commutes properly with composition,
@@ -865,98 +836,6 @@ Unpacking this, we obtain the following diagram, where the four sides above agre
 The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by the monad associativity law. The rest is \cref{lemma.key}: the pentagon commutes by \eqref{eqn.key_large} and the little triangle commutes by \eqref{eqn.key_comp}.
 \end{proof}
 
-\begin{theorem}
-For any sum-product set $\kappa$, the $\kappa$-list monad has support for pair types. 
-\end{theorem}
-\begin{proof}
-Let $\kappa$ be a sum-product set, $u\coloneqq u_\kappa$ the associated list polynomial, and $(\1,\Sigma)$ the list monad structure; see \cref{def.sum_prod_set,prop.list_monad}. By \cref{def.universe} we need to show that the functor
-\[
-  \Psi\colon\Big(\polycart,\yon,\otimes\Big)\too\Big(\en(\poly),\id,\circ\Big),
-\]
-given by $\Psi(p): q\mapsto u\otimes p\tri q$, has a lax monoidal structure and that $\indep$ gives a monoidal transformation. Given $p_1,p_2\in\polycart$, we need to define natural transformations
-\[
-	\psi\colon\id\to\Psi(\yon)
-	\qqand
-	\psi_{p_1,p_2}\colon\Psi(p_1)\circ\Psi(p_2)\to\Psi(p_1\otimes p_2),
-\]
-i.e. component maps $q\To{\psi_q} u\otimes q$ and $u\otimes p_1\tri(u\otimes p_2\tri q)\To{\psi_{p_1,p_2,q}}(u\otimes p_1\otimes p_2)\tri q$, natural in $q\in\poly$. We define them to be the dashed maps:
-\[
-\begin{tikzcd}
-	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\psi_q"']&\yon\tri q\ar[d, "\1\otimes q"]\\&
-	u\otimes q
-\end{tikzcd}
-\qqand
-\begin{tikzcd}[column sep=50pt]
-	u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\sigma_{p_1,p_2\tri q}"]\ar[dr, bend right=18pt, dashed, "\psi_{p_1,p_2,q}"']&
-	u\otimes u\otimes p_1\tri p_2\tri q\ar[d, "{(-,-)}\otimes p_1\tri p_2\tri q"]\\&
-	u\otimes p_1\tri p_2\tri q
-\end{tikzcd}
-\]
-It remains to show that these satisfy the three commutative diagrams of a lax monoidal functor.
-
-We begin by showing that the unit diagrams commute for any $q\in\poly$:
-\[
-\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
-	u\otimes p\tri q\ar[r, "\phi_{u\otimes p\tri q}"]\ar[dr, bend right=20pt, equal]\&
-	u\otimes u\otimes p\tri q \ar[d, "\phi_{\yon,p,q}"]\\
-	\&
-	u\otimes p\tri q
-\end{tikzcd}
-\hspace{.6in}
-\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
-	u\otimes p\tri q\ar[r, "u\otimes p\tri(\phi_q)"]\ar[dr, bend right=20pt, equal]\&
-	u\otimes p\tri(u\otimes q)\ar[d, "\phi_{p,\yon,q}"]\\
-	\&
-	u\otimes p\tri q
-\end{tikzcd}
-\]
-By \cref{lemma.key}, these reduce as follows:
-\[
-\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
-	u\otimes p\tri q\ar[r, "\1\otimes u\otimes p\tri q"]\ar[dr, bend right=20pt, equal]\&
-	u\otimes u\otimes p\tri q \ar[d, "{(-,-)}\otimes p\tri q"]\\
-	\&
-	u\otimes p\tri q
-\end{tikzcd}
-\hspace{.6in}
-\begin{tikzcd}[ampersand replacement=\&, column sep=50pt]
-	u\otimes p\tri q\ar[r, "u\otimes p\tri(\1\otimes q)"]\ar[d, equal]\ar[rd, "u\otimes\1\otimes p\tri q" description]\&
-	u\otimes p\tri(u\otimes q)\ar[d, "u\otimes\varphi_{p,q}"]\\
-	u\otimes p\tri q\&
-	u\otimes u\otimes p\tri q\ar[l, "{(-,-)}\otimes p\tri q"]
-\end{tikzcd}
-\]
-and both commute by the unit laws for the $\otimes$ monoid structure on $u$. We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
-\[
-\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
-	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q))
-		\ar[r, "u\otimes p_1\tri\phi_{p_2,p_3,q}"]
-		\ar[d, "\phi_{p_1,p_2,u\otimes p_3\tri q}"']\&
-	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)
-		\ar[d, "\phi_{p_1,p_2\tri p_3,q}"]\\
-	u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)
-		\ar[r, "\phi_{p_1\tri p_2,p_3,q}"']\&
-	u\otimes p_1\tri p_2\tri p_3\tri q
-\end{tikzcd}
-\]
-Unpacking this, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
-\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\varphi$ and $(-,-)$ are fully written as $u\otimes p_1\tri(u\otimes p_2\tri\varphi_{p_2,p_3\tri q})$ and $u\otimes p_1\tri((-,-)\otimes p_2\tri p_2\tri p_3)$.}
-\[\fontsize{9.6pt}{9.6pt}\selectfont
-\begin{tikzcd}
-	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q))\ar[r, "\varphi"]\ar[dd, "\varphi"']&
-	u\otimes p_1\tri(u\otimes u\otimes p_2\tri p_3\tri q)\ar[r, "{(-,-)}"]\ar[d, "\varphi"]&
-	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)\ar[dd, "\varphi"]\\&
-	u\otimes u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)\ar[dd, "\varphi"]\\[-12pt]
-	u\otimes u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)\ar[dd, "{(-,-)}"']\ar[ur, bend left=5pt, start anchor={north east}, "\varphi"]\ar[dr, bend right=5pt, start anchor={south east}, "\varphi_{p_1\tri p_2}"']&&
-	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[dd, "{(-,-)}"]\\[-12pt]&
-	u\otimes u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[d, "{(-,-)}\otimes u"]\ar[ur, bend right=5pt, start anchor={east}, end anchor={south west}, "u\otimes{(-,-)}"']\\
-	u\otimes(p_1\tri p_2\tri(u\otimes p_3\tri q))\ar[r, "\varphi_{p_1\tri p_2}"']&
-	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[r, "{(-,-)}"]&
-	u\otimes p_1\tri p_2\tri p_3\tri q
-\end{tikzcd}
-\]
-The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by associativity of the $\otimes$-monoid structure on $u$. The rest is \cref{lemma.key}: the little triangle commutes by the statement $\varphi_{p\tri p'}=\varphi_{p}\circ (p\tri\varphi_{p'})$ and the pentagon commutes by the pentagon shown there.
-\end{proof}
 
 %-------- Chapter --------%
 \chapter{Consequences in the language of dependent types}
