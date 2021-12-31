@@ -304,6 +304,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\triright}{\mathbin{\triangleright}}
 \newcommand{\tripow}[1]{^{\tri #1}}
 \newcommand{\indep}{\Fun{Indep}}
+\newcommand{\duoid}{\Fun{Duoid}}
 \newcommand{\switch}{\pi}
 
 
@@ -338,7 +339,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 % ---- Changeable document parameters ---- %
 
 \linespread{1.1}
-%\allowdisplaybreaks
+\allowdisplaybreaks
 \setsecnumdepth{section}
 \settocdepth{section}
 \setlength{\parindent}{15pt}
@@ -409,11 +410,11 @@ Let $(u,\1,\Sigma)$ be a cartesian monad. We say it is a \emph{polynomial univer
 \end{tikzcd}
 \end{equation}
 where the functors $\ol{\Phi}_u$ and $\Phi_u$ have a lax monoidal structure and are given by
-\[
+\begin{equation}\label{eqn.olphi_phi}
 \ol{\Phi}_u(p)(q)\coloneqq u\otimes p\tri q
 \qqand
 \Phi_u(p)(q)\coloneqq u\tri p\tri q
-\]
+\end{equation}
 and the natural transformation also has a monoidal structure and is given by
 \[
   u\otimes p\tri q\To{\indep\tri q} u\tri p\tri q.
@@ -507,7 +508,11 @@ Using the Yoneda lemma, we can understand a morphism $p\to q$ in $\poly$ to cons
   \qqand
   \varphi^\sharp_I\colon q[J]\to p[I]
 \end{equation}
-that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a function on directions, \emph{depending on a position $I\in p(1)$}, where $\varphi_1(i)=j$. We refer to $\varphi_1$ as the \emph{on-types function} and to $\varphi^\sharp$ as the \emph{backwards on-terms} function.
+that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a function on directions, \emph{depending on a position $I\in p(1)$}, where $\varphi_1 i=j$.%
+\footnote{
+In this paper, we generally denote \emph{function} application by juxtaposition, e.g.\ for $f\colon A\to B$ we write $fa\in B$ rather than $f(a)$ for the image of $a$ under $f$. However, we denote \emph{functor} application using parentheses, e.g.\ $p(1)$ to denote $p\colon\smset\to\smset$ applied to $1=\{{'1'}\}$ in $\smset$.
+}
+We refer to $\varphi_1$ as the \emph{on-types function} and to $\varphi^\sharp$ as the \emph{backwards on-terms} function.
 
 One can check that a map $\varphi\colon p\to q$ is cartesian iff the backwards-on-terms function $\varphi^\sharp_I$ is a bijection $p[I]\cong q[\varphi_1I]$ for each type $I\in p(1)$.
 \end{remark}
@@ -566,6 +571,21 @@ This gives a symmetric monoidal structure $(\poly,\yon,\otimes)$. A type in $p\t
 
 The $\otimes$ structure is symmetric. Both monoidal structures restrict to monoidal structures on $\polycart$; in other words any composite or Dirichlet product of cartesian morphisms is again cartesian.
 
+\begin{proposition}\label{prop.tri_dir_cartesian}
+Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
+\end{proposition}
+\begin{proof}
+Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
+\end{proof}
+
+It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ is a monoidal product that for any $u\in\poly$ the maps
+\[
+	\ol{\Phi}_u(p)(q)\coloneqq u\otimes p\tri q
+	\qqand
+	\Phi_u(p)(q)\coloneqq u\tri p\tri q
+\]
+defining the functors in \eqref{eqn.Phi} are functorial in $p\in\polycart$ and $q\in\poly$.
+
 \begin{proposition}\label{prop.indep}
 The identity functor $\poly\to\poly$ can be regarded as a lax monoidal functor
 \begin{equation}\label{eqn.indep}
@@ -581,20 +601,18 @@ Suppose given polynomials $p,q\in\poly$ and a set $X\in\smset$; since $\indep$ i
 On types, we send an index $(I,J)\in p(1)\times q(1)$ to $(I,J\_)\in p\tri q(\1)$, where $J_!\colon p[I]\to q(1)$ is constant $J$, sending each $i$ to $J\in q(1)$ Backwards on terms, we send $(i,j)\mapsto (i,j)$; indeed both \cref{eqn.comp_formula,eqn.dir_formula} have the same set of directions $\sum_{i\in p[I]}q[J]\cong p[I]\times q[J]$ when $J_!\coloneqq J$ is independent of $I$. Thus it is clear that $\indep$ is cartesian. We leave it to the reader to check the relevant axioms.
 \end{proof}
 
-\begin{proposition}\label{prop.tri_dir_cartesian}
-Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
+\begin{proposition}\label{prop.duoidal}
+There is a duoidality between $\otimes$ and $\tri$, i.e.\ for every $p_1,p_2,q_1,q_2\in\poly$ there is a cartesian map
+\[
+	(p_1\tri p_2)\otimes(q_1\tri q_2)\To{\duoid} (p_1\otimes q_1)\tri (p_2\otimes q_2)
+\]
+satisfying the usual properties.
 \end{proposition}
 \begin{proof}
-Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
-\end{proof}
+On types we begin with $(I_1\vdash I_2),(J_1\vdash J_2)\in ((p_1\tri p_2)\otimes(q_1\tri q_2))(1)$, where $I_2\colon I_1\to p_2(1)$ and $J_2\colon J_1\to q_2(1)$. It is sent by $\duoid_1$ to $(I_1,J_1)\vdash(I_2',J_2')\in (p_1\otimes q_1)\tri (p_2\otimes q_2)(1)$ where $I_2'\colon I_1\times J_1\to p_2(1)$ is given by first projecting onto $I_1$ and then applying $I_2$, and similarly $J_2'\colon I_1\times J_1\to q_2(1)$ is given by first projecting onto $J_1$ and then applying $J_2$. 
 
-It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ is a monoidal product that for any $u\in\poly$ the maps
-\[
-	\ol{\Phi}_u(p)(q)\coloneqq u\otimes p\tri q
-	\qqand
-	\Phi_u(p)(q)\coloneqq u\tri p\tri q
-\]
-defining the functors in \eqref{eqn.Phi} are functorial in $p\in\polycart$ and $q\in\poly$.
+Backwards on terms, we begin with $((i_1,j_1),(i_2,j_2))\in (p_1\otimes q_1)\tri (p_2\otimes q_2)[(I_1,J_1)\vdash(I_2',J_2')]$, where $i_2\in I'_2(i_1,j_1)=I_2 i_1$ and $j_2\in J'_2(i_1,j_1)=J_2 j_2$. It is sent by the isomorphism $\duoid^\sharp_{(I_1\vdash I_2),(J_1\vdash J_2)}$ to $((i_1,i_2),(j_1,j_2))\in ((p_1\tri p_2)\otimes(q_1\tri q_2))[(I_1\vdash I_2),(J_1\vdash J_2)]$. We leave it to the reader to check the relevant axioms.
+\end{proof}
 
 \begin{proposition}[$\kappa$-list monads]\label{prop.list_monad}
 For any sum-product set $\kappa$, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
@@ -620,51 +638,85 @@ Our goal in the next section is to show that for any $\kappa$ as in \cref{ex.sum
 %-------- Chapter --------%
 \chapter{List monads are polynomial universes}
 
-In this section, we will construct the lax monoidal functor
+In this section, we will construct the lax monoidal functors and transformation
 \[
-	\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
+\begin{tikzcd}[column sep=60pt]
+	\Big(\polycart,\yon,\tri\Big)
+		\ar[r, bend left=15pt,  start anchor={north east}, end anchor={north west}, "\ol{\Phi}_u", ""' name=P]
+		\ar[r, bend right=15pt, start anchor={south east}, end anchor={south west}, "\Phi_u"', "" name=PP]&
+	\Big(\en(\poly),\id,\circ\Big)
+	\ar[from=P, to=P|-PP, Rightarrow, shorten=2mm, "\indep"]
+\end{tikzcd}
 \]
-as we saw in \eqref{eqn.Phi}. The domain is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. The functors being lax monoidal with respect to $(\yon,\tri)$ means that there are maps
-\begin{align*}
-  q&\to\Phi(\yon)(q)
-  &(\Phi(p_1)\circ\Phi(p_2))(q)&\to \Phi(p_1\tri p_2)(q)
-\end{align*}
+as we saw in \eqref{eqn.Phi}. The domain is the category $\polycart$ of polynomials and cartesian maps between them, and the codomain is $\en(\poly)$, the category of functors $\poly\to\poly$. As in \cref{eqn.olphi_phi} the functors will be given by 
+\[
+\ol{\Phi}_u(p)(q)\coloneqq u\otimes p\tri q
+\qqand
+\Phi_u(p)(q)\coloneqq u\tri p\tri q
+\]
+The functors and transformation being monoidal with respect to $(\yon,\tri)$ means that there are maps and diagrams
+\[
+\begin{tikzcd}[row sep=1pt]
+	&u\otimes q\ar[dd]\\
+  q\ar[ur, bend left=15pt]\ar[dr, bend right=15pt]\\
+  &u\tri q
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}
+  u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r]\ar[d]&
+  u\otimes p_1\tri p_2\tri q\ar[d]\\
+  u\tri p_1\tri u\tri p_2\tri q\ar[r]&
+  u\tri p_1\tri p_2\tri q  
+\end{tikzcd}
+%\begin{tikzcd}[row sep=1pt]
+%	&\ol{\Phi}(\yon)(q)\ar[dd, "\indep"]\\
+%  q\ar[ur, bend left=15pt]\ar[dr, bend right=15pt]\\
+%  &\Phi(\yon)(q)
+%\end{tikzcd}
+%\hspace{.6in}
+%\begin{tikzcd}
+%  (\ol{\Phi}(p_1)\circ\ol{\Phi}(p_2))(q)\ar[r]\ar[d, "\indep\circ\indep"']&
+%  \ol{\Phi}(p_1\tri p_2)(q)\ar[d, "\indep"]\\
+%  (\Phi(p_1)\circ\Phi(p_2))(q)\ar[r]&
+%  \Phi(p_1\tri p_2)(q)  
+%\end{tikzcd}
+\]
 natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams.
-What we need to understand is the lax monoidality of $\Phi_u$; these constrain $u$ for the first time.
+What we need to understand is the lax monoidality of $\ol{\Phi}_u$ and $\Phi_u$; these are what constrain $u$.
 
 %---- Section ----%
 \section{The lax monoidal structure on $\Phi_u$}
 
-\cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. Everything else in the paper is shuffling and unpacking these formal consequences. 
+\cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. The remainder of the paper will be shuffling and unpacking these formal consequences. 
 
 The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
 \begin{definition}[Switching transformation $\ol{\switch}$]\label{def.switching}
-Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching transformation}
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{$p$-switching transformation}
 \[\ol{\switch}_{p}\colon p\tri(u\otimes -)\to u\otimes p\tri -\]
 as follows.
 
-Fix $q\in\polycart$. To give the component $\ol{\switch}\coloneqq\ol{\switch}_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\ol{\switch}_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
+Fix $q\in\polycart$. To give the $q$-component $\ol{\switch}\coloneqq\ol{\switch}_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$ of the $p$-switching transformation, we follow \cref{rem.positions_and_directions}. We first define the function $\ol{\switch}_1$  on types. A type in the family $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(I,A,J)$ where $I\in p(1)$, $A\colon p[I]\to u(1)$, and $J\colon p[I]\to q(1)$. We want to define a type in the family $u\otimes p\tri q$, which consists of a triple $(A',I',J')$ where $A'\in u(1)$, $I'\in p(1)$, and $J'\colon p[I']\to q(1)$. We define $I'\coloneqq I$, $J'\coloneqq J$, and $A'$ as follows:
 \begin{equation}\label{eqn.overflow}
   A'\coloneqq
   \begin{cases}
-  	\Pi(p[i],A)&\tn{ if }\Pi(p[i],A)<\kappa\\
+  	\Pi(p[I],A)&\tn{ if }\Pi(p[I],A)<\kappa\\
 		0&\tn{ otherwise}
   \end{cases}
 \end{equation}
-In a case of $(i,A,j)$ for which the second condition is activated, we say that $\ol{\switch}$ \emph{overflows}; otherwise we say it \emph{succeeds}.
+In a case of $(I,A,J)$ for which the second condition is activated, we say that $\ol{\switch}$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
-For the backwards map $\ol{\switch}^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+For the function $\ol{\switch}^\sharp_{(I,A,J)}\colon (u\otimes p\tri q)[(A',I,J)]\to(p\tri(u\otimes q))[(I,A,J)]$ backwards on terms, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',I,J)=0$, so there is a unique map; in this sense one could say ``overflow causes the system to halt''. Otherwise, we need a map
 \begin{equation}\label{eqn.not_injective}
-\prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
+\prod_{i\in p[I]}A i\times\sum_{i\in p[I]}q[J i]\to\sum_{i\in p[I]}(A i)\times (J i)
 \end{equation}
-and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
-\footnote{Note that the map $\ol{\switch}^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\ol{\switch}$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
+and it is given by $(a,i,j)\mapsto(i,a i,j i)$.%
+\footnote{Note that the map $\ol{\switch}^\sharp_{(I,A,J)}$ is not generally injective, because for a given input $(a,i,j)$, most of the data in $a$ is discarded; hence $\ol{\switch}$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
 \end{definition}
 
 One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\switch_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
 
-\begin{definition}[Switching map $\switch$]
+\begin{definition}[Switching map $\switch$]\label{def.switchmap}
 Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching map}
 \[\switch_p\colon p\tri u\to u\otimes p\]
 to be the $\yon$-component of the switching transformation, $\switch_p\coloneqq\ol{\switch}_{p,\yon}$.
@@ -673,11 +725,8 @@ to be the $\yon$-component of the switching transformation, $\switch_p\coloneqq\
 The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 
-
-
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\switch$ be defined as in \cref{def.switching} is natural
-and the following diagrams commute:
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$, let $\ol{\switch}$ and $\pi$ be as in Definitions~\ref{def.switching}~and~\ref{def.switchmap}. Then $\ol{\switch}$ and $\switch$ are natural and the following diagrams commute:
 \begin{gather}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&u\ar[dl, equal]\ar[dr, equal]\\
@@ -707,9 +756,14 @@ and the following diagrams commute:
 	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
 	u\tri u\tri p\ar[u, "\Sigma\tri p"']
 \end{tikzcd}\label{eqn.key_large}
-\end{gather}
-We record also a similar commutative diagram for the switching transformation $\ol{\switch}$:
-\begin{gather}
+\\[15pt]
+\begin{tikzcd}[column sep=large, ampersand replacement=\&]
+	p\tri(u\otimes q)\ar[r, "\ol{\switch}_{p,q}"]\ar[d, "\indep"']\&
+	u\otimes p\tri q\ar[d, "\duoid"]\\
+	p\tri u\tri q\ar[r, "\switch_{p,q}\tri q"']\&
+	(u\otimes p)\tri q
+\end{tikzcd}\label{eqn.key_compare}
+\\[15pt]
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
 	p\tri (u\otimes u)\ar[d, "\ol{\switch}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
 	p\tri u\ar[r, "\switch_p"]\&u\otimes p\\
@@ -738,6 +792,8 @@ To prove that \eqref{eqn.key_large} commutes, suppose given $(i,A,B)\in p\tri(u\
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
 Note that $\Pi(p[i],\Sigma(A, B))\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)>\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)>\kappa$ or $\Pi(p[i],Ba)>\kappa$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[i],B))$ and in the second case we will have $A_2=\Pi(p[i],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes.
+
+To prove that \eqref{eqn.key_compare} commutes, suppose given...
 
 Finally to show that \eqref{eqn.key_med2} commutes, it suffices to show for any set $I$ and sets $(A_i)_{i\in I}$ and $(B_i)_{i\in I}$ with $A_i<\kappa$ and $B_i<\kappa$, that first there is a bijection 
 \[\Pi(I,A\times B)\cong\Pi(I,A)\times\Pi(I,B)\]
@@ -1017,7 +1073,7 @@ The final diagram is quite similar, but for independent types $A,B$:
 	p\tri u\ar[r, "\switch_p"]\&u\otimes p\\
 	u\otimes p\tri u\ar[rr, "u\otimes\switch_p"']\&\&
 	u\otimes u\otimes p\ar[u, "{(-,-)}\tri p"']
-\end{tikzcd}\label{eqn.key_med2}
+\end{tikzcd}
 \]
 It is translated as
 \[
