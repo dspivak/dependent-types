@@ -366,36 +366,39 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 
 
-Dependent type theory \cite{martin-lof1975intuitionistic} was founded by Per Martin-L\"{o}f in 1975 to formalize all of mathematics. The basic idea is that the order of events is fundamental to a mathematical story arc: when playing out any specific example story in that arc, the beginning of the story affects not only the later events, but even the very terms with which to describe the later events. For example, in the story arc of conditional probability, one may say ``now if the set $P$ that we are asked to condition on happens to have measure zero we must stop, but assuming that's not the case then the result will be a new measure.'' Here the story teller is saying that no terms will describe what happens if $P$ has measure zero, whereas otherwise the terms of standard probability will apply.
+Dependent type theory \cite{martin-lof1975intuitionistic} was founded by Per Martin-L\"{o}f in 1975 to formalize all of mathematics. The basic idea is that \emph{order of events} is fundamental to a mathematical story arc: when playing out any specific example story in that arc, the beginning of the story affects not only the later events, but even the very terms with which the later events will be described. For example, in the story arc of conditional probability, one may say ``now if the set $P$ that we are asked to condition on happens to have measure zero, we must stop; but assuming that's not the case then the result will be a new measure.'' Here the story teller is saying that no terms will describe what happens if $P$ has measure zero, whereas otherwise the terms of standard probability will apply.
 
 Dependent types form a logical system with syntax, conversion rules, and methods of deduction. In \cite{awodey2014natural,awodey2018polynomial}, Awodey and later Newstead show that there is a strong connection between dependent type theory and polynomial functors. The present work follows from this remarkable discovery, but diverges in the formalism itself. Whereas they discuss pseudomonads and pseudo-algebras in a tri-category arising from a locally cartesian closed category, we keep simply to lax monoidal functors and transformations between monoidal categories. In both cases, the focus is on the syntax and conversion rules of dependent type theory, not the universal properties that yield valid deductions.
 
 A polynomial functor $p\colon\smset\to\smset$ is a coproduct of representable functors
 \[\sum_{I\in p(1)}\yon^{p[I]},\]
-which one can think of as a collection of types: The positions $I\in p(1)$ indexing the coproduct are the types, and the elements $i\in p[I]$ in the exponent are the terms of type $I$. 
+which one can think of as a collection of types: A position $I\in p(1)$ indexing the coproduct is a \emph{type} in the collection, and an element $i\in p[I]$ in the representing set $p[I]$ is a \emph{term} of type $I$. 
 
-Composition $p\tri q$ of polynomials corresponds to dependent types: in order to choose a type $x\in p\tri q(1)$, you must first choose a type $I\in p(1)$ and then, for any term $i\in p[I]$ in it you choose a type $J:q(1)$. In this paper (not in the literature) we denote this situation by $I\vdash J$. So suppose
+Composition $p\tri q$ of polynomials corresponds to dependent types: in order to choose a type $x\in (p\tri q)(1)$ in the composite, you must first choose a type $I\in p(1)$ and then, for any term $i\in p[I]$ of it you choose a type $J:q(1)$. In this paper (not in the literature) we denote this situation by $I\vdash J$. So suppose
 \[
   p=\{{'0'}\}\yon^0+\{{'1'}\}\yon^1
   \qqand 
   q=\sum_{N\in\nn}\sum_{\{D\colon N\to\rr_{\geq 0}\mid D_1+\cdots+D_N=1\}}\yon^N.
 \]
-Then to choose an element $I\vdash J\in (p\tri q)(1)$, you \emph{first} make a binary choice ${'0'}$ or ${'1'}$; that's the $I$. Then the next type $J$ depends on your choice. Indeed, in the ${'0'}$-case that's the end of the story---you stop---and in the ${'1'}$-case you \emph{further} make choice of $N\in\nn$ and a probability distribution $D$ on a set with $N$ elements. All together, whichever branch you took, the result is a type $I\vdash J$ in the collection $p\tri q$. This type has \emph{no terms} in the ${'0'}$-case, and it has $N$-many terms in the ${'1'}$-case.
+Then to choose an element $I\vdash J\in (p\tri q)(1)$, you \emph{first} make a binary choice ${'0'}$ or ${'1'}$; that's the type $I$. Then the next type $J$ depends on your choice. Indeed, in the ${'0'}$-case you have already hit the end of the story---you stop---and in the ${'1'}$-case you \emph{further} make choice of $N\in\nn$ and a probability distribution $D$ on a set with $N$ elements. All together, whichever branch you took, the result is a type $I\vdash J$ in the collection $p\tri q$. This type has \emph{no terms} in the ${'0'}$-case, and it has $N$-many terms in the ${'1'}$-case.
 
-A special case of dependent types is independent types, where the order doesn't matter. These are represented by a symmetric monoidal product $\otimes$ on polynomial functors: for any $p,q$ one can form $p\otimes q$ and there is an isomorphism $p\otimes q\cong q\otimes p$. The types in the family $p\otimes q$ are pairs of types $(I,J)\in p(1)\times q(1)$, and the terms of type $(I,J)$ are pairs of terms $(i,j)\in p[I]\times q[I]$. There is a natural map $\indep\colon(p\otimes q)\to (p\tri q)$ allowing us to regard a pair $(I,J)$ of independent types as a dependent type $(I\vdash J)\coloneqq\indep(I,J)$.
+A special case of dependent types is \emph{independent} types, where the order of this part of the story \emph{doesn't} matter. These are represented using a symmetric monoidal product $\otimes$ on polynomial functors: for any $p,q$ one can form $p\otimes q$ and there is an isomorphism $p\otimes q\cong q\otimes p$. The types in the family $p\otimes q$ are pairs of types $(I,J)\in p(1)\times q(1)$, and the terms of type $(I,J)$ are pairs of terms $(i,j)\in p[I]\times q[J]$. There is a natural map $\indep\colon(p\otimes q)\to (p\tri q)$ allowing us to regard a pair $(I,J)$ of independent types as a dependent type $(I\vdash J)\coloneqq\indep(I,J)$.
 
-In this paper we explain the notion of polynomial universe $u$ (again, this notion is due to \cite{awodey2014natural}), one can reduce all the dependencies by collapsing an arbitrarily deep dependent type into a single layer through products or sums. More generally, there is a map
+In this paper we explain the notion of a polynomial universe $u$,%
+\footnote{Again, this notion is due to \cite[Theorem 16]{awodey2014natural}, where he calls them ``natural model of extensional Martin-L\"{o}f type theory with
+product, sum, and identity types''. We focus on what that paper would call the $\mathbb{C}=1$ case, meaning that everything in this paper takes place in $\smset$ rather than an arbitrary presheaf category.}
+with which one can reduce all the dependencies by collapsing an arbitrarily deep dependent type into a single layer through products or sums. More generally, we will discuss a map
 \begin{equation}\label{eqn.switch}
   \switch_p\colon p\tri u\to u\otimes p
 \end{equation}
 that converts dependent types into independent types by sending $I\vdash A$ to the pair $(I\to A,A)$, where $I\to A$ might be called the \emph{dependent product type} or \emph{dependent function type}.%
 \footnote{This is just a terminological preference: a product $\prod_{a\in A}B$ of $A$-many copies of $B$ is also a function $A\to B$; in both cases the number of $B$'s could depend on the choice of $a\in A$. Allowing ones terminology to depend on ones preferences is a meta-version of this whole story.}
-It is as though $u$ is able to absorb the effect of $p$-dependencies into itself. This move in some sense makes computations into ``first-class objects". When $p=u$ we can convert a dependent type $(A\vdash B)\in u\tri u(1)$ all the way to a base type $(A\to B,A)\in u(1)$ by first absorbing the dependency and then composing with a pairing operation $u\tri u\To{\switch_u} u\otimes u\To{(-,-)} u$.
+It is as though $u$ is able to absorb the effect of $p$-dependencies into itself, a move which in some sense makes computations into ``first-class objects". When $p=u$ we can convert a dependent type $(A\vdash B)\in u\tri u(1)$ all the way to a base type $(A\to B,A)\in u(1)$ by first absorbing the dependency and then composing with a pairing operation $u\tri u\To{\switch_u} u\otimes u\To{(-,-)} u$.
 
-In this paper we will see that syntax and conversion rules of dependent types  emerge from the very special properties enjoyed by certain polynomials $u$. Not only should $u$ have the structure of a cartesian monad, which gives it a unit type $\1$ and $\Sigma$ types, but these must distribute properly over function types. All this is packaged in the following definition.
+In this paper we will see that syntax and conversion rules of dependent types  emerge from the very special properties enjoyed by these polynomial universes $u$. Not only should polynomials carry the structure of a cartesian monad, which gives it a unit type $\1$ and $\Sigma$ types, but these must distribute properly over function types. All this is packaged in the following definition.
 
-\begin{definition}[Universe monads]\label{def.universe}
-Let $(u,\1,\Sigma)$ be a cartesian monad. We say it is a \emph{universe monad} if there exists a diagram of the form
+\begin{definition}[Polynomial universe]\label{def.universe}
+Let $(u,\1,\Sigma)$ be a cartesian monad. We say it is a \emph{polynomial universe} if there exists a diagram of the form
 \begin{equation}\label{eqn.Phi}
 \begin{tikzcd}[column sep=60pt]
 	\Big(\polycart,\yon,\tri\Big)
@@ -418,26 +421,26 @@ and the natural transformation also has a monoidal structure and is given by
 \]
 \end{definition}
 
-The purpose of the text is to explain all this, so readers should not be concerned if they have lost the connection; our goal now is just to give a sense of the packaging. The crux of the story is that universe monads $u$ are exactly those that can absorb arbitrary dependencies into themselves, making computations into first-class types.
+The purpose of the text is to explain all this, so readers should not be concerned if they have lost the connection; our goal now is just to give a sense of the packaging. The crux of the story is that polynomial universes $u$ are things that can coherently absorb arbitrary dependencies into themselves, making computations into first-class types.
 
-In the text below we will give examples of universe monads; probably the best known is the list monad
+In the text below we will give examples of polynomial universes; probably the best known is the list monad
 \[
 	u_\nn\coloneqq\sum_{N\in\nn}\yon^N
 \]
 which has a notion of singleton list and a way to concatenate lists of lists into a list.
 
-Let's fix some universe monad $(u,\1,\Sigma)$ and write $\Phi$ for $\Phi_u$, etc. The absorption of arbitrary dependencies into $u$ is packaged up into the coherence maps---the \emph{laxators}---of the lax monoidal structure on $\Phi$ and $\ol{\Phi}$. They are of the form
+Let's fix some polynomial universe $(u,\1,\Sigma)$ and write $\Phi$ for $\Phi_u$, etc. The absorption of arbitrary dependencies into $u$ is packaged up into the coherence maps---the \emph{laxators}---of the lax monoidal structure on $\Phi$ and $\ol{\Phi}$. They are of the form
 \[
 \Phi(p_1)\circ\Phi(p_2)
 \Too{\phi_{p_1,p_2}}
 \Phi(p_1\tri p_2).
 \]
-The laxators are formed using the $\switch$-maps described above in \eqref{eqn.switch} and give rise to type- and term-forming operations for dependent function types. The unitality and associativity laws governing $\Phi,\ol{\Phi}$ give rise to the conversion rules between them. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
+The laxators are formed using the $\switch$-maps described above in \eqref{eqn.switch} and give rise to type- and term-forming operations for dependent function types. The unitality and associativity laws governing $\Phi$ and $\ol{\Phi}$ give rise to the conversion rules between them. For example, from them one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a July 2021 \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
 As mentioned there, the germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors on his theory of natural models and their connection to polynomial functors. Aside from a very different presentation (lax monoidal functors instead of pseudomonads, etc.), the present work adds two things:
 \begin{enumerate}
 	\item explicit syntax and rules for pair types, and
-	\item the distributive law of $\Pi$ over $\Sigma$, which in their language would say%
+	\item the distributive law of $\Pi$ over $\Sigma$, which in the language of \cite{awodey2018polynomial} would say%
 	\footnote{In our language it would say 
 	\[
 	A\to\Sigma(B,C)\cong \Sigma(A\to B,A\to C).
@@ -454,7 +457,7 @@ As mentioned there, the germination of this idea came from \href{https://www.you
 %---- Section ----%
 \section{Acknowledgments}
 
-I greatly appreciate the clarity of delivery and the insight behind Steve Awodey's talk at the 2021 Workshop on Polynomial Functors. It has been a major source of inspiration for the intervening year.
+I greatly appreciate the clarity of delivery and the insight behind Steve Awodey's talk at the 2021 Workshop on Polynomial Functors. It has been a major source of inspiration and fun during the intervening year.
 
 This material is based upon work supported by the Air Force Office of Scientific Research under award number FA9550-20-1-0348.
 
@@ -471,40 +474,42 @@ Given a set $S$, we denote the corresponding representable functor by
 \[\yon^S\coloneqq\smset(S,-)\colon\smset\to\smset,\]
 e.g. $\yon^S(X)\coloneqq X^S$. In particular $\yon=\yon^1$ is the identity and $\yon^0=1$ is constant singleton.
 
-A \emph{polynomial functor} is a functor $p\colon\smset\to\smset$ that is isomorphic to a sum of representables, i.e.\ for which there exists a set $I$, a set $p[i]\in\smset$ for each $i\in I$, and an isomorphism
+A \emph{polynomial functor} is a functor $p\colon\smset\to\smset$ that is isomorphic to a sum of representables, i.e.\ for which there exists a set $T$, a set $p[t]\in\smset$ for each $t\in T$, and an isomorphism
 \[
-p\cong\sum_{i\in I}\yon^{p[i]}.
+p\cong\sum_{t\in T}\yon^{p[t]}.
 \]
-We call $I$ the set of \emph{$p$-positions}, and for each position $i\in I$ we call $p[i]$ the set of \emph{$p$-directions at $i$}. 
+We call $T$ the set of \emph{$p$-types}, and for each type $t\in T$ we call $p[t]$ the set of \emph{$p$-terms of type $t$}. 
 
-A \emph{morphism} $\varphi\colon p\to q$ of polynomial functors is simply a natural transformation between them. We denote the category of polynomial functors by $\poly$. It is called \emph{cartesian} if for every map of sets $f\colon S\to T$, the naturality square
+A \emph{morphism} $\varphi\colon p\to p'$ of polynomial functors is simply a natural transformation between them. We denote the category of polynomial functors by $\poly$. It is called \emph{cartesian} if for every map of sets $f\colon S\to S'$, the naturality square
 \[
 \begin{tikzcd}
-  p(S)\ar[r, "p(f)"]\ar[d, "\varphi(S)"']&p(T)\ar[d, "\varphi(T)"]\\
-  q(S)\ar[r, "q(f)"']&q(T)\ar[ul, phantom, very near end, "\lrcorner"]
+  p(S)\ar[r, "p(f)"]\ar[d, "\varphi(S)"']&p(S)\ar[d, "\varphi(S')"]\\
+  p'(S')\ar[r, "p'(f)"']&p'(S')\ar[ul, phantom, very near end, "\lrcorner"]
 \end{tikzcd}
 \]
 is a pullback of sets. We denote the wide subcategory of polynomials and cartesian maps by $\polycart$.
 \end{definition}
 
-For any polynomial $p=\sum_{i\in I}\yon^{p[i]}$, we have a canonical isomorphism $p(1)\cong I$; hence we generally denote $p$ by
+For any polynomial $p=\sum_{t\in T}\yon^{p[t]}$, we have a canonical isomorphism $p(1)\cong T$; hence we will denote $p$ by
 \begin{equation}\label{eqn.poly_notation}
-p=\sum_{i\in p(1)}\yon^{p[i]}.
+p=\sum_{I\in p(1)}\yon^{p[I]}
 \end{equation}
+so that the $p$-types are written with upper-case letters.
+
+\begin{remark}
+Note that there is already some dependency in \cref{def.poly}; in order to define a polynomial we need a set $T$ and then, \emph{for each $t$ in $T$}, we need a representable functor. Thus we can use polynomial functors to explicate the syntax and rules of dependent types, but only if our meta-theory allows us to already know what dependent types are.
+\end{remark}
 
 \begin{remark}\label{rem.positions_and_directions}
-Note that there is already some dependency in \cref{def.poly}; in order to define a polynomial we need a set $I$ and then, \emph{for each $i$ in $I$}, we need a representable functor. In order to get the present paper off the ground, this much and a bit more---the following combinatorial description of morphisms---need to be granted.
-
 Using the Yoneda lemma, we can understand a morphism $p\to q$ in $\poly$ to consist of two pieces $(\varphi_1,\varphi^\sharp)$ as follows:
 \begin{equation}\label{eqn.mapsharp}
   \varphi_1\colon p(1)\to q(1)
   \qqand
-  \varphi^\sharp_i\colon q[j]\to p[i]
+  \varphi^\sharp_I\colon q[J]\to p[I]
 \end{equation}
-that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a function on directions, \emph{depending on a position $i\in p(1)$}.
-where $\varphi_1(i)=j$. We refer to $\varphi^\sharp$ as the \emph{on-directions} function.
+that is, $\varphi_1$ is a function on positions, and $\varphi^\sharp_i$ is a function on directions, \emph{depending on a position $I\in p(1)$}, where $\varphi_1(i)=j$. We refer to $\varphi_1$ as the \emph{on-types function} and to $\varphi^\sharp$ as the \emph{backwards on-terms} function.
 
-One can check that a map $\varphi\colon p\to q$ is cartesian iff the on-directions function $\varphi^\sharp_i$ is a bijection $p[i]\cong q[\varphi_1i]$ for each $i\in p(1)$.
+One can check that a map $\varphi\colon p\to q$ is cartesian iff the backwards-on-terms function $\varphi^\sharp_I$ is a bijection $p[I]\cong q[\varphi_1I]$ for each type $I\in p(1)$.
 \end{remark}
 
 
@@ -533,7 +538,7 @@ Given the axiom of choice, any Grothendieck universe is a sum-product set; indee
 There is only one finite ordinal with the above properties, namely $\kappa=2$. Indeed, $0$ fails condition (i), $1$ fails condition (iii) because $\Pi(0,!)=1\not<1$, and any $2<\kappa<\omega$ fails condition (ii) because by induction $\Pi(\kappa-1,(\kappa-1,\kappa-1))\not<\kappa$.
 
 The easiest intuitive example to keep in mind for our paper is $\kappa=\nn$,%
-\footnote{We write $\nn$ rather than $\omega$ for the first infinite ordinal.} so that $N<\nn$ iff $N$ is finite. The $\nn$-list polynomial is
+\footnote{We write $\nn$ rather than $\omega$ for the set of natural numbers, the first infinite ordinal.} so that $N<\nn$ iff $N$ is finite. The $\nn$-list polynomial is
 \[
   u_\nn\coloneqq\sum_{N\in\nn}\yon^N.
 \qedhere
@@ -543,15 +548,21 @@ The easiest intuitive example to keep in mind for our paper is $\kappa=\nn$,%
 %---- Section ----%
 \section{Composition and Dirichlet monoidal structures}
 
-Polynomial functors are closed under composition, which we denote by $\tri$; the monoidal unit is $\yon$.
+Polynomial functors are closed under composition, which we denote by $\tri$; its types and terms are given by the following formula:
+\begin{equation}\label{eqn.comp_formula}
+  \left(\sum_{I\in p(1)}\yon^{p[I]}\right)\;\tri\;
+  \left(\sum_{J\in q(1)}\yon^{q[J]}\right)\coloneqq
+  \sum_{I\in p(1)}\sum_{J\colon p[I]\to q(1)}\yon^{\sum_{i\in p[I]}q[J i]}.
+\end{equation}
+This gives a (nonsymmetric) monoidal structure $(\poly,\yon,\tri)$. One can see that a type in $p\tri q$ consists of a type $I\in p(1)$ and a type $(J i)\in q(1)$ for every term $i\in p[I]$. We denote such a type by $I\vdash J$. A term in it consists of a term $i\in p[I]$ and a term $j\in q[J i]$.
 
 There is another monoidal product called \emph{Dirichlet product} and denoted $\otimes$; it is given by
-\[
-\left(\sum_{i\in p(1)}\yon^{p[i]}\right)\otimes
-\left(\sum_{j\in q(1)}\yon^{q[j]}\right)\coloneqq
-\sum_{(i,j)\in p(1)\times q(1)}\yon^{p[i]\times q[i]}.
-\]
-Its monoidal unit is again $\yon$. 
+\begin{equation}\label{eqn.dir_formula}
+  \left(\sum_{I\in p(1)}\yon^{p[I]}\right)\otimes
+  \left(\sum_{J\in q(1)}\yon^{q[J]}\right)\coloneqq
+  \sum_{(I,J)\in p(1)\times q(1)}\yon^{p[I]\times q[J]}.
+\end{equation}
+This gives a symmetric monoidal structure $(\poly,\yon,\otimes)$. A type in $p\tri q$ is just a pair of types $(I,J)\in p(1)\times q(1)$ and a term of it is just a pair of terms $(i,j)\in p[I]\times q[J]$.
 
 The $\otimes$ structure is symmetric. Both monoidal structures restrict to monoidal structures on $\polycart$; in other words any composite or Dirichlet product of cartesian morphisms is again cartesian.
 
@@ -565,7 +576,9 @@ Moreover the laxators (lax coherence maps), which we denote with the same symbol
 are cartesian for any $p,q\in\poly$.
 \end{proposition}
 \begin{proof}
-Suppose given polynomials $p,q\in\poly$ and a set $X\in\smset$; the only data in $\indep$ is in its laxator, which we define as follows. Suppose given an index $(i,j)\in p(1)\times q(1)$ and map $x\colon p[i]\times q[i]\to X$. An element of $(p\tri q)(X)$ is first a choice of index $i'\in p(1)$ and, for every $s\in p[i']$ a choice of index $j'\in q(1)$ and, for every $t\in q[j']$ a choice of $x'\in X$. We use $i'\coloneqq i$, independent of $s\in p[i']$ we use $j'\coloneqq j$, and we use $x'\coloneqq x(s,t)$. One can check that the relevant axioms are satisfied and that $\indep$ is cartesian.
+Suppose given polynomials $p,q\in\poly$ and a set $X\in\smset$; since $\indep$ is merely a lax monoidal structure atop the identity functor, the only data in it is in its laxator, which we define using \cref{rem.positions_and_directions} as follows.
+
+On types, we send an index $(I,J)\in p(1)\times q(1)$ to $(I,J\_)\in p\tri q(\1)$, where $J_!\colon p[I]\to q(1)$ is constant $J$, sending each $i$ to $J\in q(1)$ Backwards on terms, we send $(i,j)\mapsto (i,j)$; indeed both \cref{eqn.comp_formula,eqn.dir_formula} have the same set of directions $\sum_{i\in p[I]}q[J]\cong p[I]\times q[J]$ when $J_!\coloneqq J$ is independent of $I$. Thus it is clear that $\indep$ is cartesian. We leave it to the reader to check the relevant axioms.
 \end{proof}
 
 \begin{proposition}\label{prop.tri_dir_cartesian}
@@ -575,23 +588,25 @@ Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
 Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
 \end{proof}
 
-It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ is a monoidal product that for any $u\in\poly$ the map
+It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ is a monoidal product that for any $u\in\poly$ the maps
 \[
+	\ol{\Phi}_u(p)(q)\coloneqq u\otimes p\tri q
+	\qqand
 	\Phi_u(p)(q)\coloneqq u\tri p\tri q
 \]
-defining the functor in \eqref{eqn.Phi} is functorial in $p\in\polycart$ and $q\in\poly$.
+defining the functors in \eqref{eqn.Phi} are functorial in $p\in\polycart$ and $q\in\poly$.
 
 \begin{proposition}[$\kappa$-list monads]\label{prop.list_monad}
 For any sum-product set $\kappa$, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
 \end{proposition}
 \begin{proof}
-Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice of one set for every cardinality $N<\kappa$, and that for any $A<\kappa$ and $B_a<\kappa$ for each set in $(B_a)_{a\in A}$, the set $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
+Recall that $u_\kappa=\sum_{N\in C_\kappa}\yon^N$, where $C_\kappa$ is a choice of one set for every cardinality $N<\kappa$, and that whenever $A<\kappa$ and $B_a<\kappa$ for each set in $(B_a)_{a\in A}$, the set $S(A,B)$ isomorphic to their disjoint union also satisfies $S(A,B)<\kappa$. 
 
 The monoidal unit on $u_\kappa$ corresponds to the ordinal $\1<\kappa$, considered as a (cartesian) map $\yon\to u_\kappa$. The monoidal product $u_\kappa\tri u_\kappa\to u_\kappa$ sends $A\in u_\kappa(1)$ and $B\colon u_\kappa[A]\to u_\kappa(1)$ to $S(A,B)$. The monad laws are satisfied because coproduct is monoidal product and $u_\kappa$ has exactly one position (element in $C_\kappa$) for each cardinality $N<\kappa$. 
 \end{proof}
 
 \begin{definition}[$\kappa$-list monads]
-For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} as the \emph{$\kappa$-list monad}. Note that since lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monoid structure 
+For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} as the \emph{$\kappa$-list monad}. Note that lax monoidal functors, such as $\indep$ from \eqref{eqn.indep}, send monoids to monoids. Hence, we also have a monoid structure 
 \begin{equation}\label{eqn.otimes_monoid}
 	\yon\To{\1} u
 	\qqand
@@ -600,19 +615,10 @@ For any sum-product set $\kappa$, we refer to the monad $(u_\kappa,\1,\Sigma)$ f
 We denote it simply using parens: $(-,-)\colon u\otimes u\to u$.
 \end{definition}
 
-Our goal will be to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} is a universe in the sense of \cref{def.universe}. Here are some examples.
-
-\begin{example}
-We resume our previous example, \cref{ex.sum_prod_set}; let $u=u_\kappa$ and recall the notation $S(A,B)\cong\coprod_{a\in A}B_a$.
-
-The function $\1\colon\yon\to u$ sends the unique position in $\yon$ to the ordinal $1$. This map is cartesian. The function $\Sigma_1\colon u\tri u(1)\to u(1)$ is defined on tuples $(A,B)\in u_\kappa\tri u_\kappa(1)$. Here $B$ denotes a function $B\colon u_\kappa[A]\to u(1)$. We define it to the coproduct $\Sigma_1(A,B)\coloneqq S(A,B)$. The map $\Sigma_{(A,B)}^\sharp\colon S(A,B)\to (u\tri u)[(A,B)]$ sends $x\in \Sigma(A,B)$ to the pair $(x_A,x_B)$, where $x_A\in A$ and $x_B\in B x_A$; it is a bijection by definition, so $\Sigma$ is cartesian as well.
-
-We generally denote $\Sigma_1$ simply by $\Sigma$ whenever confusion is not likely. Note that $\Sigma(\1,B)=B$; on positions it is literal equality, since the ordinal $\kappa$ has one element for every ordinal less than it. On directions it is also literal equality between the two functions. Similarly, $\Sigma(B,\1)=B$ and $\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)$. 
-\end{example}
-
+Our goal in the next section is to show that for any $\kappa$ as in \cref{ex.sum_prod_set}, the $\kappa$-list monad $(u_\kappa,\1,\Sigma)$ from \cref{prop.list_monad} is a universe in the sense of \cref{def.universe}.
 
 %-------- Chapter --------%
-\chapter{List monads are universe monads}
+\chapter{List monads are polynomial universes}
 
 In this section, we will construct the lax monoidal functor
 \[
@@ -832,7 +838,7 @@ The top-left and bottom-left squares commute by functoriality of monoidal produc
 %-------- Chapter --------%
 \chapter{Consequences in the language of dependent types}
 
-The main theorem really just packages the story. The real heart of the matter---at least for dependent types---is \cref{lemma.key} applied to $u$ across the board, where $u$ is a universe monad as in \cref{def.universe}. So fix a universe monad $(u,\1,\Sigma)$ for the rest of this section.
+The main theorem really just packages the story. The real heart of the matter---at least for dependent types---is \cref{lemma.key} applied to $u$ across the board, where $u$ is a polynomial universe as in \cref{def.universe}. So fix a polynomial universe $(u,\1,\Sigma)$ for the rest of this section.
 
 %---- Section ----%
 \section{Notation}
