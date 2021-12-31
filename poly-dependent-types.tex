@@ -304,7 +304,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\triright}{\mathbin{\triangleright}}
 \newcommand{\tripow}[1]{^{\tri #1}}
 \newcommand{\indep}{\Fun{Indep}}
-
+\newcommand{\switch}{\pi}
 
 
 % lenses
@@ -349,7 +349,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 %--------------- Document ---------------%
 \begin{document}
 
-\title{Polynomial universes and dependent types}
+\title{Polynomial universes:\\Syntax and conversions for dependent types}
 
 \author{David I. Spivak}
 
@@ -364,103 +364,77 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 %-------- Chapter --------%
 \chapter{Introduction}
 
-In this paper we ground the notion of dependent types in the theory of polynomial functors. The syntax and rules will all emerge from two pieces of data:
-\begin{enumerate}
-	\item A cartesian polynomial monad $(u,\1,\Sigma)$ and
-	\item a certain lax monoidal functor $\Phi\coloneqq\Phi_u$, defined in terms of $u$, of the form
-	%
-%\footnote{This can be phrased as an \emph{right-biased oplax monoidal structure} \cite{nlab.lax_monoidal} on $\polycart$, but we will only briefly mention this again.}
-\begin{equation}\label{eqn.Phi}
-\Phi_u\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big)
-\end{equation}
-\end{enumerate}
-given by $\Phi(p)(q)\coloneqq u\tri p\tri q$. Roughly speaking, this functor sends a type $J$ to a $u$-then-$p$-dependent type $A\vdash I\vdash J$.%
-\footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. All of our symbols relate to some aspect of the underlying polynomial formalism, so something like this notation seems forced on us.
-}
- That is, every polynomial $p$ gives a bespoke notion of types on which other types, from $q$, can be based. The polynomial $u$ is special---as expressed by the lax monoidality of $\Phi$---in that it knows how to absorb the bespoke notion of type dependency for any $p$ into its own. 
 
-The lax monoidality gives cartesian maps of the form 
+
+Dependent type theory \cite{martin-lof1975intuitionistic} was founded by Per Martin-L\"{o}f in 1975 to formalize all of mathematics. The basic idea is that the order of events is fundamental to a mathematical story arc: when playing out any specific example story in that arc, the beginning of the story affects not only the later events, but even the very terms with which to describe the later events. For example, in the story arc of conditional probability, one may say ``now if the set $P$ that we are asked to condition on happens to have measure zero we must stop, but assuming that's not the case then the result will be a new measure.'' Here the story teller is saying that no terms will describe what happens if $P$ has measure zero, whereas otherwise the terms of standard probability will apply.
+
+Dependent types form a logical system with syntax, conversion rules, and methods of deduction. In \cite{awodey2014natural,awodey2018polynomial}, Awodey and later Newstead show that there is a strong connection between dependent type theory and polynomial functors. The present work follows from this remarkable discovery, but diverges in the formalism itself. Whereas they discuss pseudomonads and pseudo-algebras in a tri-category arising from a locally cartesian closed category, we keep simply to lax monoidal functors and transformations between monoidal categories. In both cases, the focus is on the syntax and conversion rules of dependent type theory, not the universal properties that yield valid deductions.
+
+A polynomial functor $p\colon\smset\to\smset$ is a coproduct of representable functors
+\[\sum_{I\in p(1)}\yon^{p[I]},\]
+which one can think of as a collection of types: The positions $I\in p(1)$ indexing the coproduct are the types, and the elements $i\in p[I]$ in the exponent are the terms of type $I$. 
+
+Composition $p\tri q$ of polynomials corresponds to dependent types: in order to choose a type $x\in p\tri q(1)$, you must first choose a type $I\in p(1)$ and then, for any term $i\in p[I]$ in it you choose a type $J:q(1)$. In this paper (not in the literature) we denote this situation by $I\vdash J$. So suppose
+\[
+  p=\{{'0'}\}\yon^0+\{{'1'}\}\yon^1
+  \qqand 
+  q=\sum_{N\in\nn}\sum_{\{D\colon N\to\rr_{\geq 0}\mid D_1+\cdots+D_N=1\}}\yon^N.
+\]
+Then to choose an element $I\vdash J\in (p\tri q)(1)$, you \emph{first} make a binary choice ${'0'}$ or ${'1'}$; that's the $I$. Then the next type $J$ depends on your choice. Indeed, in the ${'0'}$-case that's the end of the story---you stop---and in the ${'1'}$-case you \emph{further} make choice of $N\in\nn$ and a probability distribution $D$ on a set with $N$ elements. All together, whichever branch you took, the result is a type $I\vdash J$ in the collection $p\tri q$. This type has \emph{no terms} in the ${'0'}$-case, and it has $N$-many terms in the ${'1'}$-case.
+
+A special case of dependent types is independent types, where the order doesn't matter. These are represented by a symmetric monoidal product $\otimes$ on polynomial functors: for any $p,q$ one can form $p\otimes q$ and there is an isomorphism $p\otimes q\cong q\otimes p$. The types in the family $p\otimes q$ are pairs of types $(I,J)\in p(1)\times q(1)$, and the terms of type $(I,J)$ are pairs of terms $(i,j)\in p[I]\times q[I]$. There is a natural map $\indep\colon(p\otimes q)\to (p\tri q)$ allowing us to regard a pair $(I,J)$ of independent types as a dependent type $(I\vdash J)\coloneqq\indep(I,J)$.
+
+In this paper we explain the notion of polynomial universe $u$ (again, this notion is due to \cite{awodey2014natural}), one can reduce all the dependencies by collapsing an arbitrarily deep dependent type into a single layer through products or sums. More generally, there is a map
+\begin{equation}\label{eqn.switch}
+  \switch_p\colon p\tri u\to u\otimes p
+\end{equation}
+that converts dependent types into independent types by sending $I\vdash A$ to the pair $(I\to A,A)$, where $I\to A$ might be called the \emph{dependent product type} or \emph{dependent function type}.%
+\footnote{This is just a terminological preference: a product $\prod_{a\in A}B$ of $A$-many copies of $B$ is also a function $A\to B$; in both cases the number of $B$'s could depend on the choice of $a\in A$. Allowing ones terminology to depend on ones preferences is a meta-version of this whole story.}
+It is as though $u$ is able to absorb the effect of $p$-dependencies into itself. This move in some sense makes computations into ``first-class objects". When $p=u$ we can convert a dependent type $(A\vdash B)\in u\tri u(1)$ all the way to a base type $(A\to B,A)\in u(1)$ by first absorbing the dependency and then composing with a pairing operation $u\tri u\To{\switch_u} u\otimes u\To{(-,-)} u$.
+
+In this paper we will see that syntax and conversion rules of dependent types  emerge from the very special properties enjoyed by certain polynomials $u$. Not only should $u$ have the structure of a cartesian monad, which gives it a unit type $\1$ and $\Sigma$ types, but these must distribute properly over function types. All this is packaged in the following definition.
+
+\begin{definition}[Universe monads]\label{def.universe}
+Let $(u,\1,\Sigma)$ be a cartesian monad. We say it is a \emph{universe monad} if there exists a diagram of the form
+\begin{equation}\label{eqn.Phi}
+\begin{tikzcd}[column sep=60pt]
+	\Big(\polycart,\yon,\tri\Big)
+		\ar[r, bend left=15pt,  start anchor={north east}, end anchor={north west}, "\ol{\Phi}_u", ""' name=P]
+		\ar[r, bend right=15pt, start anchor={south east}, end anchor={south west}, "\Phi_u"', "" name=PP]&
+	\Big(\en(\poly),\id,\circ\Big)
+	\ar[from=P, to=P|-PP, Rightarrow, shorten=2mm, "\indep"]
+\end{tikzcd}
+\end{equation}
+where the functors $\ol{\Phi}_u$ and $\Phi_u$ have a lax monoidal structure and are given by
+\[
+\ol{\Phi}_u(p)(q)\coloneqq u\otimes p\tri q
+\qqand
+\Phi_u(p)(q)\coloneqq u\tri p\tri q
+\]
+and the natural transformation also has a monoidal structure and is given by
+\[
+  u\otimes p\tri q\To{\indep\tri q} u\tri p\tri q.
+  \qedhere
+\]
+\end{definition}
+
+The purpose of the text is to explain all this, so readers should not be concerned if they have lost the connection; our goal now is just to give a sense of the packaging. The crux of the story is that universe monads $u$ are exactly those that can absorb arbitrary dependencies into themselves, making computations into first-class types.
+
+In the text below we will give examples of universe monads; probably the best known is the list monad
+\[
+	u_\nn\coloneqq\sum_{N\in\nn}\yon^N
+\]
+which has a notion of singleton list and a way to concatenate lists of lists into a list.
+
+Let's fix some universe monad $(u,\1,\Sigma)$ and write $\Phi$ for $\Phi_u$, etc. The absorption of arbitrary dependencies into $u$ is packaged up into the coherence maps---the \emph{laxators}---of the lax monoidal structure on $\Phi$ and $\ol{\Phi}$. They are of the form
 \[
 \Phi(p_1)\circ\Phi(p_2)
 \Too{\phi_{p_1,p_2}}
 \Phi(p_1\tri p_2).
 \]
-In particular, we will apply this functor to the monad $u$ itself, compose with $\Sigma$, and apply it to $u\in\poly$ to obtain a map
-\begin{equation}\label{eqn.main}
-  \Phi(u)\circ\Phi(u)(u)
-  \Too{\phi_{u,u}(u)}
-  \Phi(u\tri u)(u)
-  \Too{\Sigma(u)}
-  \Phi(u)(u)
-\end{equation}
-which contains within it the most important structural rules of dependent type theory. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
+The laxators are formed using the $\switch$-maps described above in \eqref{eqn.switch} and give rise to type- and term-forming operations for dependent function types. The unitality and associativity laws governing $\Phi,\ol{\Phi}$ give rise to the conversion rules between them. For example, from the structure and axioms one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-\begin{definition}[Universe monads]\label{def.universe}
-We say that a cartesian monad $(u,\1,\Sigma)$ has the structure of a \emph{universe monad} if the functor $\Phi_u$, given by
-\begin{equation}\label{eqn.define_phi}
-	\Phi_u(p)(q)\coloneqq u\tri p\tri q
-\end{equation}
- has a lax monoidal structure.
-\end{definition}
-
-
-Universe monads give the following sort of constructors.%
-\begin{equation}\label{eqn.premise_axiom}
-  \begin{prooftree}
-    \Hypo{A}
-    \Infer1{\1\vdash A}
-  \end{prooftree}
-\hspace{.5in}
-  \begin{prooftree}
-    \Hypo{A, B\vdash (C, D\vdash E)}
-    \Infer1{(A,B\to C),\Sigma(B,D)\vdash E}
-  \end{prooftree}
-\end{equation}
-The first says that for any type $A:\U$, one can form the unit type $\1$ and for any term $():[\1]$ a type $A():\U$ depending on it. The second is more complex. Suppose given a type $A:\U$, a type $B:\U$, for every $b:[B]$ a type $Cb:\U$ and a type $Db:\U$, and for every $d:[Db]$ a type $Ebd:\U$. Then one can form a type $(A,B\to C)\in \U$, a type $\Sigma(B,D)\in \U$, and for every $(b, d)\in [\Sigma(B,D)]$ a type $E(b,d):\U$. We denote $\Sigma$ types, where the second type may depend on the first, by $\Sigma(A,B)$; we denote product types---a special case of $\Sigma$ types where the second type does not depend on the first---by $(A,B)$.
-
-The typing constructors come along with term constructors going in the opposite direction. 
-\begin{equation}\label{eqn.premise_axiom}
-	\hspace{.5in}
-  \begin{prooftree}
-    \Hypo{(),a}
-    \Infer1{a()}
-  \end{prooftree}
-\hspace{.5in}
-  \begin{prooftree}
-    \Hypo{(a,c), (b,d), e}
-    \Infer1{a,b,(cb, db ,e(b, db))}
-  \end{prooftree}
-\end{equation}
-These are opaque---indeed, they are derived from the structure, not chosen---so we unpack them. Here's what they say
-\begin{enumerate}[label=(\roman*)]
-	\item Suppose given a dependent sequence of terms $():\1$, $a:[A()]$. Then we can construct a term $a():[A]$. By forthcoming conversions, we denote $a()$ simply by $a$.
-	\item Suppose given a dependent sequence of terms $(a,c):[(A,B\to C)]$, $(b,d):[\Sigma(B,D)]$, and $e:[E(b,d)]$. Then we can construct terms $a:[A]$, $b:[B]$, $cb:[Cb]$, $db:[Db]$, and $e(b,db):[E b d]$.
-\end{enumerate}
-There are also equalities between types, e.g.
-\[
-\begin{array}{lll}
-	A=\1\to A&
-		A\to(B,C)=(A\to B,A\to C)&
-			A\to\Sigma(B,C)=\Sigma(A\to B,A\to C)\\
-	()=A\to ()&
-		(A,B)\to C=A\to B\to C&
-			\Sigma(A,B)\to C=A\to B\to C
-\end{array}
-\]
-which come with conversion rules for terms%
-\footnote{In case it isn't clear, we denote the terms of product types and $\Sigma$-types in the same way, namely as pairs $(a,b):(A,B)$ or $(a,b):\Sigma(A,B)$. We denote terms of a function type $A\to B$ simply by the codomain, e.g. $b:A\to B$; we leave it implicit that $b$ is waiting for an input $a:A$ to obtain $ba:B$.}
-\[\arraycolsep=1cm
-\begin{array}{lll}
-	a\equiv a()&
-		(b,c)(a)\equiv (b(a),c(a))&
-			(b,c)(a)\equiv (b(a),c(a))\\
-	()\equiv()(a)&
-		c(a,b)\equiv c a b&
-			c(a,b)\equiv c a b
-\end{array}
-\]
-
-The germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors, an explication of ideas in work of Awodey and Newstead \cite{awodey2018polynomial}. Indeed, their paper contains much of what will be said here. The present work adds two things:
+As mentioned there, the germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors on his theory of natural models and their connection to polynomial functors. Aside from a very different presentation (lax monoidal functors instead of pseudomonads, etc.), the present work adds two things:
 \begin{enumerate}
 	\item explicit syntax and rules for pair types, and
 	\item the distributive law of $\Pi$ over $\Sigma$, which in their language would say%
@@ -469,14 +443,13 @@ The germination of this idea came from \href{https://www.youtube.com/watch?v=RDu
 	A\to\Sigma(B,C)\cong \Sigma(A\to B,A\to C).
 	\]
 	}
-	\[
+	\begin{equation}\label{eqn.distributivity_law_we_all_love}
 	\prod_{x:A}\sum_{y:B(x)}C(x,y)\cong\sum_{y:\prod_{x:A}B(x)}\prod_{x:A}C(x,y(x))
-	\]
-	They have derived the other law connecting $\Sigma$ and $\Pi$ (see \cite[Remark 4.2]{awodey2018polynomial}), but seem to be missing this one.%
-	\footnote{\href{https://youtu.be/RDuNIP4icKI?t=13898}{Andr\'{e} Joyal's question following Steve Awodey's talk} was ``what happened to the distributivity law that we love between sum and product?" Steve said that he believed it was of the same form as the other laws they had derived, and that they get it for free. I have not seen this derivation; if it does arise for free from the structure of a pseudoalgebra in the sense of their paper, then this paper would lose most of its value.
+	\end{equation}
+	Awodey-Newstead derived the other law connecting $\Sigma$ and $\Pi$ (see \cite[Remark 4.2]{awodey2018polynomial}), but under our reading they seem to be missing the one in \eqref{eqn.distributivity_law_we_all_love}.%
+	\footnote{\href{https://youtu.be/RDuNIP4icKI?t=13898}{Andr\'{e} Joyal's question following Steve Awodey's talk} was ``what happened to the distributivity law that we love between sum and product?" Steve said that he believed it was of the same form as the other laws they had derived, and that they get it for free. I have not seen this derivation, but it may be coming from universal properties. Since neither this nor \cite{awodey2018polynomial} consider universal properties of dependent types, just their formation and rules, we hope that the present paper will be of interest.
 	}
 \end{enumerate}
-such that everything in sight is derived from the structures in \eqref{eqn.main} and \eqref{eqn.aux} (rather than from a certain pseudomonad, as in Awodey-Newstead).
 
 %---- Section ----%
 \section{Acknowledgments}
@@ -559,9 +532,10 @@ Given the axiom of choice, any Grothendieck universe is a sum-product set; indee
 
 There is only one finite ordinal with the above properties, namely $\kappa=2$. Indeed, $0$ fails condition (i), $1$ fails condition (iii) because $\Pi(0,!)=1\not<1$, and any $2<\kappa<\omega$ fails condition (ii) because by induction $\Pi(\kappa-1,(\kappa-1,\kappa-1))\not<\kappa$.
 
-The easiest intuitive example to keep in mind for our paper is $\kappa=\omega$, where $N<\omega$ iff $N$ is finite. The $\omega$-list polynomial is
+The easiest intuitive example to keep in mind for our paper is $\kappa=\nn$,%
+\footnote{We write $\nn$ rather than $\omega$ for the first infinite ordinal.} so that $N<\nn$ iff $N$ is finite. The $\nn$-list polynomial is
 \[
-  u_\omega\coloneqq\sum_{N\in\nn}\yon^N.
+  u_\nn\coloneqq\sum_{N\in\nn}\yon^N.
 \qedhere
 \]
 \end{example}
@@ -659,12 +633,12 @@ What we need to understand is the lax monoidality of $\Phi_u$; these constrain $
 
 The unexpected thing about this map is that to define it requires we use what we call \emph{overflow}. It says that if you try to multiply too many things together, and the result is not a type in $u$, then define the result to be the empty type. One could instead restrict the domain (the sort of $p$ one is allowed to use), but then the statement becomes less attractive. We also think it is an interesting feature to include overflow values.
 
-\begin{definition}[Switching transformation $\ol{\sigma}$ and map $\sigma$]\label{def.switching}
+\begin{definition}[Switching transformation $\ol{\switch}$]\label{def.switching}
 Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching transformation}
-\[\ol{\sigma}_{p}\colon p\tri(u\otimes -)\to u\otimes p\tri -\]
+\[\ol{\switch}_{p}\colon p\tri(u\otimes -)\to u\otimes p\tri -\]
 as follows.
 
-Fix $q\in\polycart$. To give the component $\ol{\sigma}\coloneqq\ol{\sigma}_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\ol{\sigma}_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
+Fix $q\in\polycart$. To give the component $\ol{\switch}\coloneqq\ol{\switch}_{p,q}\colon p\tri(u\otimes q)\to u\otimes p\tri q$, we first define its component $\ol{\switch}_1$ on positions. A position of $p\tri(u\otimes q)\to u\otimes p\tri q$ consists of a triple $(i,A,j)$ where $i\in p(1)$, $A\colon p[i]\to u(1)$, and $j\colon p[i]\to q(1)$. We want to define a position of $u\otimes p\tri q$, which consists of a triple $(A',i',j')$ where $A'\in u(1)$, $i'\in p(1)$, and $j'\colon p[i']\to q(1)$. We define $i'\coloneqq i$, $j'\coloneqq j$, and $A'$ as follows:
 \begin{equation}\label{eqn.overflow}
   A'\coloneqq
   \begin{cases}
@@ -672,19 +646,23 @@ Fix $q\in\polycart$. To give the component $\ol{\sigma}\coloneqq\ol{\sigma}_{p,q
 		0&\tn{ otherwise}
   \end{cases}
 \end{equation}
-In a case of $(i,A,j)$ for which the second condition is activated, we say that $\ol{\sigma}$ \emph{overflows}; otherwise we say it \emph{succeeds}.
+In a case of $(i,A,j)$ for which the second condition is activated, we say that $\ol{\switch}$ \emph{overflows}; otherwise we say it \emph{succeeds}.
 
-For the backwards map $\ol{\sigma}^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
+For the backwards map $\ol{\switch}^\sharp_{(i,A,j)}\colon (u\otimes p\tri q)[(A',i,j)]\to(p\tri(u\otimes q))[(i,A,j)]$ on directions, there are two cases. If $A'=0$ then $(u\otimes p\tri q)[(A',i,j)=0$, so there is a unique map; this is the sense in which ``overflow causes the system to halt''. Otherwise, we need a map
 \begin{equation}\label{eqn.not_injective}
 \prod_{s\in p[i]}A_s\times\sum_{s\in p[i]}q[js]\to\sum_{s\in p[i]}(A s)\times (js)
 \end{equation}
 and it is given by $(a,s,t)\mapsto(s,as,ts)$.%
-\footnote{Note that the map $\ol{\sigma}^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\ol{\sigma}$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
-
-Finally, we define $\sigma\colon p\tri u\to u\otimes p$ to be the $\yon$-component, $\sigma\coloneqq\ol{\sigma}_{p,\yon}$.
+\footnote{Note that the map $\ol{\switch}^\sharp_{(i,A,j)}$ is not generally injective, because for a given input $(a,s,t)$, most of the data in $a$ is discarded; hence $\ol{\switch}$ is not cartesian. This has nothing to do with overflow, and hence could not be avoided by merely restricting $\polycart$ to $\kappa$-bounded polynomials.}
 \end{definition}
 
-One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\sigma_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
+One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\switch_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
+
+\begin{definition}[Switching map $\switch$]
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching map}
+\[\switch_p\colon p\tri u\to u\otimes p\]
+to be the $\yon$-component of the switching transformation, $\switch_p\coloneqq\ol{\switch}_{p,\yon}$.
+\end{definition}
 
 The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
@@ -692,52 +670,52 @@ The following lemma captures the key formal properties of the switching map. To 
 
 
 \begin{lemma}[Key lemma]\label{lemma.key}
-Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\sigma$ be defined as in \cref{def.switching} is natural
+Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set $\kappa$. The switching map $\switch$ be defined as in \cref{def.switching} is natural
 and the following diagrams commute:
 \begin{gather}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&u\ar[dl, equal]\ar[dr, equal]\\
-	\yon\tri u\ar[rr, "\sigma_{\yon}"']\&\&u\otimes\yon
+	\yon\tri u\ar[rr, "\switch_{\yon}"']\&\&u\otimes\yon
 \end{tikzcd}
 \hspace{.6in}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
-	p\tri u\ar[rr, "\sigma_{p}"']\&\&u\otimes p
+	p\tri u\ar[rr, "\switch_{p}"']\&\&u\otimes p
 \end{tikzcd}\label{eqn.key_smalls}
 \\[15pt]
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri p'\tri u\ar[d, "p\tri\sigma_{p'}"']\ar[r, "\sigma_{p\tri p'}"]\&
+	p\tri p'\tri u\ar[d, "p\tri\switch_{p'}"']\ar[r, "\switch_{p\tri p'}"]\&
 	u\otimes p\tri p'\ar[r, "\indep\tri p'"]\&u\tri p\tri p'\\
 	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
-	p\tri u\tri p'\ar[r, "\sigma_{p}\tri p'"']\&
+	p\tri u\tri p'\ar[r, "\switch_{p}\tri p'"']\&
 	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
 \end{tikzcd}\label{eqn.key_med1}
 \\[15pt]
 \begin{tikzcd}[, ampersand replacement=\&, column sep=large]
-	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\sigma\tri u"']\&
-	p\tri u\ar[r, "\sigma"]\&
+	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\switch_p\tri u"']\&
+	p\tri u\ar[r, "\switch_p"]\&
 	u\otimes p\ar[r, "\indep"]\&
 	u\tri p\\
 	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
-	u\tri p\tri u\ar[r, "u\tri\sigma"']\&
+	u\tri p\tri u\ar[r, "u\tri\switch_p"']\&
 	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
 	u\tri u\tri p\ar[u, "\Sigma\tri p"']
 \end{tikzcd}\label{eqn.key_large}
 \end{gather}
-We record also a similar commutative diagram for the switching transformation $\ol{\sigma}$:
+We record also a similar commutative diagram for the switching transformation $\ol{\switch}$:
 \begin{gather}
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri (u\otimes u)\ar[d, "\ol{\sigma}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
-	p\tri u\ar[r, "\sigma_p"]\&u\otimes p\\
-	u\otimes p\tri u\ar[rr, "u\otimes\sigma_p"']\&\&
+	p\tri (u\otimes u)\ar[d, "\ol{\switch}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
+	p\tri u\ar[r, "\switch_p"]\&u\otimes p\\
+	u\otimes p\tri u\ar[rr, "u\otimes\switch_p"']\&\&
 	u\otimes u\otimes p\ar[u, "{(-,-)}\tri p"']
 \end{tikzcd}\label{eqn.key_med2}
 \end{gather}
 \end{lemma}
 \begin{proof}
-We begin with naturality. Clearly $\sigma_p$ is natural in $q\in\poly$. Though the map $\sigma_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
+We begin with naturality. Clearly $\switch_p$ is natural in $q\in\poly$. Though the map $\switch_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
 \[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
-and $\sigma_p$ overflows iff $\sigma_{p'}$ does.
+and $\switch_p$ overflows iff $\switch_{p'}$ does.
 
 We next consider the commutativity of the maps in \eqref{eqn.key_smalls}. The map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in$C_\kappa$). Thus the left hand triangle commutes. For the right-hand triangle, suppose given $i\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i)$ and under the right-hand map it is sent to $(\1,i)$; these are the same element of $C_\kappa$, since $\Pi(p[i],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
@@ -767,7 +745,7 @@ Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomial $p\i
 \] 
 as the composite of the independent switching map and the independent inclusion:
 \[
-	p\tri u\To{\sigma_{p}}u\otimes p\To{\indep}u\tri p.
+	p\tri u\To{\switch_{p}}u\otimes p\To{\indep}u\tri p.
 	\qedhere
 \]
 \end{definition}
@@ -903,7 +881,7 @@ which means that choosing a term of $A\vdash B$, meaning an $a:[A]$ and a $b:[B 
 
 Recall that for any $p\in\polycart$ and $q\in\poly$, \cref{def.switching} provides a morphism%
 \footnote{As usual, $\tri$ binds the tightest, so $\U\times u\tri \U$ denotes $\U\times(u\tri \U)$.}
-\[\sigma_{p,q}\colon p\tri (u\otimes q)\to u\otimes p\tri q\]
+\[\switch_{p,q}\colon p\tri (u\otimes q)\to u\otimes p\tri q\]
 Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\in q(1)$ for each $i\in p[I]$, we obtain a type denoted $(I\to A):\U$ (and we keep $I,J$ as before). In symbols,
 \begin{equation*}
   \begin{prooftree}
@@ -955,12 +933,12 @@ We now unpack the results from \cref{lemma.key}. The first two diagrams
 \[
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&u\ar[dl, equal]\ar[dr, equal]\\
-	\yon\tri u\ar[rr, "\sigma_{\yon}"']\&\&u\otimes\yon
+	\yon\tri u\ar[rr, "\switch_{\yon}"']\&\&u\otimes\yon
 \end{tikzcd}
 \hspace{.6in}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
-	p\tri u\ar[rr, "\sigma_{p}"']\&\&u\otimes p
+	p\tri u\ar[rr, "\switch_{p}"']\&\&u\otimes p
 \end{tikzcd}\label{eqn.key_smalls}
 \]
 is translated as:
@@ -979,14 +957,17 @@ is translated as:
 The next diagram
 \[
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri p'\tri u\ar[d, "p\tri\sigma_{p'}"']\ar[r, "\sigma_{p\tri p'}"]\&
+	p\tri p'\tri u\ar[d, "p\tri\switch_{p'}"']\ar[r, "\switch_{p\tri p'}"]\&
 	u\otimes p\tri p'\ar[r, "\indep\tri p'"]\&u\tri p\tri p'\\
 	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
-	p\tri u\tri p'\ar[r, "\sigma_{p}\tri p'"']\&
+	p\tri u\tri p'\ar[r, "\switch_{p}\tri p'"']\&
 	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
 \end{tikzcd}\label{eqn.key_med1}
 \]
-is translated as
+is translated as follows%
+\footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. Our notation simply follows the polynomial formalism in the sense that whenever we see $\tri$ in the polynomials, we see $\vdash$ in the types.
+}
+
 \[
   \begin{prooftree}
     \Hypo{I\vdash I'\vdash A:p\tri p'\tri \U}
@@ -1005,12 +986,12 @@ This syntax, which includes a turnstyle in the domain of an arrow $(I\vdash I')\
 The next diagram
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=large]
-	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\sigma\tri u"']\&
-	p\tri u\ar[r, "\sigma"]\&
+	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\switch\tri u"']\&
+	p\tri u\ar[r, "\switch"]\&
 	u\otimes p\ar[r, "\indep"]\&
 	u\tri p\\
 	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
-	u\tri p\tri u\ar[r, "u\tri\sigma"']\&
+	u\tri p\tri u\ar[r, "u\tri\switch"']\&
 	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
 	u\tri u\tri p\ar[u, "\Sigma\tri p"']
 \end{tikzcd}
@@ -1026,9 +1007,9 @@ is translated as
 The final diagram is quite similar, but for independent types $A,B$:
 \[
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri (u\otimes u)\ar[d, "\ol{\sigma}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
-	p\tri u\ar[r, "\sigma_p"]\&u\otimes p\\
-	u\otimes p\tri u\ar[rr, "u\otimes\sigma_p"']\&\&
+	p\tri (u\otimes u)\ar[d, "\ol{\switch}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
+	p\tri u\ar[r, "\switch_p"]\&u\otimes p\\
+	u\otimes p\tri u\ar[rr, "u\otimes\switch_p"']\&\&
 	u\otimes u\otimes p\ar[u, "{(-,-)}\tri p"']
 \end{tikzcd}\label{eqn.key_med2}
 \]
