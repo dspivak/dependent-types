@@ -601,11 +601,11 @@ Both the $\tri$ and the $\otimes$ products preserve cartesian maps.
 Suppose given cartesian maps $\alpha\colon p_1\to p_2$ and $\beta\colon q_1\to q_2$. Then $\alpha\tri\beta$ is cartesian using the pullback definition \cref{def.poly} and $\alpha\otimes\beta$ is cartesian using the bijection-on-directions criterion from \cref{rem.positions_and_directions}.
 \end{proof}
 
-It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ and $\tri$ are monoidal products that for any $u\in\poly$ the map
+It follows from \cref{prop.tri_dir_cartesian} and the fact that $\otimes$ is a monoidal product that for any $u\in\poly$ the map
 \[
 	\Phi_u(p)(q)\coloneqq u\tri p\tri q
 \]
-defining the functors in \eqref{eqn.aux} are functorial in $p\in\polycart$ and $q\in\poly$.
+defining the functor in \eqref{eqn.Phi} is functorial in $p\in\polycart$ and $q\in\poly$.
 
 \begin{proposition}[$\kappa$-list monads]\label{prop.list_monad}
 For any sum-product set $\kappa$, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
@@ -714,14 +714,14 @@ and the following diagrams commute:
 \end{tikzcd}\label{eqn.key_med1}
 \\[15pt]
 \begin{tikzcd}[, ampersand replacement=\&, column sep=large]
-	p\tri u\tri u\ar[r, "\Sigma"]\ar[d, "\sigma\tri u"']\&
+	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\sigma\tri u"']\&
 	p\tri u\ar[r, "\sigma"]\&
 	u\otimes p\ar[r, "\indep"]\&
 	u\tri p\\
 	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
 	u\tri p\tri u\ar[r, "u\tri\sigma"']\&
 	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
-	u\tri u\tri p\ar[u, "\Sigma"']
+	u\tri u\tri p\ar[u, "\Sigma\tri p"']
 \end{tikzcd}\label{eqn.key_large}
 \end{gather}
 We record also a similar commutative diagram for the switching transformation $\ol{\sigma}$:
@@ -879,24 +879,32 @@ The cartesian monoid structures $(u,\1,\Sigma)$ and $(u,\1,(-,-))$, and the map 
   \begin{prooftree}
     \Infer0{\1}
   \end{prooftree}
- \hspace{.6in}
-  \begin{prooftree}
-    \Hypo{A\vdash B}
-    \Infer1{\Sigma(A,B)}
-  \end{prooftree}
- \hspace{.6in} 
+  \hspace{.6in} 
   \begin{prooftree}
     \Hypo{A, B}
     \Infer1{(A,B)}
   \end{prooftree}
+\hspace{.6in}
+  \begin{prooftree}
+    \Hypo{A\vdash B}
+    \Infer1{\Sigma(A,B)}
+  \end{prooftree}
 \]
-Its cartesianness means that $\1$ has a single term, which we again call $():[\1]$. The cartesianness of $\Sigma$ means that a term of $\Sigma(A,B)$ consists of an element of $u\tri u[(A\vdash B)]$, i.e.\ a term $a:[A]$ and a term $b:[Ba]$. Similarly, a term of $(A,B)$ consists of an element $(a,b):[A]\times[B]$.
+Its cartesianness means that $\1$ has a single term, which we again call $():[\1]$. The cartesianness of $\Sigma$ means that a term of $\Sigma(A,B)$ consists of an element of $u\tri u[(A\vdash B)]$, i.e.\ a term $a:[A]$ and a term $b:[Ba]$. Similarly, a term of $(A,B)$ consists of an element $(a,b):[A]\times[B]$. From the third one, we can also write
+\begin{equation}\label{eqn.dep_vs_sigma}
+\begin{prooftree}
+  \Infer0{(A\vdash B)\equiv \Sigma(A,B)}
+\end{prooftree}
+\end{equation}
+which means that choosing a term of $A\vdash B$, meaning an $a:[A]$ and a $b:[B a]$, is the same thing as choosing a term of $\Sigma(A,B)$. The analogous statements for the first two say that the empty context has one element, and that choosing a term of $A,B$, meaning an $a:[A]$ and a $b:[B]$, is the same thing as choosing a term of $(A,B)$.
+
+
 \paragraph{The switching transformation.}
 
 Recall that for any $p\in\polycart$ and $q\in\poly$, \cref{def.switching} provides a morphism%
 \footnote{As usual, $\tri$ binds the tightest, so $\U\times u\tri \U$ denotes $\U\times(u\tri \U)$.}
 \[\sigma_{p,q}\colon p\tri (u\otimes q)\to u\otimes p\tri q\]
-Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\in q(1)$ for each $i\in p[I]$, we obtain a type denoted $(I\to A):\U$ (and we keep $I,J$ as before. In symbols,
+Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\in q(1)$ for each $i\in p[I]$, we obtain a type denoted $(I\to A):\U$ (and we keep $I,J$ as before). In symbols,
 \begin{equation*}
   \begin{prooftree}
     \Hypo{I\vdash (A, J)}
@@ -906,21 +914,131 @@ Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\i
 Given terms $a:[I\to A]$, $i:p[I]$, and $j:q[Ji]$, we obtain a term $(i,a i, j):p\tri(u\otimes q)[I\vdash (A,J)]$. Unlike the case for $\1$, $\Sigma$, and $(-,-)$, this construction is not a bijection because $\varphi_{u,u}$ is not cartesian, as explained in the footnote below \cref{eqn.not_injective}.
 
 %---- Section ----%
-\section{Unpacking the key results}
+\section{Unpacking the results}
 
 
 Before we start, note that we already have the pairing laws from the fact that $(-,-)$ and $\Sigma$ are cartesian monads.
+%\[
+%\begin{array}{cc}
+%	(A,\1)=A=(\1,A)&(A,(B,C))=((A,B),C)\\
+%	\Sigma(A,\1)=A=\Sigma(\1,A)&
+%		\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)
+%\end{array}
+%\]
+\begin{gather*}
+\begin{prooftree}
+	\Hypo{A:\U}
+	\Infer1{(A,\1)\equiv A\equiv (\1,A)}
+\end{prooftree}
+\hspace{.6in}
+\begin{prooftree}
+	\Hypo{A:\U}
+	\Infer1{\Sigma(A,\1)\equiv A\equiv \Sigma(\1,A)}
+\end{prooftree}
+\\[10pt]
+\begin{prooftree}
+	\Hypo{A:\U}
+	\Hypo{B:\U}
+	\Hypo{C:\U}
+	\Infer3{(A,(B,C))\equiv ((A,B),C)}
+\end{prooftree}
+\hspace{.6in}
+\begin{prooftree}
+	\Hypo{A:\U}
+	\Hypo{B:\U}
+	\Hypo{C:\U}
+	\Infer3{\Sigma(A,\Sigma(B,C))\equiv \Sigma(\Sigma(A,B),C)}
+\end{prooftree}
+\end{gather*}
+
+We now unpack the results from \cref{lemma.key}. The first two diagrams
 \[
-\begin{array}{cc}
-	(A,\1)=A=(\1,A)&(A,(B,C))=((A,B),C)\\
-	\Sigma(A,\1)=A=\Sigma(\1,A)&
-		\Sigma(A,\Sigma(B,C))=\Sigma(\Sigma(A,B),C)
-\end{array}
+\begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
+	\&u\ar[dl, equal]\ar[dr, equal]\\
+	\yon\tri u\ar[rr, "\sigma_{\yon}"']\&\&u\otimes\yon
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
+	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
+	p\tri u\ar[rr, "\sigma_{p}"']\&\&u\otimes p
+\end{tikzcd}\label{eqn.key_smalls}
+\]
+is translated as:
+\[
+  \begin{prooftree}
+    \Hypo{A : \U}
+    \Infer1{(\1\to A)\equiv A}
+  \end{prooftree}
+  \hspace{.6in}
+  \begin{prooftree}
+    \Hypo{I : p(1)}
+    \Infer1{(I\to \1)\equiv \1}
+  \end{prooftree}
 \]
 
-We now unpack the equations from \cref{lemma.key,cor.key}.
+The next diagram
+\[
+\begin{tikzcd}[column sep=large, ampersand replacement=\&]
+	p\tri p'\tri u\ar[d, "p\tri\sigma_{p'}"']\ar[r, "\sigma_{p\tri p'}"]\&
+	u\otimes p\tri p'\ar[r, "\indep\tri p'"]\&u\tri p\tri p'\\
+	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
+	p\tri u\tri p'\ar[r, "\sigma_{p}\tri p'"']\&
+	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
+\end{tikzcd}\label{eqn.key_med1}
+\]
+is translated as
+\[
+  \begin{prooftree}
+    \Hypo{I\vdash I'\vdash A:p\tri p'\tri \U}
+    \Infer1{((I\vdash I')\to A)\equiv (I\to I'\to A)}
+  \end{prooftree}
+\]
+This syntax, which includes a turnstyle in the domain of an arrow $(I\vdash I')\to A$, is unusual. But we can understand it in more classical notation below, either in its native form as to the left, or using \cref{eqn.dep_vs_sigma} which gives the equivalent form on the right:
+\[
+  \prod_{i:I,\; i':I' i}A i i'\;
+  \equiv\;
+  \prod_{i:I}\prod_{i':I' i}A i i'
+  \equiv\;
+  \prod_{(i,i'):\sum_{i:I}I' i}A (i,i')\;
+\]
 
+The next diagram
+\[
+\begin{tikzcd}[ampersand replacement=\&, column sep=large]
+	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\sigma\tri u"']\&
+	p\tri u\ar[r, "\sigma"]\&
+	u\otimes p\ar[r, "\indep"]\&
+	u\tri p\\
+	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
+	u\tri p\tri u\ar[r, "u\tri\sigma"']\&
+	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
+	u\tri u\tri p\ar[u, "\Sigma\tri p"']
+\end{tikzcd}
+\]
+is translated as
+\[
+  \begin{prooftree}
+    \Hypo{I\vdash A\vdash B : p\tri u\tri \U}
+    \Infer1{I\to\Sigma(A,B)\equiv\Sigma(I\to A,I\to B)}
+  \end{prooftree}
+\]
 
+The final diagram is quite similar, but for independent types $A,B$:
+\[
+\begin{tikzcd}[column sep=large, ampersand replacement=\&]
+	p\tri (u\otimes u)\ar[d, "\ol{\sigma}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
+	p\tri u\ar[r, "\sigma_p"]\&u\otimes p\\
+	u\otimes p\tri u\ar[rr, "u\otimes\sigma_p"']\&\&
+	u\otimes u\otimes p\ar[u, "{(-,-)}\tri p"']
+\end{tikzcd}\label{eqn.key_med2}
+\]
+It is translated as
+\[
+  \begin{prooftree}
+    \Hypo{I\vdash (A, B) : p\tri(\U\otimes\U)}
+    \Infer1{I\to(A,B)\equiv(I\to A,I\to B)}
+  \end{prooftree}
+\]
 
 
 %\[
