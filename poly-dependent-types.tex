@@ -723,7 +723,9 @@ and the following diagrams commute:
 	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
 	u\tri u\tri p\ar[u, "\Sigma"']
 \end{tikzcd}\label{eqn.key_large}
-\\[15pt]
+\end{gather}
+We record also a similar commutative diagram for the switching transformation $\ol{\sigma}$:
+\begin{gather}
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
 	p\tri (u\otimes u)\ar[d, "\ol{\sigma}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
 	p\tri u\ar[r, "\sigma_p"]\&u\otimes p\\
@@ -857,33 +859,51 @@ The main theorem really just packages the story. The real heart of the matter---
 %---- Section ----%
 \section{Notation}
 
-Let $\U\coloneqq u(1)$. We denote each element of $\U$ using an upper-case letter, $A,B$, etc., and call it a \emph{base type}, or simply a \emph{type}. Given a base type $A\in u(1)$, we denote $u[A]$ simply by $[A]$, since $u$ is fixed. We denote each element of $[A]$ using the same letter in lower-case, $a,a':[A]$, etc., and call it a \emph{term of type $A$}. 
+Our notation is not meant to be authoritative; the mathematics of polynomial functors takes care of the meaning, so that we can be more relaxed about how we want to represent it. The following is only meant to have the level of formality of a math paper, not of a logic or philosophy paper.
 
-An element of $u\tri\U=u\tri u(1)=(u\tri u)(1)$ consists of an element $A\in\U$, and an element $B\, a\in\U$ for every $a\in [A]$. We denote it by $(A\vdash B)\in u\tri \U$ and call it a \emph{once-dependent type};. Similarly we can have $(n+1)$-fold dependent types
-\[(A_1\vdash\cdots\vdash A_n\vdash B)\in u\tripow{n}\tri\U.\]
-An element in $u\tripow{n}\tri u[A_1\vdash\cdots\vdash A_n\vdash B]$ consists of a term $a_1:A_1$, \dots, a term $a_n:A_n\, a_1\,\ldots\, a_n$, and a term $b\, a_1\,\ldots\, a_n:B\, a_1\,\ldots\, a_n$.
+\paragraph{Type collections, types, terms, and dependencies.}
+We refer to a polynomial $p\in\polycart$ as a \emph{type collection}. We refer to each element $I\in p(1)$ as a \emph{type}, and we refer to each element $i\in p[I]$ as a \emph{term of type $I$} and write $i:p[I]$.
 
-An element of $(u\otimes u)(1)$ consists of a pair $(A,B)\in\U\times\U$; we call it a \emph{product type}. An element of $(u\otimes u)[(A,B)]$ consists of a pair $(a,b)\in [A]\times[B]$. There is exactly one element of $\yon(1)$; we denote it $\1$. The set $\yon[\1]$ has a unique element, and we denote it $()$.
+We refer to $u$ as the \emph{type universe}; it is a type collection, but has more structure. Let $\U\coloneqq u(1)$ be the positions of the universe polynomial $u$. We denote each element of $\U$ using an upper-case letter, $A,B$, etc., and call it a \emph{base type}. Given a base type $A\in u(1)$, we denote $u[A]$ simply by $[A]$, since $u$ is fixed. We denote each element of $[A]$ using the same letter in lower-case, $a,a':[A]$, etc.; these are terms of type $A$.
 
-The cartesian monoid structures $(u,\1,\Sigma)$ and $(u,\1,(-,-))$, and the map $\indep\colon u\otimes u\to u\tri u$, are denoted as follows. The map $\1\colon\yon\to u$ provides a certain type, which we again call $\1\in U$. Its cartesianness means that $\1$ has a single term, which we again call $():[\1]$.
+We refer to $\yon$ as the \emph{unit} type collection. There is exactly one element of $\yon(1)$; we denote it $\1$. The set $\yon[\1]$ has a unique element, and we denote it $()$.
 
-The map $\Sigma\colon u\tri u\to u$ provides a function $u\tri\U\to\U$, which we again call $\Sigma$. Thus for any dependent type $A\vdash B:u\tri\U$, we can form $\Sigma(A,B):\U$. Similarly the map $(-,-)\colon u\otimes u\to u$ provides a function $\U\times \U\to\U$, which we again denote $(-,-)$. Thus for any pair of types $(A,B):\U\times \U$ we can form $(A,B):\U$. The cartesianness of $\Sigma$ means that a term of $\Sigma(A,B)$ consists of an element of $u\tri u[(A\vdash B)]$, i.e.\ a term $a:[A]$ and a term $b:[Ba]$. Similarly, a term of $(A,B)$ consists of an element $(a,b):[A]\times[B]$. 
+An element of $p\tri q(1)=(p\tri q)(1)$ consists of an element $I:p(1)$ and an element $J i:q(1)$ for every $i:p[I]$; we denote it by $(I\vdash J)\in (p\tri q)(1)$. Since $r\coloneqq p\tri q$ is a polynomial, $I\vdash J$ is just a type (an element of $r(1)$); however if we receive $r$ as a composite of $p$ and $q$ we may refer to $I\vdash J$ as a \emph{dependent type}: the $q$-type depends on a term of the $p$-type. A term of type $I\vdash J$ consists of a pair $(i,j)$ where $i:p[I]$ and $j: q[J i]$; we denote it $(i,j):(p\tri q)[I\vdash J]$.
 
-Note that only the notation is being created here; the rest just emerges from the meaning of $\tri$ and $\otimes$. If we leave some case out of our notation, e.g.\ how to denote an element of $u\tri(\U\otimes\U)$, one can simply make it up, as long as they understand how it corresponds to the relevant theory of polynomial functors.
+An element of $(p\otimes q)(1)$ consists of a pair $(I,J)\in p(1)\times q(1)$; we call it a \emph{product type}. An element of $(p\otimes q)[(I,J)]$ consists of a pair $(i,j)\in p[I]\times q[J]$. 
 
-The map $\varphi_{u,u}\colon u\tri (u\otimes u)\to u\otimes u\tri u$ from \cref{lemma.key} provides a function%
+\paragraph{Monoid structures on base types.}
+
+The cartesian monoid structures $(u,\1,\Sigma)$ and $(u,\1,(-,-))$, and the map $\indep\colon u\otimes u\to u\tri u$, are denoted as follows. The map $\1\colon\yon\to u$ provides a certain base type, which we again call $\1\in U$. The map $\Sigma\colon u\tri u\to u$ provides a function $u\tri\U\to\U$, which we again call $\Sigma$. Thus for any dependent type $A\vdash B:u\tri\U$, we can form $\Sigma(A,B):\U$. Similarly the map $(-,-)\colon u\otimes u\to u$ provides a function $\U\times \U\to\U$, which we again denote $(-,-)$. Thus for any pair of types $(A,B):\U\times \U$ we can form $(A,B):\U$. 
+\[
+  \begin{prooftree}
+    \Infer0{\1}
+  \end{prooftree}
+ \hspace{.6in}
+  \begin{prooftree}
+    \Hypo{A\vdash B}
+    \Infer1{\Sigma(A,B)}
+  \end{prooftree}
+ \hspace{.6in} 
+  \begin{prooftree}
+    \Hypo{A, B}
+    \Infer1{(A,B)}
+  \end{prooftree}
+\]
+Its cartesianness means that $\1$ has a single term, which we again call $():[\1]$. The cartesianness of $\Sigma$ means that a term of $\Sigma(A,B)$ consists of an element of $u\tri u[(A\vdash B)]$, i.e.\ a term $a:[A]$ and a term $b:[Ba]$. Similarly, a term of $(A,B)$ consists of an element $(a,b):[A]\times[B]$.
+\paragraph{The switching transformation.}
+
+Recall that for any $p\in\polycart$ and $q\in\poly$, \cref{def.switching} provides a morphism%
 \footnote{As usual, $\tri$ binds the tightest, so $\U\times u\tri \U$ denotes $\U\times(u\tri \U)$.}
-\begin{equation}\label{eqn.key_types}
-	u\tri(\U\times\U)\to \U\times u\tri \U.
-\end{equation}
-For any dependent type $A\vdash B,C:u\tri(\U\times\U)$, we can form $A\to B,A\vdash C$, where $A\to B$ is an element of $\U$, and $A\vdash C$ is a dependent type. It is clear from the form of \eqref{eqn.key_types} that $C$ is not dependent on $A\to B$ here. Given a term $(b,a,c):(A\to B,A\vdash C)$, one can construct a term $(a,ba,c):u\tri(u\otimes u)[A\vdash B,C]$. Unlike the case for $\1$ and $\Sigma$, this construction is not a bijection because $\varphi_{u,u}$ is not cartesian, as explained in the footnote below \eqref{eqn.not_injective}.
-
-It will be convenient to also have notation for the map from \eqref{eqn.corkey}, namely
-\[\ol\varphi_{u,u,u}\colon (u\otimes u)\tri(u\otimes u)\to u\tri(u\otimes u\tri u).\]
-Given a dependent type $(A,B)\vdash(C,D):(u\otimes u)\tri(\U\times \U)$, we can form a type which we denote 
-\[A\vdash(B\to C,B\vdash D):u\tri(\U\otimes u\tri \U).\]
-A term in it consists of $a:[A]$, $c:[B\to C]$, $b:[B]$, and $d:[Db]$. From any such term we can construct a term of the original type, namely
-\[((a,ba),(c(ba), d(ba))):(u\otimes u)\tri(u\otimes u)[(A,B)\vdash(C,D)].\]
+\[\sigma_{p,q}\colon p\tri (u\otimes q)\to u\otimes p\tri q\]
+Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\in q(1)$ for each $i\in p[I]$, we obtain a type denoted $(I\to A):\U$ (and we keep $I,J$ as before. In symbols,
+\begin{equation*}
+  \begin{prooftree}
+    \Hypo{I\vdash (A, J)}
+    \Infer1{I\to A, I\vdash J}
+  \end{prooftree}
+\end{equation*}
+Given terms $a:[I\to A]$, $i:p[I]$, and $j:q[Ji]$, we obtain a term $(i,a i, j):p\tri(u\otimes q)[I\vdash (A,J)]$. Unlike the case for $\1$, $\Sigma$, and $(-,-)$, this construction is not a bijection because $\varphi_{u,u}$ is not cartesian, as explained in the footnote below \cref{eqn.not_injective}.
 
 %---- Section ----%
 \section{Unpacking the key results}
@@ -898,20 +918,7 @@ Before we start, note that we already have the pairing laws from the fact that $
 \end{array}
 \]
 
-We now unpack the equations from \cref{lemma.key,cor.key}, with $u$ in place of all $p$'s and $q$'s. Rather than read the equations off as is, we derive more human-readable, or expected results from them. We begin with commutative diagram \eqref{eqn.corkey_diag}
-\[
-\begin{tikzcd}[column sep=large]
-	(u\otimes u)\tri(u\otimes u)\ar[r, "\ol\varphi_{u,u,u}"]\ar[d, "\varphi_{u\otimes u,u}"']&
-	u\tri(u\otimes u\tri u)\ar[d, "\varphi_{u,u\tri u}"]\\
-	u\otimes(u\otimes u)\tri u\ar[r, "u\otimes\indep"']&
-	u\otimes u\tri u\tri u
-\end{tikzcd}
-\]
-It says that for any dependent type $(A,B)\vdash(C,D)$, we can either form $((A,B)\to C),(A,B)\vdash D$ or $A\vdash (B\to C, B\vdash D)$; then applying $\indep$ to both sides we have
-\[
-((A,B)\to C)\vdash (A,B)\vdash D\equiv A\vdash (B\to C)\vdash B\vdash D
-\]
-There is an attendant conversion between terms: we can interchange $c,(a,b),d$ with $a,ca,b,d$. From here we can derive the rule $\Sigma(A\to C,A\to D)\equiv A\to\Sigma(C,D)$ by setting $B=\1$ and ...
+We now unpack the equations from \cref{lemma.key,cor.key}.
 
 
 
