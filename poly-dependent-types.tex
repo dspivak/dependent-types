@@ -773,27 +773,32 @@ Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set 
 \end{gather}
 \end{lemma}
 \begin{proof}
-We begin with naturality. Clearly $\switch_p$ is natural in $q\in\poly$. Though the map $\switch_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(i)=i'$ then the bijection $\alpha_i^\sharp$ extends to a bijection
-\[\Pi(p[i],A)\cong\Pi(p'[i'],A)\]
-and $\switch_p$ overflows iff $\switch_{p'}$ does.
+We begin with naturality. Clearly $\ol{\switch}_p$ is natural in $q\in\poly$. Though the map $\switch_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(I)=I'$ then the bijection $\alpha_I^\sharp$ extends to a bijection
+\[\Pi(p[I],A)\cong\Pi(p'[I'],A)\]
+and $\ol{\switch}_p$ overflows iff $\ol{\switch}_{p'}$ does. Since $\switch$ is the $\yon$-component of $\ol{\switch}$ it is natural in $p$ as well.
 
-We next consider the commutativity of the maps in \eqref{eqn.key_smalls}. The map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in$C_\kappa$). Thus the left hand triangle commutes. For the right-hand triangle, suppose given $i\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[i],\1),i)$ and under the right-hand map it is sent to $(\1,i)$; these are the same element of $C_\kappa$, since $\Pi(p[i],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
+We next consider the commutativity of the diagrams in \eqref{eqn.key_smalls}. The map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in $C_\kappa$). Thus the left hand triangle commutes. For the right-hand triangle, suppose given $I\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[I],\1),I)$ and under the right-hand map it is sent to $(\1,I)$; these are the same element of $C_\kappa$, since $\Pi(p[I],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
 To prove that \eqref{eqn.key_med1} commutes, it suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
 \[\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))\]
 which there is, and that second the overflow handling agrees, as we now argue. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$. 
 
-To prove that \eqref{eqn.key_large} commutes, suppose given $(i,A,B)\in p\tri(u\tri u)$, where $A\colon p[i]\to u(1)$ and $B\colon\sum_{s:p[i]}As\to u(1)$. It is easy to check that under the top composite map it is sent to  $(A_1,i)$ and under the bottom composite map it is sent to $(A_2,i)$, for some $A_1,A_2\in u(1)$. Assuming neither overflows, these are 
+To prove that \eqref{eqn.key_large} commutes, suppose given $(I,A,B)\in p\tri(u\tri u)$, where $A\colon p[I]\to u(1)$ and $B\colon\sum_{i:p[I]}Ai\to u(1)$. It is easy to check that, for some $A_1,A_2\in u(1)$, it is sent under the top composite map to  $(A_1,I)$ and under the bottom composite map it is sent to $(A_2,I)$. Assuming neither overflows, these are 
 \[
-  A_1\cong\Pi(p[i],\Sigma(A, B))
+  A_1\cong\Pi(p[I],\Sigma(A, B))
   \qqand
-	A_2\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))
+	A_2\cong\Sigma(\Pi(p[I],A),\Pi(p[I],B))
 \] 
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
-Note that $\Pi(p[i],\Sigma(A, B))\cong\Sigma(\Pi(p[i],A),\Pi(p[i],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[i],A\times B)>\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[i],A)>\kappa$ or $\Pi(p[i],Ba)>\kappa$ is too big, for some $a\in\Pi(p[i],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[i],B))$ and in the second case we will have $A_2=\Pi(p[i],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes.
+Note that $\Pi(p[I],\Sigma(A, B))\cong\Sigma(\Pi(p[I],A),\Pi(p[I],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[I],A\times B)>\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[I],A)>\kappa$ or $\Pi(p[I],Ba)>\kappa$ is too big, for some $a\in\Pi(p[I],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[I],B))$ and in the second case we will have $A_2=\Pi(p[I],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes.
 
-To prove that \eqref{eqn.key_compare} commutes, suppose given...
+To prove that \eqref{eqn.key_compare} commutes, suppose given $(I,A,J)\in p\tri(u\otimes q)(1)$, i.e.\ $A\colon p[I]\to u(1)$ and $J\colon p[I]\to q(1)$. Around both composites it is sent to $((\Pi(I,A),I),J')\in (u\otimes p)\tri q$ where $J'$ is the composite $\Pi(I,A)\times I\to I\To{J} q(1)$. It may be helpful to see it in slow motion: around the top we have
+\[I\vdash (A,J)\quad\mapsto\quad \Pi(I, A),(I\vdash J)\quad\mapsto\quad (\Pi(I,A),I)\vdash J\]
+and around the bottom we have
+\[
+I\vdash (A,J)\quad\mapsto\quad I\vdash A\vdash J\quad\mapsto\quad (\Pi(I, A),I)\vdash J
+\]
 
 Finally to show that \eqref{eqn.key_med2} commutes, it suffices to show for any set $I$ and sets $(A_i)_{i\in I}$ and $(B_i)_{i\in I}$ with $A_i<\kappa$ and $B_i<\kappa$, that first there is a bijection 
 \[\Pi(I,A\times B)\cong\Pi(I,A)\times\Pi(I,B)\]
@@ -1001,7 +1006,7 @@ We now unpack the results from \cref{lemma.key}. The first two diagrams
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
 	p\tri u\ar[rr, "\switch_{p}"']\&\&u\otimes p
-\end{tikzcd}\label{eqn.key_smalls}
+\end{tikzcd}
 \]
 is translated as:
 \[
@@ -1024,7 +1029,7 @@ The next diagram
 	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
 	p\tri u\tri p'\ar[r, "\switch_{p}\tri p'"']\&
 	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
-\end{tikzcd}\label{eqn.key_med1}
+\end{tikzcd}
 \]
 is translated as follows%
 \footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. Our notation simply follows the polynomial formalism in the sense that whenever we see $\tri$ in the polynomials, we see $\vdash$ in the types.
