@@ -367,28 +367,30 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 
 
-Dependent type theory \cite{martin-lof1975intuitionistic} was founded by Per Martin-L\"{o}f in 1975 to formalize all of mathematics. The basic idea is that \emph{order of events} is fundamental to a mathematical story arc: when playing out any specific example story in that arc, the beginning of the story affects not only the later events, but even the very terms with which the later events will be described. For example, in the story arc of conditional probability, one may say ``now if the set $P$ that we are asked to condition on happens to have measure zero, we must stop; but assuming that's not the case then the result will be a new measure.'' Here the story teller is saying that no terms will describe what happens if $P$ has measure zero, whereas otherwise the terms of standard probability will apply.
+Dependent type theory \cite{martin-lof1975intuitionistic} was founded by Per Martin-L\"{o}f in 1975 to formalize constructive mathematics. The basic idea is that \emph{order of events} is fundamental to a mathematical story arc: when playing out any specific example story in that arc, the beginning of the story affects not only the later events, but even the very terms with which the later events will be described. For example, in the story arc of conditional probability, one may say ``now if the set $P$ that we are asked to condition on happens to have measure zero, we must stop; but assuming that's not the case then the result will be a new probability measure.'' Here the story teller is saying that no terms will describe what happens if $P$ has measure zero, whereas otherwise the terms of standard probability will apply.
 
 Dependent types form a logical system with syntax, conversion rules, and methods of deduction. In \cite{awodey2014natural,awodey2018polynomial}, Awodey and later Newstead show that there is a strong connection between dependent type theory and polynomial functors. The present work follows from this remarkable discovery, but diverges in the formalism itself. Whereas they discuss pseudomonads and pseudo-algebras in a tri-category arising from a locally cartesian closed category, we keep simply to lax monoidal functors and transformations between monoidal categories. In both cases, the focus is on the syntax and conversion rules of dependent type theory, not the universal properties that yield valid deductions.
 
 A polynomial functor $p\colon\smset\to\smset$ is a coproduct of representable functors
 \[\sum_{I\in p(1)}\yon^{p[I]},\]
-which one can think of as a collection of types: A position $I\in p(1)$ indexing the coproduct is a \emph{type} in the collection, and an element $i\in p[I]$ in the representing set $p[I]$ is a \emph{term} of type $I$. 
+which one can think of as a collection of types: A position $I\in p(1)$ indexing the coproduct corresponds to a \emph{type} in the collection, and an element $i\in p[I]$ in the representing set $p[I]$ corresponds to a \emph{term} of type $I$. 
 
-Composition $p\tri q$ of polynomials corresponds to dependent types: in order to choose a type $x\in (p\tri q)(1)$ in the composite, you must first choose a type $I\in p(1)$ and then, for any term $i\in p[I]$ of it you choose a type $J:q(1)$. In this paper (not in the literature) we denote this situation by $I\vdash J$. So suppose
+Under this system, composition $p\tri q$ of polynomials corresponds to dependent types: in order to choose a type $x\in (p\tri q)(1)$ in the composite, you must first choose a type $I\in p(1)$ and then, for any term $i\in p[I]$ of it you choose a type $J:q(1)$. In this paper (not in the literature) we denote this situation by $I\vdash J$. 
+
+For example, suppose
 \[
   p=\{{'0'}\}\yon^0+\{{'1'}\}\yon^1
   \qqand 
   q=\sum_{N\in\nn}\sum_{\{D\colon N\to\rr_{\geq 0}\mid D_1+\cdots+D_N=1\}}\yon^N.
 \]
-Then to choose an element $I\vdash J\in (p\tri q)(1)$, you \emph{first} make a binary choice ${'0'}$ or ${'1'}$; that's the type $I$. Then the next type $J$ depends on your choice. Indeed, in the ${'0'}$-case you have already hit the end of the story---you stop---and in the ${'1'}$-case you \emph{further} make choice of $N\in\nn$ and a probability distribution $D$ on a set with $N$ elements. All together, whichever branch you took, the result is a type $I\vdash J$ in the collection $p\tri q$. This type has \emph{no terms} in the ${'0'}$-case, and it has $N$-many terms in the ${'1'}$-case.
+Then to choose an element $I\vdash J\in (p\tri q)(1)$, you \emph{first} make a binary choice ${'0'}$ or ${'1'}$; that's the type $I\in p(1)$. Then the next type $J$ depends on your choice. Indeed, in the ${'0'}$-case you have already hit the end of the story---you stop---and in the ${'1'}$-case you \emph{further} make choice of $N\in\nn$ and a probability distribution $D$ on a set with $N$ elements. All together, whichever branch you took, the result is a type $I\vdash J$ in the collection $p\tri q$. This type has \emph{no terms} in the ${'0'}$-case, and it has $N$-many terms in the ${'1'}$-case.
 
 A special case of dependent types is \emph{independent} types, where the order of this part of the story \emph{doesn't} matter. These are represented using a symmetric monoidal product $\otimes$ on polynomial functors: for any $p,q$ one can form $p\otimes q$ and there is an isomorphism $p\otimes q\cong q\otimes p$. The types in the family $p\otimes q$ are pairs of types $(I,J)\in p(1)\times q(1)$, and the terms of type $(I,J)$ are pairs of terms $(i,j)\in p[I]\times q[J]$. There is a natural map $\indep\colon(p\otimes q)\to (p\tri q)$ allowing us to regard a pair $(I,J)$ of independent types as a dependent type $(I\vdash J)\coloneqq\indep(I,J)$.
 
-In this paper we explain the notion of a polynomial universe $u$,%
+In this paper we explain the notion of a \emph{polynomial universe} $u$,%
 \footnote{Again, this notion is due to \cite[Theorem 16]{awodey2014natural}, where he calls them ``natural model of extensional Martin-L\"{o}f type theory with
 product, sum, and identity types''. We focus on what that paper would call the $\mathbb{C}=1$ case, meaning that everything in this paper takes place in $\smset$ rather than an arbitrary presheaf category.}
-with which one can reduce all the dependencies by collapsing an arbitrarily deep dependent type into a single layer through products or sums. More generally, we will discuss a map
+with which one can reduce all the dependencies by collapsing an arbitrarily deep dependent type into a single layer. In particular we will be intersted in a particular map
 \begin{equation}\label{eqn.switch}
   \switch_p\colon p\tri u\to u\otimes p
 \end{equation}
@@ -396,10 +398,10 @@ that converts dependent types into independent types by sending $I\vdash A$ to t
 \footnote{This is just a terminological preference: a product $\prod_{a\in A}B$ of $A$-many copies of $B$ is also a function $A\to B$; in both cases the number of $B$'s could depend on the choice of $a\in A$. Allowing ones terminology to depend on ones preferences is a meta-version of this whole story.}
 It is as though $u$ is able to absorb the effect of $p$-dependencies into itself, a move which in some sense makes computations into ``first-class objects". When $p=u$ we can convert a dependent type $(A\vdash B)\in u\tri u(1)$ all the way to a base type $(A\to B,A)\in u(1)$ by first absorbing the dependency and then composing with a pairing operation $u\tri u\To{\switch_u} u\otimes u\To{(-,-)} u$.
 
-In this paper we will see that syntax and conversion rules of dependent types  emerge from the very special properties enjoyed by these polynomial universes $u$. Not only should polynomials carry the structure of a cartesian monad, which gives it a unit type $\1$ and $\Sigma$ types, but these must distribute properly over function types. All this is packaged in the following definition.
+In this paper we will see that syntax and conversion rules of dependent types  emerge from the very special properties enjoyed by these polynomial universes $u$. Not only should a polynomial universe carry the structure of a cartesian monad, which gives it a unit type $\1$ and $\Sigma$ types, but these must distribute properly over function types. All this is packaged in the following definition.
 
 \begin{definition}[Polynomial universe]\label{def.universe}
-Let $(u,\1,\Sigma)$ be a cartesian monad. We say it is a \emph{polynomial universe} if there exists a diagram of the form
+Let $(u,\1,\Sigma)$ be a cartesian polynomial monad. We say it is a \emph{polynomial universe} if there exists a diagram of the form
 \begin{equation}\label{eqn.Phi}
 \begin{tikzcd}[column sep=60pt]
 	\Big(\polycart,\yon,\tri\Big)
@@ -422,15 +424,19 @@ and the natural transformation also has a monoidal structure and is given by
 \]
 \end{definition}
 
-The purpose of the text is to explain all this, so readers should not be concerned if they have lost the connection; our goal now is just to give a sense of the packaging. The crux of the story is that polynomial universes $u$ are things that can coherently absorb arbitrary dependencies into themselves, making computations into first-class types.
+The purpose of the remainder of this paper is to explain all this, so readers should not be concerned if they have lost the connection; our goal now is just to give a sense of the packaging. The crux of the story is that polynomial universes $u$ are things that can coherently absorb arbitrary dependencies into themselves, making computations into first-class types.
 
 In the text below we will give examples of polynomial universes; probably the best known is the list monad
 \[
 	u_\nn\coloneqq\sum_{N\in\nn}\yon^N
 \]
-which has a notion of singleton list and a way to concatenate lists of lists into a list.
+which has a notion of singleton list and a way to concatenate lists of lists into a list, e.g.\ sending $[[1,2,3],[4,5]]\mapsto [1,2,3,4,5]$. But one can also perform the following operation: given a list of lists, one can \emph{list out} all the ways to choose one element from each, e.g.
+\[
+[[1,2,3],[4,5]]\mapsto [[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]].
+\]
+Let's call this operation \emph{cross-sectioning}. Anyway, the ways these two operations---concatenating and cross-sectioning---work together coherently with various associative, distributive, unital, and other properties. This structure is at the heart of dependent type theory and emerges directly from \cref{def.universe}.
 
-Let's fix some polynomial universe $(u,\1,\Sigma)$ and write $\Phi$ for $\Phi_u$, etc. The absorption of arbitrary dependencies into $u$ is packaged up into the coherence maps---the \emph{laxators}---of the lax monoidal structure on $\Phi$ and $\ol{\Phi}$. They are of the form
+To explain at a high level, let's fix some polynomial universe $(u,\1,\Sigma)$ and write $\Phi$ for $\Phi_u$, etc. The absorption of arbitrary dependencies into $u$ is packaged up into the coherence maps---the \emph{laxators}---of the lax monoidal structure on $\Phi$ and $\ol{\Phi}$. They are of the form
 \[
 \Phi(p_1)\circ\Phi(p_2)
 \Too{\phi_{p_1,p_2}}
@@ -438,7 +444,7 @@ Let's fix some polynomial universe $(u,\1,\Sigma)$ and write $\Phi$ for $\Phi_u$
 \]
 The laxators are formed using the $\switch$-maps described above in \eqref{eqn.switch} and give rise to type- and term-forming operations for dependent function types. The unitality and associativity laws governing $\Phi$ and $\ol{\Phi}$ give rise to the conversion rules between them. For example, from them one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a July 2021 \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-As mentioned there, the germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors on his theory of natural models and their connection to polynomial functors. Aside from a very different presentation (lax monoidal functors instead of pseudomonads, etc.), the present work adds two things:
+As mentioned there, the germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors on his theory of natural models and their connection to polynomial functors. Aside from a very different presentation (e.g.\ lax monoidal functors here in place of pseudomonads there, the present work adds two things:
 \begin{enumerate}
 	\item explicit syntax and rules for pair types, and
 	\item the distributive law of $\Pi$ over $\Sigma$, which in the language of \cite{awodey2018polynomial} would say%
@@ -448,9 +454,9 @@ As mentioned there, the germination of this idea came from \href{https://www.you
 	\]
 	}
 	\begin{equation}\label{eqn.distributivity_law_we_all_love}
-	\prod_{x:A}\sum_{y:B(x)}C(x,y)\cong\sum_{y:\prod_{x:A}B(x)}\prod_{x:A}C(x,y(x))
+	\prod_{x:A}\sum_{y:B(x)}C(x,y)\cong\sum_{y:\prod_{x:A}B(x)}\prod_{x:A}C(x,y(x)).
 	\end{equation}
-	Awodey-Newstead derived the other law connecting $\Sigma$ and $\Pi$ (see \cite[Remark 4.2]{awodey2018polynomial}), but under our reading they seem to be missing the one in \eqref{eqn.distributivity_law_we_all_love}.%
+	Awodey and Newstead derived the other law connecting $\Sigma$ and $\Pi$ in their paper (see \cite[Remark 4.2]{awodey2018polynomial}), but under our reading of it, they seem to be missing the one in \eqref{eqn.distributivity_law_we_all_love}.%
 	\footnote{\href{https://youtu.be/RDuNIP4icKI?t=13898}{Andr\'{e} Joyal's question following Steve Awodey's talk} was ``what happened to the distributivity law that we love between sum and product?" Steve said that he believed it was of the same form as the other laws they had derived, and that they get it for free. I have not seen this derivation, but it may be coming from universal properties. Since neither this nor \cite{awodey2018polynomial} consider universal properties of dependent types, just their formation and rules, we hope that the present paper will be of interest.
 	}
 \end{enumerate}
