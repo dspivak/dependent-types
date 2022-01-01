@@ -593,7 +593,7 @@ The identity functor $\poly\to\poly$ can be regarded as a lax monoidal functor
 \end{equation}
 Moreover the laxators (lax coherence maps), which we denote with the same symbol
 \[\indep\colon (p\otimes q)\to (p\tri q)\]
-are cartesian for any $p,q\in\poly$.
+are cartesian for, and natural in, $p,q\in\poly$.
 \end{proposition}
 \begin{proof}
 Suppose given polynomials $p,q\in\poly$ and a set $X\in\smset$; since $\indep$ is merely a lax monoidal structure atop the identity functor, the only data in it is in its laxator, which we define using \cref{rem.positions_and_directions} as follows.
@@ -655,11 +655,10 @@ as we saw in \eqref{eqn.Phi}. The domain is the category $\polycart$ of polynomi
 \Phi_u(p)(q)\coloneqq u\tri p\tri q
 \]
 The functors and transformation being monoidal with respect to $(\yon,\tri)$ means that there are maps and diagrams
-\[
-\begin{tikzcd}[row sep=1pt]
-	&u\otimes q\ar[dd]\\
-  q\ar[ur, bend left=15pt]\ar[dr, bend right=15pt]\\
-  &u\tri q
+\begin{equation}\label{eqn.main_requirement_for_lax}
+\begin{tikzcd}
+	q\ar[r]\ar[d, equal]&u\otimes q\ar[d]\\
+  q\ar[r]&u\tri q
 \end{tikzcd}
 \hspace{.6in}
 \begin{tikzcd}
@@ -668,24 +667,13 @@ The functors and transformation being monoidal with respect to $(\yon,\tri)$ mea
   u\tri p_1\tri u\tri p_2\tri q\ar[r]&
   u\tri p_1\tri p_2\tri q  
 \end{tikzcd}
-%\begin{tikzcd}[row sep=1pt]
-%	&\ol{\Phi}(\yon)(q)\ar[dd, "\indep"]\\
-%  q\ar[ur, bend left=15pt]\ar[dr, bend right=15pt]\\
-%  &\Phi(\yon)(q)
-%\end{tikzcd}
-%\hspace{.6in}
-%\begin{tikzcd}
-%  (\ol{\Phi}(p_1)\circ\ol{\Phi}(p_2))(q)\ar[r]\ar[d, "\indep\circ\indep"']&
-%  \ol{\Phi}(p_1\tri p_2)(q)\ar[d, "\indep"]\\
-%  (\Phi(p_1)\circ\Phi(p_2))(q)\ar[r]&
-%  \Phi(p_1\tri p_2)(q)  
-%\end{tikzcd}
-\]
+\end{equation}
+
 natural in $p_1,p_2,q$, satisfying the appropriate commutative diagrams.
 What we need to understand is the lax monoidality of $\ol{\Phi}_u$ and $\Phi_u$; these are what constrain $u$.
 
 %---- Section ----%
-\section{The lax monoidal structure on $\Phi_u$}
+\section{The switching transformation}
 
 \cref{def.switching} is the technical center of the paper, defining the switching map; the idea is that a universe $u$ should be able to absorb arbitrary dependencies into it. In \cref{lemma.key} we will capture the formal consequences of the switching map. The remainder of the paper will be shuffling and unpacking these formal consequences. 
 
@@ -722,7 +710,12 @@ Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly
 to be the $\yon$-component of the switching transformation, $\switch_p\coloneqq\ol{\switch}_{p,\yon}$.
 \end{definition}
 
-The following lemma captures the key formal properties of the switching map. To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
+%---- Section ----%
+\section{Main theorem}
+
+In this section we prove the main theorem of the paper, which says that $\kappa$-list monads are polynomial universes. But to get there requires what we call the ``key lemma'' (\cref{lemma.key}), which lays out all the diagrams that actually get the job done.%
+\footnote{We wouldn't be surprised if sometime in the future the diagrams in \cref{lemma.key} are found to assemble into a more compact or elegant structure than the natural transformation diagram \eqref{eqn.Phi} defining universe polynomials. For now, that is the most elegant packaging of these diagrams that we know of.}
+To prove it we will need the---so far unused---property of $\kappa$ that it is closed under its own products, i.e.\ that for any $A<\kappa$ and $(B_a)_{a\in A}$ with each $B_a<\kappa$, the product $\prod_{a\in A}B_a=\Pi(A,B)<\kappa$ is too.
 
 
 \begin{lemma}[Key lemma]\label{lemma.key}
@@ -773,9 +766,22 @@ Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set 
 \end{gather}
 \end{lemma}
 \begin{proof}
-We begin with naturality. Clearly $\ol{\switch}_p$ is natural in $q\in\poly$. Though the map $\switch_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$ because of the overflow, it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(I)=I'$ then the bijection $\alpha_I^\sharp$ extends to a bijection
+We begin with naturality. Clearly $\ol{\switch}_p$ is natural in $q\in\poly$. Though the map $\ol{\switch}_{p}$ would not be natural for arbitrary polynomial maps $\alpha\colon p\to p'$,%
+\footnote{
+Consider the unique map $\alpha\colon\yon^1\to \yon^0$. The naturality diagram
+\[
+\begin{tikzcd}[ampersand replacement=\&]
+  \yon^1\tri u\ar[r, "\switch_{\yon^1}"]\ar[d, "\alpha\tri u"']\&
+  u\otimes\yon^1\ar[d, "u\otimes\alpha"]\\
+  \yon^0\tri u\ar[r, "\switch_{\yon^0}"']\&
+  u\otimes \yon^0
+\end{tikzcd}
+\]
+does not commute: starting with $\1\vdash A$, the top composite yields $(A,())$, whereas the bottom composite yields $(0,())$. Thus $\switch$, and hence $\ol{\switch}$ is not generally natural for noncartesian $\alpha$.
+}
+it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(I)=I'$ then the bijection $\alpha_I^\sharp$ extends to a bijection
 \[\Pi(p[I],A)\cong\Pi(p'[I'],A)\]
-and $\ol{\switch}_p$ overflows iff $\ol{\switch}_{p'}$ does. Since $\switch$ is the $\yon$-component of $\ol{\switch}$ it is natural in $p$ as well.
+and $\ol{\switch}_p$ overflows iff $\ol{\switch}_{p'}$ does. Since $\switch$ is the $\yon$-component of $\ol{\switch}$, it is natural in $p$ as well.
 
 We next consider the commutativity of the diagrams in \eqref{eqn.key_smalls}. The map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in $C_\kappa$). Thus the left hand triangle commutes. For the right-hand triangle, suppose given $I\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[I],\1),I)$ and under the right-hand map it is sent to $(\1,I)$; these are the same element of $C_\kappa$, since $\Pi(p[I],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
@@ -817,36 +823,73 @@ as the composite of the independent switching map and the independent inclusion:
 \]
 \end{definition}
 
-\begin{theorem}
-For any sum-product set $\kappa$, the $\kappa$-list monad is a universe for dependent types. 
+We now prove the main theorem.
+
+\begin{theorem}\label{thm.main}
+For any sum-product set $\kappa$, the $\kappa$-list monad is a polynomial universe. 
 \end{theorem}
 \begin{proof}
-Let $\kappa$ be a sum-product set, $u\coloneqq u_\kappa$ the associated list polynomial, and $(\1,\Sigma)$ the list monad structure; see \cref{def.sum_prod_set,prop.list_monad}. By \cref{def.universe} we need to show that the functor
+Let $\kappa$ be a sum-product set, $u\coloneqq u_\kappa$ the associated list polynomial, and $(\1,\Sigma)$ the list monad structure; see \cref{def.sum_prod_set,prop.list_monad}. By \cref{def.universe} we need to define the laxators for the two functors in the diagram 
 \[
-  \Phi\colon\Big(\polycart,\yon,\tri\Big)\too\Big(\en(\poly),\id,\circ\Big),
+\begin{tikzcd}[column sep=60pt]
+	\Big(\polycart,\yon,\tri\Big)
+		\ar[r, bend left=15pt,  start anchor={north east}, end anchor={north west}, "q\mapsto u\otimes p\tri q", ""' name=P]
+		\ar[r, bend right=15pt, start anchor={south east}, end anchor={south west}, "q\mapsto u\tri p\tri q"', "" name=PP]&
+	\Big(\en(\poly),\id,\circ\Big)
+	\ar[from=P, to=P|-PP, Rightarrow, shorten=2mm, "\indep"]
+\end{tikzcd}
 \]
-given by $\Phi(p): q\mapsto u\tri p\tri q$, has a lax monoidal structure. Given $p_1,p_2\in\polycart$, we need to define the laxators, i.e.\ natural transformations
-\[
-	\phi\colon\id\to\Phi(\yon)
-	\qqand
-	\phi_{p_1,p_2}\colon\Phi(p_1)\circ\Phi(p_2)\to\Phi(p_1\tri p_2).
-\]
-We define their components $q\To{\phi_q} u\tri q$ and $u\tri p_1\tri u\tri p_2\tri q\To{\phi_{p_1,p_2, q}}u\tri p_1\tri p_2\tri q$ to be the dashed maps:
+labeled by where they send $p\in\polycart$, and prove that the transformation $\indep$ is monoidal. As mentioned in \eqref{eqn.main_requirement_for_lax}, we need horizontal maps
 \[
 \begin{tikzcd}
-	q\ar[r, "\cong"]\ar[rd, bend right, dashed, "\phi_q"']&\yon\tri q\ar[d, "\1\tri q"]\\&
-	u\tri q
+	q\ar[r, "\ol\phi_q"]\ar[d, equal]&u\otimes q\ar[d, "\indep"]\\
+  q\ar[r, "\phi_q"']&u\tri q
 \end{tikzcd}
-\qqand
-\begin{tikzcd}[column sep=50pt]
-	u\tri p_1\tri u\tri p_2\tri q\ar[r, "u\tri\varphi_{p_1}\tri p_2\tri q"]\ar[dr, bend right=18pt, dashed, "\phi_{p_1,p_2,q}"']&
-	u\tri u\tri p_1\tri p_2\tri q\ar[d, "\Sigma\tri p_1\tri p_2\tri q"]\\&
-	u\tri p_1\tri p_2\tri q
+\hspace{.6in}
+\begin{tikzcd}[column sep=large]
+  u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "\ol\phi_{p_1,p_2,q}"]\ar[d, "\indep\tri\indep"']&
+  u\otimes p_1\tri p_2\tri q\ar[d, "\indep"]\\
+  u\tri p_1\tri u\tri p_2\tri q\ar[r, "\phi_{p_1,p_2,q}"']&
+  u\tri p_1\tri p_2\tri q  
 \end{tikzcd}
 \]
-
-It remains to show that these satisfy the three commutative diagrams of a lax monoidal functor. The unit diagrams 
+natural in $p_1,p_2\in\polycart$ and $q\in\poly$, that make those diagram commute. Define $\ol\phi_q$ and $\phi_q$ to respectively be the top and bottom maps in the square:
 \[
+\begin{tikzcd}
+	q\ar[r, "\1\otimes q"]\ar[d, equal]&u\otimes q\ar[d, "\indep"]\\
+  q\ar[r, "\1\tri q"']&u\tri q
+\end{tikzcd}
+\]
+Define $\ol\phi_{p_1,p_2,q}$ and $\phi_{p_1,p_2,q}$ to be the top and bottom composites in the rectangle
+\[
+\begin{tikzcd}[column sep=50pt]
+  u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\ol\switch_{p_1,p_2\tri q}"]\ar[d, "\indep\tri\indep"']&
+  u\otimes u\otimes p_1\tri p_2\tri q\ar[r, "{(-,-)}\tri p_1\tri p_2\tri q"]\ar[d]&[10pt]
+  u\otimes p_1\tri p_2\tri q\ar[d, "\indep"]\\
+  u\tri p_1\tri u\tri p_2\tri q\ar[r, "u\tri\varphi_{p_1}\tri p_2\tri q"']&
+  u\tri u\tri p_1\tri p_2\tri q\ar[r, "\Sigma\tri p_1\tri p_2\tri q"']&
+  u\tri p_1\tri p_2\tri q  
+\end{tikzcd}
+\]
+where we use $\ol{\switch}$ and $\varphi$ (see Definitions~\ref{def.switching}~and~\ref{def.dep_switching}) and the multiplications $(-,-)$ and $\otimes$.
+The left-hand square in this diagram commutes by \eqref{eqn.key_compare} and the right-hand square commutes by \eqref{eqn.otimes_monoid} and the naturality of $\indep$.
+
+It remains to show that in both cases these satisfy the three commutative diagrams of a lax monoidal functor. The unit diagrams are:
+\begin{gather*}
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\otimes p\tri q\ar[r, "\ol\phi_{u\otimes p\tri q}"]\ar[dr, bend right=20pt, equal]\&
+	u\otimes u\otimes p\tri q \ar[d, "\ol\phi_{\yon,p,q}"]\\
+	\&
+	u\otimes p\tri q
+\end{tikzcd}
+\hspace{.6in}
+\begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
+	u\otimes p\tri q\ar[r, "u\otimes p\tri\ol\phi_q"]\ar[dr, bend right=20pt, equal]\&
+	u\otimes p\tri (u\otimes q)\ar[d, "\ol\phi_{p,\yon,q}"]\\
+	\&
+	u\tri p\tri q
+\end{tikzcd}
+\\[15pt]
 \begin{tikzcd}[ampersand replacement=\&, column sep=45pt]
 	u\tri p\tri q\ar[r, "\phi_{u\tri p\tri q}"]\ar[dr, bend right=20pt, equal]\&
 	u\tri u\tri p\tri q \ar[d, "\phi_{\yon,p,q}"]\\
@@ -860,8 +903,8 @@ It remains to show that these satisfy the three commutative diagrams of a lax mo
 	\&
 	u\tri p\tri q
 \end{tikzcd}
-\]
-commute by the monad unit laws and the commutativity of the right-hand triangle in \eqref{eqn.key_smalls}.
+\end{gather*}
+Both the top and bottom diagrams commute by the respective monad unit laws and the commutativity of the respective triangles in \eqref{eqn.key_smalls}.
 
 We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
 \[
