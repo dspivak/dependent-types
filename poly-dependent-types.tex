@@ -95,6 +95,8 @@ bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
   }
 } 
 
+\newcommand{\upp}{\begin{tikzcd}[row sep=6pt]~\\~\ar[u, bend left=50pt, looseness=1.3, start anchor=east, end anchor=east]\end{tikzcd}}
+
 \newcommand{\bito}[1][]{
 	\begin{tikzcd}[ampersand replacement=\&, cramped]\ar[r, biml-bimr, "#1"]\&~\end{tikzcd}  
 }
@@ -308,6 +310,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\switch}{\pi}
 
 
+
 % lenses
 \newcommand{\biglens}[2]{
      \begin{bmatrix}{\vphantom{f_f^f}#2} \\ {\vphantom{f_f^f}#1} \end{bmatrix}
@@ -444,7 +447,7 @@ To explain at a high level, let's fix some polynomial universe $(u,\1,\Sigma)$ a
 \]
 The laxators are formed using the $\switch$-maps described above in \eqref{eqn.switch} and give rise to type- and term-forming operations for dependent function types. The unitality and associativity laws governing $\Phi$ and $\ol{\Phi}$ give rise to the conversion rules between them. For example, from them one can derive a self-distributivity law $u\tri u\to u\tri u$, as discussed in a July 2021 \href{https://topos.site/blog/2021/07/jump-monads-from-conjugation-to-dependent-types/}{Topos Institute blog post}.
 
-As mentioned there, the germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors on his theory of natural models and their connection to polynomial functors. Aside from a very different presentation (e.g.\ lax monoidal functors here in place of pseudomonads there, the present work adds two things:
+As mentioned there, the germination of this idea came from \href{https://www.youtube.com/watch?v=RDuNIP4icKI\&t=10765s}{Steve Awodey's talk} at the 2021 Workshop on Polynomial Functors on his theory of natural models and their connection to polynomial functors. Aside from a very different presentation (e.g.\ lax monoidal functors here in place of pseudomonads there), the present work adds two things:
 \begin{enumerate}
 	\item explicit syntax and rules for pair types, and
 	\item the distributive law of $\Pi$ over $\Sigma$, which in the language of \cite{awodey2018polynomial} would say%
@@ -1063,7 +1066,7 @@ Before we start, note that we already have the pairing laws from the fact that $
 \begin{gather*}
 \begin{prooftree}
 	\Hypo{A:\U}
-	\Infer1{(A,\1)\equiv A\equiv (\1,A)}
+	\Infer1{(A,\1)\equiv (\1,A)}
 \end{prooftree}
 \hspace{.6in}
 \begin{prooftree}
@@ -1075,30 +1078,27 @@ Before we start, note that we already have the pairing laws from the fact that $
 \\[10pt]
 \begin{prooftree}
 	\Hypo{A:\U}
-	\Infer1{\Sigma(A,\1)\equiv A\equiv \Sigma(\1,A)}
+	\Infer1{\Sigma(A,\1)\equiv \Sigma(\1,A)}
 \end{prooftree}
 \hspace{.6in}
 \begin{prooftree}
-	\Hypo{A:\U}
-	\Hypo{B:\U}
-	\Hypo{C:\U}
-	\Infer3{\Sigma(A,\Sigma(B,C))\equiv \Sigma(\Sigma(A,B),C)}
+	\Hypo{A\vdash B\vdash C:u\tri u\tri\U}
+	\Infer1{\Sigma(A,\Sigma(B,C))\equiv \Sigma(\Sigma(A,B),C)}
 \end{prooftree}
 \end{gather*}
 These also come with term conversions. The second pair looks exactly like the first pair, because of our notation, so we don't rewrite it:
 \begin{gather*}
 \begin{prooftree}
-	\Hypo{a:[A]}
-	\Infer1{(a,())\equiv a\equiv ((),a)}
+	\Hypo{a}
+	\Infer[double]1{(a,())\equiv ((),a)}
 \end{prooftree}
 \hspace{.6in}
 \begin{prooftree}
-	\Hypo{a:[A]}
-	\Hypo{b:[B]}
-	\Hypo{c:[C]}
-	\Infer3{(a,(b,c))\equiv ((a,b),c)}
+	\Hypo{a,b,c}
+	\Infer[double]1{(a,(b,c))\equiv ((a,b),c)}
 \end{prooftree}
 \end{gather*}
+The double lines mean that, since the monad operations are cartesian, the map backwards on terms is a bijection. Thus in both cases there is a one-to-one correspondence between terms below the line and above the line.
 
 We now unpack the results from \cref{lemma.key}. The diagrams
 \[
@@ -1112,31 +1112,40 @@ We now unpack the results from \cref{lemma.key}. The diagrams
 	p\tri u\ar[rr, "\switch_{p}"']\&\&u\tri p
 \end{tikzcd}
 \]
-in \eqref{eqn.key_smalls} are translated as:
-\[
+in \eqref{eqn.key_smalls} are translated tersely on top, or verbosely on bottom; see \cref{rem.switching_later_coords_irrel}:
+\begin{gather*}
   \begin{prooftree}
-    \Hypo{A : \U}
-    \Infer1{(\1\to A)\equiv A:p\tri p'\tri\U}
+    \Hypo{A}
+    \Infer1{(\1\to A)\equiv A}
   \end{prooftree}
-  \hspace{.6in}
+\hspace{.6in}
   \begin{prooftree}
     \Hypo{I : p(1)}
     \Infer1{(I\to \1)\equiv \1}
   \end{prooftree}
-\]
-In fact, they also imply
-\[
+\\
   \begin{prooftree}
-    \Hypo{A : \U}
-    \Infer1{\1\equiv\1}
+    \Hypo{A}
+    \Infer1{(\1\to A,\1)\equiv (A,\1)}
   \end{prooftree}
   \hspace{.6in}
   \begin{prooftree}
-    \Hypo{I : p(1)}
-    \Infer1{I\equiv I}
+    \Hypo{I}
+    \Infer1{((I\to \1)\vdash I)\equiv (\1\vdash I)}
+  \end{prooftree}
+\end{gather*}
+From the verbose version we also get a derivation rule backwards on terms, but not conversions (since the switching map is not cartesian).
+\[
+  \begin{prooftree}
+    \Hypo{((),a())}
+    \Infer[left label={$\upp$}]1{(a,())}
+  \end{prooftree}
+  \hspace{.6in}
+  \begin{prooftree}
+    \Hypo{i}
+    \Infer[left label={$\upp$}]1{((),i)}
   \end{prooftree}
 \]
-in the second coordinates, as predicted by \cref{rem.switching_later_coords_irrel}; in the following we will leave off the later coordinates when they are similarly too obvious to be interesting.
 
 The rule provided by the next diagram \eqref{eqn.key_compare} is already inherent in the way our notation works (much like how, in string diagrams, associativity is there but invisible). In the next diagram \eqref{eqn.key_med3}
 \[
@@ -1145,7 +1154,7 @@ The rule provided by the next diagram \eqref{eqn.key_compare} is already inheren
 	p\tri (u\otimes p'\tri q)\ar[rr, "\ol\switch_{p, p'\tri q}"']\&\&u\otimes p\tri p'\tri q
 \end{tikzcd}
 \]
-we translate tersely as left, or verbosely as right; see \cref{rem.switching_later_coords_irrel}:%
+we translate tersely as left, or verbosely as right%
 \footnote{
 This syntax, which includes a turnstyle in the domain of an arrow $(I\vdash I')\to A$, is unusual. But we can understand it in more classical notation below, either in its native form as to the left, or using \cref{eqn.dep_vs_sigma} which gives the equivalent form on the right:
 \[
@@ -1167,11 +1176,11 @@ This syntax, which includes a turnstyle in the domain of an arrow $(I\vdash I')\
     \Infer1{((I\vdash I')\to A,I\vdash I'\vdash J)\equiv (I\to I'\to A, I\vdash I'\vdash J)}
   \end{prooftree}
 \]
-From the verbose version we also get a derivation rule backwards on terms, but not conversions (since the switching map is not cartesian).
+From the verbose version we also get a derivation rule backwards on terms:
 \[
   \begin{prooftree}
-    \Hypo{a,i,i',j}
-    \Infer1{i,i',(a i i', j)}
+    \Hypo{i,i',(a i i', j)}
+    \Infer[left label={$\upp$}]1{a,i,i',j}
   \end{prooftree}
 \]
 
@@ -1197,10 +1206,11 @@ which was derived from \cref{eqn.key_compare}, and perhaps unsurprisingly has th
 From the verbose version we also get a derivation rule backwards on terms:
 \[
   \begin{prooftree}
-    \Hypo{a,i,i'}
-    \Infer1{i,i',a i i'}
+    \Hypo{i,i',a i i'}
+    \Infer[left label={$\upp$}]1{a,i,i'}
   \end{prooftree}
 \]
+
 The next diagram \eqref{eqn.key_large}
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=large]
@@ -1226,8 +1236,8 @@ is translated tersely as left, or verbosely as right:
 From the verbose version we also get a derivation rule backwards on terms:
 \[
   \begin{prooftree}
-    \Hypo{(a,b),i}
-    \Infer1{i,ai,bi}
+    \Hypo{i,ai,bi}
+    \Infer[left label={$\upp$}]1{(a,b),i}
   \end{prooftree}
 \]
 
@@ -1257,8 +1267,8 @@ is translated tersely as left, or verbosely as right:
 From the verbose version we also get a derivation rule backwards on terms:
 \[
   \begin{prooftree}
-    \Hypo{(a,b),i}
-    \Infer1{i,ai,bi}
+    \Hypo{i,ai,bi}
+    \Infer[left label={$\upp$}]1{(a,b),i}
   \end{prooftree}
 \]
 Again this looks exactly like the above case of $\Sigma$ in place of $(-,-)$, which means that ambiguities in our notational system are appropriately washed away.
@@ -1268,10 +1278,10 @@ Again this looks exactly like the above case of $\Sigma$ in place of $(-,-)$, wh
 
 One may hope to generalize the above considerations to polynomial universes in arbitrary copresheaf categories $\cat{C}\set$. A first question is how to define polynomials in that context, because there are two reasonable generalizations. One is the usual one, which comes from maps $E\to B$ in $\cat{C}\set$; the other is that of parametric right adjoint functors $\cat{C}\set\to\cat{C}\set$, which is strictly more general for nondiscrete $\cat{C}$. 
 
-Preliminary work suggests that $\poly$ should be replaced by the category $\cat{C}\set[\cat{C}]$ of parametric right adjoints $\cat{C}\set\to\cat{C}\set$; see \cite{spivak2021functorial}. In the case $\cat{C}=1$, this yields $1\set[1]\cong\poly$. It seems that $\polycart$ should be replaced by the comma category (lax pullback) $(\cat{C}\downarrow\{\smset\})$ associated to the diagram of categories (not 2-categories)
-\[\cat{C}\set\To{\text{elts}}\smcat\From{\smset}\{*\}.\]
-In the case $\cat{C}=1$, this yields $\polycart$. Denoting the image of its inclusion into $\cat{C}\set[\cat{C}]$ as $\cat{C}\set[\cat{C}]^{\Cat{cart}}$,  it appears that everything in the diagram
-\[
+Preliminary work suggests that $\poly$ should be replaced by the category $\cat{C}\set[\cat{C}]$ of parametric right adjoints $\cat{C}\set\to\cat{C}\set$; see \cite{spivak2021functorial}. In the case $\cat{C}=1$, this yields $1\set[1]\cong\poly$. It seems that $\polycart$ should be replaced by the comma category, also known as the lax pullback, $(\cat{C}\downarrow\{\smset\})$ associated to the diagram of categories (not 2-categories)
+\[\cat{C}\set\To{\Fun{elts}}\smcat\From{\smset}\{*\}.\]
+Here $\Fun{elts}$ sends a copresheaf to its category of elements. In the case $\cat{C}=1$, this lax pullback yields $\polycart$. Denoting the image of its inclusion into $\cat{C}\set[\cat{C}]$ as $\cat{C}\set[\cat{C}]^{\Cat{cart}}$,  it appears that everything in the diagram
+\begin{equation}\label{eqn.generalPhi}
 \begin{tikzcd}[column sep=60pt]
 	\Big(\cat{C}\set[\cat{C}]^{\Cat{cart}},\id, \circ\Big)
 		\ar[r, bend left=15pt,  start anchor={north east}, end anchor={north west}, "p\mapsto u\otimes p\circ-", ""' name=P]
@@ -1279,8 +1289,10 @@ In the case $\cat{C}=1$, this yields $\polycart$. Denoting the image of its incl
 	\Big(\en(\cat{C}\set[\cat{C}]),\id,\circ\Big)
 	\ar[from=P, to=P|-PP, Rightarrow, shorten=2mm, "\indep"]
 \end{tikzcd}
-\]
-makes sense, though it is unclear whether the usual definition of universes fits in as $u$ and makes everything appropriately monoidal. 
+\end{equation}
+makes sense. 
+
+Thus the hypothesis is that we can define polynomial universes again using \eqref{eqn.generalPhi} or something like it, i.e.\ asking the maps to be monoidal, and have the resulting notion coincide with the usual notion of universes.
 
 
 
