@@ -458,14 +458,14 @@ As mentioned there, the germination of this idea came from \href{https://www.you
 %---- Section ----%
 \section{Acknowledgments}
 
-I greatly appreciate the clarity of delivery and the insight behind Steve Awodey's talk at the 2021 Workshop on Polynomial Functors. It has been a major source of inspiration and fun during the intervening year.
+I greatly appreciate the clarity of delivery and the insight behind Steve Awodey's talk at the 2021 Workshop on Polynomial Functors. It has been a major source of inspiration and fun during the intervening year. 
 
 This material is based upon work supported by the Air Force Office of Scientific Research under award number FA9550-20-1-0348.
 
 %-------- Chapter --------%
 \chapter{Background and key examples}
 
-The main purpose of this section is to fix notation and provide a brief overview of polynomial functors in one variable. But we will also use this section to introduce our main polynomials of interest, which we call $\kappa$-list polynomials.
+The main purpose of this section is to fix notation and provide a brief overview of polynomial functors in one variable. More extensive background material can be found in \cite{spivak2022poly} and \cite{kock2012polynomial}. We will also use the present section to introduce our main polynomials of interest, which we call $\kappa$-list polynomials.
 
 %---- Section ----%
 \section{Basics}
@@ -609,9 +609,9 @@ There is a duoidality between $\otimes$ and $\tri$, i.e.\ for every $p_1,p_2,q_1
 satisfying the usual properties.
 \end{proposition}
 \begin{proof}
-On types we begin with $(I_1\vdash I_2),(J_1\vdash J_2)\in ((p_1\tri p_2)\otimes(q_1\tri q_2))(1)$, where $I_2\colon I_1\to p_2(1)$ and $J_2\colon J_1\to q_2(1)$. It is sent by $\duoid_1$ to $(I_1,J_1)\vdash(I_2',J_2')\in (p_1\otimes q_1)\tri (p_2\otimes q_2)(1)$ where $I_2'\colon I_1\times J_1\to p_2(1)$ is given by first projecting onto $I_1$ and then applying $I_2$, and similarly $J_2'\colon I_1\times J_1\to q_2(1)$ is given by first projecting onto $J_1$ and then applying $J_2$. 
+On types we begin with $(I_1, I_2),(J_1, J_2)\in ((p_1\tri p_2)\otimes(q_1\tri q_2))(1)$, where $I_2\colon I_1\to p_2(1)$ and $J_2\colon J_1\to q_2(1)$. It is sent by $\duoid_1$ to $(I_1,J_1),(I_2',J_2')\in (p_1\otimes q_1)\tri (p_2\otimes q_2)(1)$ where $I_2'\colon I_1\times J_1\to p_2(1)$ is given by first projecting onto $I_1$ and then applying $I_2$, and similarly $J_2'\colon I_1\times J_1\to q_2(1)$ is given by first projecting onto $J_1$ and then applying $J_2$. 
 
-Backwards on terms, we begin with $((i_1,j_1),(i_2,j_2))\in (p_1\otimes q_1)\tri (p_2\otimes q_2)[(I_1,J_1)\vdash(I_2',J_2')]$, where $i_2\in I'_2(i_1,j_1)=I_2 i_1$ and $j_2\in J'_2(i_1,j_1)=J_2 j_2$. It is sent by the isomorphism $\duoid^\sharp_{(I_1\vdash I_2),(J_1\vdash J_2)}$ to $((i_1,i_2),(j_1,j_2))\in ((p_1\tri p_2)\otimes(q_1\tri q_2))[(I_1\vdash I_2),(J_1\vdash J_2)]$. We leave it to the reader to check the relevant axioms.
+Backwards on terms, we begin with $((i_1,j_1),(i_2,j_2))\in (p_1\otimes q_1)\tri (p_2\otimes q_2)[(I_1,J_1),(I_2',J_2')]$, where $i_2\in I'_2(i_1,j_1)=I_2 i_1$ and $j_2\in J'_2(i_1,j_1)=J_2 j_2$. It is sent by the isomorphism $\duoid^\sharp_{(I_1, I_2),(J_1, J_2)}$ to $((i_1,i_2),(j_1,j_2))\in ((p_1\tri p_2)\otimes(q_1\tri q_2))[(I_1, I_2),(J_1, J_2)]$. We leave it to the reader to check the relevant axioms.
 \end{proof}
 
 We record a lemma that will be useful later; the proof is straightforward.
@@ -991,6 +991,8 @@ We refer to $\yon$ as the \emph{unit} type collection. There is exactly one elem
 
 An element of $p\tri q(1)=(p\tri q)(1)$ consists of an element $I:p(1)$ and an element $J i:q(1)$ for every $i:p[I]$; we denote it by $(I\vdash J)\in (p\tri q)(1)$. Since $r\coloneqq p\tri q$ is a polynomial, $I\vdash J$ is just a type (an element of $r(1)$); however if we receive $r$ as a composite of $p$ and $q$ we may refer to $I\vdash J$ as a \emph{dependent type}: the $q$-type depends on a term of the $p$-type. A term of type $I\vdash J$ consists of a pair $(i,j)$ where $i:p[I]$ and $j: q[J i]$; we denote it $(i,j):(p\tri q)[I\vdash J]$.
 
+Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. Our notation simply follows the polynomial formalism in the sense that whenever we see $\tri$ in the polynomials, we see $\vdash$ in the types. For example, a type in $p\tri q\tri r$ would be denoted $I\vdash J\vdash K$. Here we have for each $i\in p[I]$ a $q$-type $Ji\in q(1)$ and for each $j\in q[J i]$ an $r$-type $Kij\in r(1)$. A term in $I\vdash J\vdash K$ is a triple $(i,j,k)$ where $i\in p[I]$, $j\in q[Ji]$, and $k\in r[Kij]$.
+
 An element of $(p\otimes q)(1)$ consists of a pair $(I,J)\in p(1)\times q(1)$; we call it a \emph{product type}. An element of $(p\otimes q)[(I,J)]$ consists of a pair $(i,j)\in p[I]\times q[J]$. 
 
 \paragraph{Monoid structures on base types.}
@@ -1034,6 +1036,12 @@ Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\i
 \end{equation*}
 Given terms $a:[I\to A]$, $i:p[I]$, and $j:q[Ji]$, we obtain a term $(i,a i, j):p\tri(u\otimes q)[I\vdash (A,J)]$. Unlike the case for $\1$, $\Sigma$, and $(-,-)$, this construction is not a bijection because $\switch_{u,u}$ is not cartesian, as explained in the footnote below \cref{eqn.not_injective}.
 
+\begin{remark}\label{rem.switching_later_coords_irrel}
+The switching map acts on a dependent type $I\vdash A$ by modifying $A$, even as $I$ moves past unmodified: the result is $(I\to A, I)$. Thus when there are equations between various applications of the switching map, the later coordinates are generally not interesting; they just say something like $I=I$.
+
+However, there is something interesting about terms: there is a map from terms of $(I\to A,I)$ back to terms of $I\vdash A$, namely $(a,i)\mapsto(i,ai)$.
+\end{remark}
+
 %---- Section ----%
 \section{Unpacking the results}
 
@@ -1054,14 +1062,14 @@ Before we start, note that we already have the pairing laws from the fact that $
 \hspace{.6in}
 \begin{prooftree}
 	\Hypo{A:\U}
-	\Infer1{\Sigma(A,\1)\equiv A\equiv \Sigma(\1,A)}
+	\Hypo{B:\U}
+	\Hypo{C:\U}
+	\Infer3{(A,(B,C))\equiv ((A,B),C)}
 \end{prooftree}
 \\[10pt]
 \begin{prooftree}
 	\Hypo{A:\U}
-	\Hypo{B:\U}
-	\Hypo{C:\U}
-	\Infer3{(A,(B,C))\equiv ((A,B),C)}
+	\Infer1{\Sigma(A,\1)\equiv A\equiv \Sigma(\1,A)}
 \end{prooftree}
 \hspace{.6in}
 \begin{prooftree}
@@ -1071,8 +1079,22 @@ Before we start, note that we already have the pairing laws from the fact that $
 	\Infer3{\Sigma(A,\Sigma(B,C))\equiv \Sigma(\Sigma(A,B),C)}
 \end{prooftree}
 \end{gather*}
+These also come with term conversions. The second pair looks exactly like the first pair, because of our notation, so we don't rewrite it:
+\begin{gather*}
+\begin{prooftree}
+	\Hypo{a:[A]}
+	\Infer1{(a,())\equiv a\equiv ((),a)}
+\end{prooftree}
+\hspace{.6in}
+\begin{prooftree}
+	\Hypo{a:[A]}
+	\Hypo{b:[B]}
+	\Hypo{c:[C]}
+	\Infer3{(a,(b,c))\equiv ((a,b),c)}
+\end{prooftree}
+\end{gather*}
 
-We now unpack the results from \cref{lemma.key}. The first two diagrams
+We now unpack the results from \cref{lemma.key}. The diagrams
 \[
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
 	\&u\ar[dl, equal]\ar[dr, equal]\\
@@ -1080,15 +1102,15 @@ We now unpack the results from \cref{lemma.key}. The first two diagrams
 \end{tikzcd}
 \hspace{.6in}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
-	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
-	p\tri u\ar[rr, "\switch_{p}"']\&\&u\otimes p
+	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\tri p"]\\
+	p\tri u\ar[rr, "\switch_{p}"']\&\&u\tri p
 \end{tikzcd}
 \]
-is translated as:
+in \eqref{eqn.key_smalls} are translated as:
 \[
   \begin{prooftree}
     \Hypo{A : \U}
-    \Infer1{(\1\to A)\equiv A}
+    \Infer1{(\1\to A)\equiv A:p\tri p'\tri\U}
   \end{prooftree}
   \hspace{.6in}
   \begin{prooftree}
@@ -1096,27 +1118,29 @@ is translated as:
     \Infer1{(I\to \1)\equiv \1}
   \end{prooftree}
 \]
-
-The next diagram
-\[
-\begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri p'\tri u\ar[d, "p\tri\switch_{p'}"']\ar[r, "\switch_{p\tri p'}"]\&
-	u\otimes p\tri p'\ar[r, "\indep\tri p'"]\&u\tri p\tri p'\\
-	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
-	p\tri u\tri p'\ar[r, "\switch_{p}\tri p'"']\&
-	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
-\end{tikzcd}
-\]
-is translated as follows%
-\footnote{Every time a type depends on terms of a previous type, we use a turnstyle $\vdash$; thus there may be several turnstyles in a type definition. Our notation simply follows the polynomial formalism in the sense that whenever we see $\tri$ in the polynomials, we see $\vdash$ in the types.
-}
-
+In fact, they also imply
 \[
   \begin{prooftree}
-    \Hypo{I\vdash I'\vdash A:p\tri p'\tri \U}
-    \Infer1{((I\vdash I')\to A)\equiv (I\to I'\to A)}
+    \Hypo{A : \U}
+    \Infer1{\1\equiv\1}
+  \end{prooftree}
+  \hspace{.6in}
+  \begin{prooftree}
+    \Hypo{I : p(1)}
+    \Infer1{I\equiv I}
   \end{prooftree}
 \]
+in the second coordinates, as predicted by \cref{rem.switching_later_coords_irrel}; in the following we will leave off the later coordinates when they are similarly too obvious to be interesting.
+
+The rule provided by the next diagram \eqref{eqn.key_compare} is already inherent in the way our notation works (much like how, in string diagrams, associativity is there but invisible). In the next diagram \eqref{eqn.key_med3}
+\[
+\begin{tikzcd}[column sep=-10pt, ampersand replacement=\&]
+	\&p\tri p'\tri (u\otimes q)\ar[dl, "p\tri\ol\switch_{p',q}"']\ar[dr,"\ol\switch_{p\tri p',q}"]\\
+	p\tri (u\otimes p'\tri q)\ar[rr, "\ol\switch_{p, p'\tri q}"']\&\&u\otimes p\tri p'\tri q
+\end{tikzcd}
+\]
+we translate tersely as left, or verbosely as right; see \cref{rem.switching_later_coords_irrel}:%
+\footnote{
 This syntax, which includes a turnstyle in the domain of an arrow $(I\vdash I')\to A$, is unusual. But we can understand it in more classical notation below, either in its native form as to the left, or using \cref{eqn.dep_vs_sigma} which gives the equivalent form on the right:
 \[
   \prod_{i:I,\; i':I' i}A i i'\;
@@ -1125,66 +1149,132 @@ This syntax, which includes a turnstyle in the domain of an arrow $(I\vdash I')\
   \equiv\;
   \prod_{(i,i'):\sum_{i:I}I' i}A (i,i')\;
 \]
+}
+\[
+  \begin{prooftree}
+    \Hypo{I\vdash I'\vdash A}
+    \Infer1{((I\vdash I')\to A)\equiv (I\to I'\to A)}
+  \end{prooftree}
+\hspace{.6in}
+  \begin{prooftree}
+    \Hypo{I\vdash I'\vdash (A,J)}
+    \Infer1{((I\vdash I')\to A,I\vdash I'\vdash J)\equiv (I\to I'\to A, I\vdash I'\vdash J)}
+  \end{prooftree}
+\]
+From the verbose version we also get a derivation rule backwards on terms, but not conversions (since the switching map is not cartesian).
+\[
+  \begin{prooftree}
+    \Hypo{a,i,i',j}
+    \Infer1{i,i',(a i i', j)}
+  \end{prooftree}
+\]
 
-The next diagram
+Next we have diagram \eqref{eqn.key_med1} 
+\[
+\begin{tikzcd}[column sep=0pt, ampersand replacement=\&]
+	\&p\tri p'\tri u\ar[dl, "p\tri\switch_{p'}"']\ar[dr,"\switch_{p\tri p'}"]\\
+	p\tri u\tri p'\ar[rr, "\switch_{p}\tri p'"']\&\&u\tri p\tri p'
+\end{tikzcd}
+\]
+which was derived from \cref{eqn.key_compare}, and perhaps unsurprisingly has the very similar content. The terse version (left) is the same as above, and the verbose version (right) is slightly different:
+\[
+  \begin{prooftree}
+    \Hypo{I\vdash I'\vdash A}
+    \Infer1{((I\vdash I')\to A)\equiv (I\to I'\to A)}
+  \end{prooftree}
+\hspace{.6in}
+  \begin{prooftree}
+    \Hypo{I\vdash I'\vdash A}
+    \Infer1{((I\vdash I')\to A\vdash I\vdash I')\equiv (I\to I'\to A\vdash I\vdash I')}
+  \end{prooftree}
+\]
+From the verbose version we also get a derivation rule backwards on terms:
+\[
+  \begin{prooftree}
+    \Hypo{a,i,i'}
+    \Infer1{i,i',a i i'}
+  \end{prooftree}
+\]
+The next diagram \eqref{eqn.key_large}
 \[
 \begin{tikzcd}[ampersand replacement=\&, column sep=large]
-	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\switch\tri u"']\&
-	p\tri u\ar[r, "\switch"]\&
-	u\otimes p\ar[r, "\indep"]\&
-	u\tri p\\
-	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
-	u\tri p\tri u\ar[r, "u\tri\switch"']\&
-	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
-	u\tri u\tri p\ar[u, "\Sigma\tri p"']
+  p\tri u\tri u\ar[d, "p\tri\Sigma"']\ar[r, "\switch_p\tri u"]\&
+  u\tri p\tri u\ar[r, "u\tri\switch_p"]\&
+  u\tri u\tri p\ar[d, "\Sigma\tri p"]\\
+  p\tri u\ar[rr, "\switch_p"']\&\&
+  u\tri p
 \end{tikzcd}
 \]
-is translated as
+is translated tersely as left, or verbosely as right:
 \[
   \begin{prooftree}
-    \Hypo{I\vdash A\vdash B : p\tri u\tri \U}
+    \Hypo{I\vdash A\vdash B}
     \Infer1{I\to\Sigma(A,B)\equiv\Sigma(I\to A,I\to B)}
   \end{prooftree}
+  \hspace{.6in}
+  \begin{prooftree}
+    \Hypo{I\vdash A\vdash B}
+    \Infer1{(I\to\Sigma(A,B)\vdash I)\equiv(\Sigma(I\to A,I\to B)\vdash I)}
+  \end{prooftree}  
 \]
-
-The final diagram is quite similar, but for independent types $A,B$:
-\[
-\begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri (u\otimes u)\ar[d, "\ol{\switch}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
-	p\tri u\ar[r, "\switch_p"]\&u\otimes p\\
-	u\otimes p\tri u\ar[rr, "u\otimes\switch_p"']\&\&
-	u\otimes u\otimes p\ar[u, "{(-,-)}\tri p"']
-\end{tikzcd}
-\]
-It is translated as
+From the verbose version we also get a derivation rule backwards on terms:
 \[
   \begin{prooftree}
-    \Hypo{I\vdash (A, B) : p\tri(\U\otimes\U)}
-    \Infer1{I\to(A,B)\equiv(I\to A,I\to B)}
+    \Hypo{(a,b),i}
+    \Infer1{i,ai,bi}
   \end{prooftree}
 \]
 
+The final diagram \eqref{eqn.key_med2}
+\[
+\begin{tikzcd}[column sep=large, ampersand replacement=\&]
+	p\tri (u\otimes u)\ar[r, "\ol{\switch}_{p,u}"]\ar[d, "p\tri{(-,-)}"']\&
+	u\otimes p\tri u\ar[r, "u\otimes\ol\switch_{p,\yon}"]
+	\&u\otimes u\otimes p\ar[d, "{(-,-)}\otimes p"]\\
+	p\tri u\ar[rr, "\ol\switch_{p,\yon}"']
+	\&\&
+	u\otimes p
+\end{tikzcd}
+\]
+is translated tersely as left, or verbosely as right:
+\[
+  \begin{prooftree}
+    \Hypo{I\vdash (A, B)}
+    \Infer1{I\to(A,B)\equiv(I\to A,I\to B)}
+  \end{prooftree}
+\hspace{.6in}
+ \begin{prooftree}
+    \Hypo{I\vdash (A, B)}
+    \Infer1{(I\to(A,B),I)\equiv((I\to A,I\to B),I)}
+  \end{prooftree}
+\]
+From the verbose version we also get a derivation rule backwards on terms:
+\[
+  \begin{prooftree}
+    \Hypo{(a,b),i}
+    \Infer1{i,ai,bi}
+  \end{prooftree}
+\]
+Again this looks exactly like the above case of $\Sigma$ in place of $(-,-)$, which means that ambiguities in our notational system are appropriately washed away.
 
-%\[
-%\begin{tabular}{p{3in}|p{2in}}
-%	naturality with respect to $p\in\polycart$,\\applied to $\Sigma\colon u\tri u\to u$&
-%		\\
-%	naturality with respect to $\indep$&
-%		\\
-%	commutation with composition&
-%		\\
-%	the first diagram&
-%		\\
-%	the second diagram&
-%		
-%\end{tabular}
-%\]
+%-------- Chapter --------%
+\chapter{Future work}
 
+One may hope to generalize the above considerations to polynomial universes in arbitrary copresheaf categories $\cat{C}\set$. A first question is how to define polynomials in that context, because there are two reasonable generalizations. One is the usual one, which comes from maps $E\to B$ in $\cat{C}\set$; the other is that of parametric right adjoint functors $\cat{C}\set\to\cat{C}\set$, which is strictly more general for nondiscrete $\cat{C}$. 
 
-
-
-
-
+Preliminary work suggests that $\poly$ should be replaced by the category $\cat{C}\set[\cat{C}]$ of parametric right adjoints $\cat{C}\set\to\cat{C}\set$; see \cite{spivak2021functorial}. In the case $\cat{C}=1$, this yields $1\set[1]\cong\poly$. It seems that $\polycart$ should be replaced by the comma category (lax pullback) $(\cat{C}\downarrow\{\smset\})$ associated to the diagram of categories (not 2-categories)
+\[\cat{C}\set\To{\text{elts}}\smcat\From{\smset}\{*\}.\]
+In the case $\cat{C}=1$, this yields $\polycart$. Denoting the image of its inclusion into $\cat{C}\set[\cat{C}]$ as $\cat{C}\set[\cat{C}]^{\Cat{cart}}$,  it appears that everything in the diagram
+\[
+\begin{tikzcd}[column sep=60pt]
+	\Big(\cat{C}\set[\cat{C}]^{\Cat{cart}},\id, \circ\Big)
+		\ar[r, bend left=15pt,  start anchor={north east}, end anchor={north west}, "p\mapsto u\otimes p\circ-", ""' name=P]
+		\ar[r, bend right=15pt, start anchor={south east}, end anchor={south west}, "p\mapsto u\circ p\circ-"', "" name=PP]&
+	\Big(\en(\cat{C}\set[\cat{C}]),\id,\circ\Big)
+	\ar[from=P, to=P|-PP, Rightarrow, shorten=2mm, "\indep"]
+\end{tikzcd}
+\]
+makes sense, though it is unclear whether the usual definition of universes fits in as $u$ and makes everything appropriately monoidal. 
 
 
 
