@@ -614,6 +614,18 @@ On types we begin with $(I_1\vdash I_2),(J_1\vdash J_2)\in ((p_1\tri p_2)\otimes
 Backwards on terms, we begin with $((i_1,j_1),(i_2,j_2))\in (p_1\otimes q_1)\tri (p_2\otimes q_2)[(I_1,J_1)\vdash(I_2',J_2')]$, where $i_2\in I'_2(i_1,j_1)=I_2 i_1$ and $j_2\in J'_2(i_1,j_1)=J_2 j_2$. It is sent by the isomorphism $\duoid^\sharp_{(I_1\vdash I_2),(J_1\vdash J_2)}$ to $((i_1,i_2),(j_1,j_2))\in ((p_1\tri p_2)\otimes(q_1\tri q_2))[(I_1\vdash I_2),(J_1\vdash J_2)]$. We leave it to the reader to check the relevant axioms.
 \end{proof}
 
+We record a lemma that will be useful later; the proof is straightforward.
+
+\begin{lemma}\label{lemma.duoid_indep}
+For any polynomials $v,p,p'\in\poly$ the following diagram commutes:
+\[
+\begin{tikzcd}[column sep=0]
+	&v\otimes p\tri p'\ar[dl, "\duoid"']\ar[dr, "\indep_{v,p\tri p'}"]\\
+	(v\otimes p)\tri p'\ar[rr, "\indep_{v,p}\tri p'"']&&v\tri p\tri p'
+\end{tikzcd}
+\]
+\end{lemma}
+
 \begin{proposition}[$\kappa$-list monads]\label{prop.list_monad}
 For any sum-product set $\kappa$, there is a cartesian monad structure $(\1,\Sigma)$ on the $\kappa$-list polynomial $u_\kappa\in\polycart$.
 \end{proposition}
@@ -705,9 +717,9 @@ and it is given by $(a,i,j)\mapsto(i,a i,j i)$.%
 One can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the switching map $\switch_p\colon p\tri u\to u\otimes p$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
 
 \begin{definition}[Switching map $\switch$]\label{def.switchmap}
-Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching map}
-\[\switch_p\colon p\tri u\to u\otimes p\]
-to be the $\yon$-component of the switching transformation, $\switch_p\coloneqq\ol{\switch}_{p,\yon}$.
+Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. Then for any $p\in\poly$ we define the \emph{switching map} denoted $\switch_p\colon p\tri u\to u\tri p$ to be the composite
+\[p\tri u\To{\ol{\pi}_\yon}u\otimes p\To{\indep}u\tri p\]
+of $\indep$ with the $\yon$-component of the switching transformation $\pi_p\coloneqq\indep\circ\ol{\pi}_\yon$.
 \end{definition}
 
 %---- Section ----%
@@ -727,41 +739,42 @@ Let $u\coloneqq u_\kappa$ be the $\kappa$-list polynomial for a sum-product set 
 \end{tikzcd}
 \hspace{.6in}
 \begin{tikzcd}[column sep=10pt, ampersand replacement=\&]
-	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\otimes p"]\\
-	p\tri u\ar[rr, "\switch_{p}"']\&\&u\otimes p
+	\&p\ar[dl, "p\tri\1"']\ar[dr,"\1\tri p"]\\
+	p\tri u\ar[rr, "\switch_{p}"']\&\&u\tri p
 \end{tikzcd}\label{eqn.key_smalls}
-\\[15pt]
-\begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri p'\tri u\ar[d, "p\tri\switch_{p'}"']\ar[r, "\switch_{p\tri p'}"]\&
-	u\otimes p\tri p'\ar[r, "\indep\tri p'"]\&u\tri p\tri p'\\
-	p\tri (u\otimes p')\ar[r, "p\tri \indep"']\&
-	p\tri u\tri p'\ar[r, "\switch_{p}\tri p'"']\&
-	(u\tri p)\tri p'\ar[u, "\indep\tri p'"']
-\end{tikzcd}\label{eqn.key_med1}
-\\[15pt]
-\begin{tikzcd}[, ampersand replacement=\&, column sep=large]
-	p\tri u\tri u\ar[r, "p\tri\Sigma"]\ar[d, "\switch_p\tri u"']\&
-	p\tri u\ar[r, "\switch_p"]\&
-	u\otimes p\ar[r, "\indep"]\&
-	u\tri p\\
-	(u\otimes p)\tri u\ar[r, "\indep\tri u"']\&
-	u\tri p\tri u\ar[r, "u\tri\switch_p"']\&
-	u\tri (u\otimes p)\ar[r, "u\tri\indep"']\&
-	u\tri u\tri p\ar[u, "\Sigma\tri p"']
-\end{tikzcd}\label{eqn.key_large}
 \\[15pt]
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
 	p\tri(u\otimes q)\ar[r, "\ol{\switch}_{p,q}"]\ar[d, "\indep"']\&
 	u\otimes p\tri q\ar[d, "\duoid"]\\
-	p\tri u\tri q\ar[r, "\switch_{p,q}\tri q"']\&
+	p\tri u\tri q\ar[r, "\ol\switch_{p,\yon}\tri q"']\&
 	(u\otimes p)\tri q
 \end{tikzcd}\label{eqn.key_compare}
 \\[15pt]
+\begin{tikzcd}[column sep=-10pt, ampersand replacement=\&]
+	\&p\tri p'\tri (u\otimes q)\ar[dl, "p\tri\ol\switch_{p',q}"']\ar[dr,"\ol\switch_{p\tri p',q}"]\\
+	p\tri (u\otimes p'\tri q)\ar[rr, "\ol\switch_{p, p'\tri q}"']\&\&u\otimes p\tri p'\tri q
+\end{tikzcd}\label{eqn.key_med3}
+\\[15pt]
+\begin{tikzcd}[column sep=0pt, ampersand replacement=\&]
+	\&p\tri p'\tri u\ar[dl, "p\tri\switch_{p'}"']\ar[dr,"\switch_{p\tri p'}"]\\
+	p\tri u\tri p'\ar[rr, "\switch_{p}\tri p'"']\&\&u\tri p\tri p'
+\end{tikzcd}\label{eqn.key_med1}
+\\[15pt]
+\begin{tikzcd}[ampersand replacement=\&, column sep=large]
+  p\tri u\tri u\ar[d, "p\tri\Sigma"']\ar[r, "\switch_p\tri u"]\&
+  u\tri p\tri u\ar[r, "u\tri\switch_p"]\&
+  u\tri u\tri p\ar[d, "\Sigma\tri p"]\\
+  p\tri u\ar[rr, "\switch_p"']\&\&
+  u\tri p
+\end{tikzcd}\label{eqn.key_large}
+\\[15pt]
 \begin{tikzcd}[column sep=large, ampersand replacement=\&]
-	p\tri (u\otimes u)\ar[d, "\ol{\switch}_{p',u}"']\ar[r, "p\tri{(-,-)}"]\&
-	p\tri u\ar[r, "\switch_p"]\&u\otimes p\\
-	u\otimes p\tri u\ar[rr, "u\otimes\switch_p"']\&\&
-	u\otimes u\otimes p\ar[u, "{(-,-)}\tri p"']
+	p\tri (u\otimes u)\ar[r, "\ol{\switch}_{p,u}"]\ar[d, "p\tri{(-,-)}"']\&
+	u\otimes p\tri u\ar[r, "u\otimes\ol\switch_{p,\yon}"]
+	\&u\otimes u\otimes p\ar[d, "{(-,-)}\otimes p"]\\
+	p\tri u\ar[rr, "\ol\switch_{p,\yon}"']
+	\&\&
+	u\otimes p
 \end{tikzcd}\label{eqn.key_med2}
 \end{gather}
 \end{lemma}
@@ -781,15 +794,23 @@ does not commute: starting with $\1\vdash A$, the top composite yields $(A,())$,
 }
 it is natural when $\alpha$ is cartesian. Indeed if $\alpha_1(I)=I'$ then the bijection $\alpha_I^\sharp$ extends to a bijection
 \[\Pi(p[I],A)\cong\Pi(p'[I'],A)\]
-and $\ol{\switch}_p$ overflows iff $\ol{\switch}_{p'}$ does. Since $\switch$ is the $\yon$-component of $\ol{\switch}$, it is natural in $p$ as well.
+and $\ol{\switch}_p$ overflows iff $\ol{\switch}_{p'}$ does. Since $\switch$ is the $\yon$-component of $\ol{\switch}$ composed with $\indep$, it is natural in $p$ as well.
 
 We next consider the commutativity of the diagrams in \eqref{eqn.key_smalls}. The map $\yon\tri u\to u\otimes\yon$ sends $(\1,A)\mapsto\prod_{():\1}A()$, which is isomorphic to $A$ (and hence equal in $C_\kappa$). Thus the left hand triangle commutes. For the right-hand triangle, suppose given $I\in p(1)$. Under the left-hand composite map it is sent to $(\Pi(p[I],\1),I)$ and under the right-hand map it is sent to $(\1,I)$; these are the same element of $C_\kappa$, since $\Pi(p[I],\1)$ is defined isomorphic to a product of $\1$'s, which is isomorphic to $\1$. The maps on directions are also identical.
 
-To prove that \eqref{eqn.key_med1} commutes, it suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
-\[\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))\]
-which there is, and that second the overflow handling agrees, as we now argue. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$. 
+To prove that \eqref{eqn.key_compare} commutes, suppose given $(I,A,J)\in p\tri(u\otimes q)(1)$, i.e.\ $A\colon p[I]\to u(1)$ and $J\colon p[I]\to q(1)$. Around both composites it is sent to $((\Pi(I,A),I),J')\in (u\otimes p)\tri q$ where $J'$ is the composite $\Pi(I,A)\times I\to I\To{J} q(1)$.
+% It may be helpful to see this one in slow motion: around the top we have
+%\[I\vdash (A,J)\quad\mapsto\quad \Pi(I, A),(I\vdash J)\quad\mapsto\quad (\Pi(I,A),I)\vdash J\]
+%and around the bottom we have
+%\[
+%I\vdash (A,J)\quad\mapsto\quad I\vdash A\vdash J\quad\mapsto\quad (\Pi(I, A),I)\vdash J
+%\]
 
-To prove that \eqref{eqn.key_large} commutes, suppose given $(I,A,B)\in p\tri(u\tri u)$, where $A\colon p[I]\to u(1)$ and $B\colon\sum_{i:p[I]}Ai\to u(1)$. It is easy to check that, for some $A_1,A_2\in u(1)$, it is sent under the top composite map to  $(A_1,I)$ and under the bottom composite map it is sent to $(A_2,I)$. Assuming neither overflows, these are 
+To prove that \eqref{eqn.key_med3} commutes, it suffices to show for any set $I$, sets $(I'_i)_{i\in I}$, and sets $(A_{i,i'})_{i\in I, i'\in I'_i}$ with $A_{i,i'}<\kappa$, that first there is a bijection
+\[\Pi(\Sigma(I,I'),A)\cong\Pi(I,\Pi(I',A))\]
+which there is, and that second the overflow handling agrees, as we now argue. If for any $i\in I$ there is an overflow in $\Pi(I'_i,A_i)$ then it will output $0$, and the product of anything with $0$ is $0$; hence the two sides agree that the result is $0$. Otherwise, if all $\Pi(I'_i,A_i)$ succeed, then if the mutual result is too big, both sides again agree that the result is $0$. The commutativity of \eqref{eqn.key_med1} follows from \eqref{eqn.key_compare}, \eqref{eqn.key_med3}, and \cref{lemma.duoid_indep}.
+
+To prove that \eqref{eqn.key_large} commutes, suppose given $(I,A,B)\in p\tri(u\tri u)(1)$, where $A\colon p[I]\to u(1)$ and $B\colon\sum_{i:p[I]}Ai\to u(1)$. It is easy to check that, for some $A_1,A_2\in u(1)$, it is sent under the top composite map to  $(A_1,I)$ and under the bottom composite map it is sent to $(A_2,I)$. Assuming neither overflows, these are 
 \[
   A_1\cong\Pi(p[I],\Sigma(A, B))
   \qqand
@@ -797,31 +818,11 @@ To prove that \eqref{eqn.key_large} commutes, suppose given $(I,A,B)\in p\tri(u\
 \] 
 respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
 
-Note that $\Pi(p[I],\Sigma(A, B))\cong\Sigma(\Pi(p[I],A),\Pi(p[I],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[I],A\times B)>\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[I],A)>\kappa$ or $\Pi(p[I],Ba)>\kappa$ is too big, for some $a\in\Pi(p[I],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[I],B))$ and in the second case we will have $A_2=\Pi(p[I],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes.
+Note that $\Pi(p[I],\Sigma(A, B))\cong\Sigma(\Pi(p[I],A),\Pi(p[I],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[I],A\times B)>\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[I],A)>\kappa$ or $\Pi(p[I],Ba)>\kappa$ is too big, for some $a\in\Pi(p[I],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[I],B))$ and in the second case we will have $A_2=\Pi(p[I],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes. 
 
-To prove that \eqref{eqn.key_compare} commutes, suppose given $(I,A,J)\in p\tri(u\otimes q)(1)$, i.e.\ $A\colon p[I]\to u(1)$ and $J\colon p[I]\to q(1)$. Around both composites it is sent to $((\Pi(I,A),I),J')\in (u\otimes p)\tri q$ where $J'$ is the composite $\Pi(I,A)\times I\to I\To{J} q(1)$. It may be helpful to see it in slow motion: around the top we have
-\[I\vdash (A,J)\quad\mapsto\quad \Pi(I, A),(I\vdash J)\quad\mapsto\quad (\Pi(I,A),I)\vdash J\]
-and around the bottom we have
-\[
-I\vdash (A,J)\quad\mapsto\quad I\vdash A\vdash J\quad\mapsto\quad (\Pi(I, A),I)\vdash J
-\]
-
-Finally to show that \eqref{eqn.key_med2} commutes, it suffices to show for any set $I$ and sets $(A_i)_{i\in I}$ and $(B_i)_{i\in I}$ with $A_i<\kappa$ and $B_i<\kappa$, that first there is a bijection 
-\[\Pi(I,A\times B)\cong\Pi(I,A)\times\Pi(I,B)\]
-which there is, and that second the overflow handling agrees. The argument is similar to the above.
+The commutativity of \eqref{eqn.key_med2} follows from \eqref{eqn.key_compare}, \eqref{eqn.key_large}, and \cref{lemma.duoid_indep}. This completes the proof.
 \end{proof}
 
-\begin{definition}[Dependent switching map $\varphi$]\label{def.dep_switching}
-Let $u\coloneqq u_\kappa$ be a $\kappa$-list polynomial. For any polynomial $p\in\polycart$, define the \emph{dependent switching map}
-\[
-	\varphi_{p}\colon p\tri u\to u\tri p
-\] 
-as the composite of the independent switching map and the independent inclusion:
-\[
-	p\tri u\To{\switch_{p}}u\otimes p\To{\indep}u\tri p.
-	\qedhere
-\]
-\end{definition}
 
 We now prove the main theorem.
 
@@ -866,12 +867,12 @@ Define $\ol\phi_{p_1,p_2,q}$ and $\phi_{p_1,p_2,q}$ to be the top and bottom com
   u\otimes p_1\tri(u\otimes p_2\tri q)\ar[r, "u\otimes\ol\switch_{p_1,p_2\tri q}"]\ar[d, "\indep\tri\indep"']&
   u\otimes u\otimes p_1\tri p_2\tri q\ar[r, "{(-,-)}\tri p_1\tri p_2\tri q"]\ar[d]&[10pt]
   u\otimes p_1\tri p_2\tri q\ar[d, "\indep"]\\
-  u\tri p_1\tri u\tri p_2\tri q\ar[r, "u\tri\varphi_{p_1}\tri p_2\tri q"']&
+  u\tri p_1\tri u\tri p_2\tri q\ar[r, "u\tri\switch_{p_1}\tri p_2\tri q"']&
   u\tri u\tri p_1\tri p_2\tri q\ar[r, "\Sigma\tri p_1\tri p_2\tri q"']&
   u\tri p_1\tri p_2\tri q  
 \end{tikzcd}
 \]
-where we use $\ol{\switch}$ and $\varphi$ (see Definitions~\ref{def.switching}~and~\ref{def.dep_switching}) and the multiplications $(-,-)$ and $\otimes$.
+where we use $\ol{\switch}$ and $\switch$ (see Definitions~\ref{def.switching}~and~\ref{def.switchmap}) and the multiplications $(-,-)$ and $\otimes$.
 The left-hand square in this diagram commutes by \eqref{eqn.key_compare} and the right-hand square commutes by \eqref{eqn.otimes_monoid} and the naturality of $\indep$.
 
 It remains to show that in both cases these satisfy the three commutative diagrams of a lax monoidal functor. The unit diagrams are:
@@ -906,8 +907,19 @@ It remains to show that in both cases these satisfy the three commutative diagra
 \end{gather*}
 Both the top and bottom diagrams commute by the respective monad unit laws and the commutativity of the respective triangles in \eqref{eqn.key_smalls}.
 
-We conclude by showing that the associativity diagram commutes for any $q\in\poly$:
-\[
+We conclude by showing that the associativity diagrams for $\ol\Phi$ and $\Phi$:
+\begin{gather*}
+\begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
+	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q))
+		\ar[r, "u\otimes p_1\tri\ol\phi_{p_2,p_3,q}"]
+		\ar[d, "\ol\phi_{p_1,p_2,u\otimes p_3\tri q}"']\&
+	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)
+		\ar[d, "\ol\phi_{p_1,p_2\tri p_3,q}"]\\
+	u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)
+		\ar[r, "\ol\phi_{p_1\tri p_2,p_3,q}"']\&
+	u\otimes p_1\tri p_2\tri p_3\tri q
+\end{tikzcd}
+\\[15pt]
 \begin{tikzcd}[ampersand replacement=\&, column sep=60pt]
 	u\tri p_1\tri u\tri p_2\tri u\tri p_3\tri q
 		\ar[r, "u\tri p_1\tri\phi_{p_2,p_3,q}"]
@@ -918,23 +930,44 @@ We conclude by showing that the associativity diagram commutes for any $q\in\pol
 		\ar[r, "\phi_{p_1\tri p_2,p_3,q}"']\&
 	u\tri p_1\tri p_2\tri p_3\tri q
 \end{tikzcd}
+\end{gather*}
+commute for any $q\in\poly$. Unpacking the first, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
+\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\switch$ and $\Sigma$ are fully written as $u\tri p_1\tri u\tri p_2\tri\switch_{p_2}\tri p_3\tri q$ and $u\tri p_1\tri\Sigma\tri p_2\tri p_3\tri q$.}
+\[\fontsize{9.6pt}{9.6pt}\selectfont
+\begin{tikzcd}
+	u\otimes p_1\tri(u\otimes p_2\tri(u\otimes p_3\tri q))\ar[r, "\ol{\pi}"]\ar[dd, "\ol{\pi}"']&
+	u\otimes p_1\tri(u\otimes u\otimes p_2\tri p_3\tri q)\ar[r, "{(-,-)}"]\ar[d, "\ol{\pi}"]&[5pt]
+	u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)\ar[dd, "\ol{\pi}"]\\&
+	u\otimes u\otimes p_1\tri(u\otimes p_2\tri p_3\tri q)\ar[dd, "\ol{\pi}"]\\[-12pt]
+	u\otimes u\otimes p_1\tri p_2\tri(u\otimes p_3\tri q)\ar[dd, "{(-,-)}"']\ar[ur, bend left=5pt, start anchor={north east}, "\ol{\pi}"]\ar[dr, bend right=5pt, start anchor={south east}, "\ol{\pi}_{p_1\tri p_2}"']&&
+	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[dd, "{(-,-)}"]\\[-12pt]&
+	u\otimes u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[d, "{(-,-)}\otimes u"]\ar[ur, bend right=5pt, start anchor={east}, end anchor={south west}, "u\otimes{(-,-)}"']\\
+	u\otimes(p_1\tri p_2\tri(u\otimes p_3\tri q))\ar[r, "\ol{\pi}_{p_1\tri p_2}"']&
+	u\otimes u\otimes p_1\tri p_2\tri p_3\tri q\ar[r, "{(-,-)}"']&
+	u\otimes p_1\tri p_2\tri p_3\tri q
+\end{tikzcd}
 \]
-Unpacking this, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
-\footnote{We label the maps merely by ``hints'' for space reasons; e.g. the top maps labeled $\varphi$ and $\Sigma$ are fully written as $u\tri p_1\tri u\tri p_2\tri\varphi_{p_2}\tri p_3\tri q$ and $u\tri p_1\tri\Sigma\tri p_2\tri p_3\tri q$.}
+The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by the monad associativity law. The rest is \cref{lemma.key}: the little triangle commutes by \eqref{eqn.key_med3} and the pentagon commutes by \eqref{eqn.key_med2}.
+
+The proof of the associativity for $\Phi$ is quite similar. Unpacking the second, we obtain the following diagram, where the four sides above agree with the four composite sides shown:%
 \[%\fontsize{11pt}{11pt}\selectfont
 \begin{tikzcd}
-	u\tri p_1\tri u\tri p_2\tri u\tri p_3\tri q\ar[r, "\varphi"]\ar[dd, "\varphi"']&
-	u\tri p_1\tri u\tri u\tri p_2\tri p_3\tri q\ar[r, "\Sigma"]\ar[d, "\varphi"]&
-	u\tri p_1\tri u\tri p_2\tri p_3\tri q\ar[dd, "\varphi"]\\&
-	u\tri u\tri p_1\tri u\tri p_2\tri p_3\tri q\ar[dd, "\varphi"]\\[-12pt]
-	u\tri u\tri p_1\tri p_2\tri u\tri p_3\tri q\ar[dd, "\Sigma"']\ar[ur, bend left=5pt, start anchor={north east}, "\varphi"]\ar[dr, bend right=5pt, start anchor={south east}, "\varphi_{p_1\tri p_2}"']&&
+	u\tri p_1\tri u\tri p_2\tri u\tri p_3\tri q\ar[r, "\switch"]\ar[dd, "\switch"']&
+	u\tri p_1\tri u\tri u\tri p_2\tri p_3\tri q\ar[r, "\Sigma"]\ar[d, "\switch"]&
+	u\tri p_1\tri u\tri p_2\tri p_3\tri q\ar[dd, "\switch"]\\&
+	u\tri u\tri p_1\tri u\tri p_2\tri p_3\tri q\ar[dd, "\switch"]\\[-12pt]
+	u\tri u\tri p_1\tri p_2\tri u\tri p_3\tri q\ar[dd, "\Sigma"']\ar[ur, bend left=5pt, start anchor={north east}, "\switch"]\ar[dr, bend right=5pt, start anchor={south east}, "\switch_{p_1\tri p_2}"']&&
 	u\tri u\tri p_1\tri p_2\tri p_3\tri q\ar[dd, "\Sigma"]\\[-12pt]&
 	u\tri u\tri u\tri p_1\tri p_2\tri p_3\tri q\ar[d, "\Sigma\tri u"]\ar[ur, bend right=5pt, start anchor={east}, end anchor={south west}, "u\tri\Sigma"']\\
-	u\tri p_1\tri p_2\tri u\tri p_3\tri q\ar[r, "\varphi_{p_1\tri p_2}"']&
+	u\tri p_1\tri p_2\tri u\tri p_3\tri q\ar[r, "\switch_{p_1\tri p_2}"']&
 	u\tri u\tri p_1\tri p_2\tri p_3\tri q\ar[r, "\Sigma"]&
 	u\tri p_1\tri p_2\tri p_3\tri q
 \end{tikzcd}
 \]
+
+
+
+
 The top-left and bottom-left squares commute by functoriality of monoidal products, and the bottom right square commutes by the monad associativity law. The rest is \cref{lemma.key}: the little triangle commutes by \eqref{eqn.key_med1} and the pentagon commutes by \eqref{eqn.key_large}.
 \end{proof}
 
@@ -942,7 +975,7 @@ The top-left and bottom-left squares commute by functoriality of monoidal produc
 %-------- Chapter --------%
 \chapter{Consequences in the language of dependent types}
 
-The main theorem really just packages the story. The real heart of the matter---at least for dependent types---is \cref{lemma.key} applied to $u$ across the board, where $u$ is a polynomial universe as in \cref{def.universe}. So fix a polynomial universe $(u,\1,\Sigma)$ for the rest of this section.
+The main theorem really just packages the story. The real heart of the matter---at least for dependent types---is \cref{lemma.key} applied to some  polynomial universe $(u,\1,\Sigma)$, which we fix for the rest of this section.
 
 %---- Section ----%
 \section{Notation}
@@ -999,7 +1032,7 @@ Thus, given a dependent type $I\in p(1)$, a base type $A_i:\U$ and a type $J i\i
     \Infer1{I\to A, I\vdash J}
   \end{prooftree}
 \end{equation*}
-Given terms $a:[I\to A]$, $i:p[I]$, and $j:q[Ji]$, we obtain a term $(i,a i, j):p\tri(u\otimes q)[I\vdash (A,J)]$. Unlike the case for $\1$, $\Sigma$, and $(-,-)$, this construction is not a bijection because $\varphi_{u,u}$ is not cartesian, as explained in the footnote below \cref{eqn.not_injective}.
+Given terms $a:[I\to A]$, $i:p[I]$, and $j:q[Ji]$, we obtain a term $(i,a i, j):p\tri(u\otimes q)[I\vdash (A,J)]$. Unlike the case for $\1$, $\Sigma$, and $(-,-)$, this construction is not a bijection because $\switch_{u,u}$ is not cartesian, as explained in the footnote below \cref{eqn.not_injective}.
 
 %---- Section ----%
 \section{Unpacking the results}
