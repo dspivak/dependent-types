@@ -368,10 +368,27 @@ Awodey, later with Newstead, showed how polynomial monads $(u,\1,\Sigma)$ with e
 This paper builds off that work---explicating the syntax and rules for dependent type theory by axiomatizing them in the language of polynomial functors---but from a different starting point. First we work in a more basic setting, that of a 1-category with two monoidal products. Second, rather than considering pseudo-algebras of any sort, we define a seemingly new categorical structure that houses the axioms for dependent type theory in a polynomial setting. This structure picks up something that Awodey-Newstead seem to have missed: the distributive law for products over sums. Indeed, one result of our axiomatization is that any universe monad will always carry a self-distributive law $u\tri u\to u\tri u$.
 \end{abstract}
 
+{\color{red!50!black}
+Mistake: the distributive law
+\[
+\Pi(A,\Sigma(B,C))\cong\Sigma(\Pi(A,B),\Pi(A,C))
+\]
+does not work. You can't seem to define $u\tri u\to u\otimes u$ in such a way that \eqref{eqn.key_large} holds. Here's a counterexample:
+\[\fontsize{7.5pt}{7.5pt}\selectfont
+\begin{tikzcd}
+	{[[[1,2],[3]],[[4],[5]]]}\ar[d, |->]\ar[r, |->]&
+	{[[[1,2],[4]],[[1,2],[5]],[[3],[4]],[[3],[5]]]}\ar[r, |->]&
+	{[[[1,4],[2,4]],[[1,5],[2,5]],[[3,4]],[[3,5]]]}\ar[d, |->]\\
+	{[[1,2,3],[4,5]]}\ar[r, |->]&
+	{[[1,4],[2,4],[3,4],[1,5],[2,5],[3,5]]}\ar[r, phantom, "\neq" description]&
+	{[[1,4],[2,4],[1,5],[2,5],[3,4],[3,5]]}
+\end{tikzcd}
+\]
+You could try using ``the other order", but that doesn't work either.
+}
 
 %-------- Chapter --------%
 \chapter{Introduction}
-
 
 
 Dependent type theory \cite{martin-lof1975intuitionistic} was founded by Per Martin-L\"{o}f in 1975 to formalize constructive mathematics. The basic idea is that \emph{order of events} is fundamental to a mathematical story arc: when playing out any specific example story in that arc, the beginning of the story affects not only the later events, but even the very terms with which the later events will be described. For example, in the story arc of conditional probability, one may say ``now if the set $P$ that we are asked to condition on happens to have measure zero, we must stop; but assuming that's not the case then the result will be a new probability measure.'' Here the story teller is saying that no terms will describe what happens if $P$ has measure zero, whereas otherwise the terms of standard probability will apply.
