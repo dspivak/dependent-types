@@ -1,0 +1,518 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  oneside,
+  article]{memoir}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\settrims{0pt}{0pt} % page and stock same size
+\settypeblocksize{*}{34.5pc}{*} % {height}{width}{ratio}
+\setlrmargins{*}{*}{1} % {spine}{edge}{ratio}
+\setulmarginsandblock{.98in}{.98in}{*} % height of typeblock computed
+\setheadfoot{\onelineskip}{2\onelineskip} % {headheight}{footskip}
+\setheaderspaces{*}{1.5\onelineskip}{*} % {headdrop}{headsep}{ratio}
+\checkandfixthelayout
+
+
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+\usepackage[inline]{enumitem}
+\usepackage{ifthen}
+\usepackage[utf8]{inputenc} %allows non-ascii in bib file
+\usepackage{xcolor}
+
+\usepackage[backend=biber, backref=true, maxbibnames = 10, style = alphabetic]{biblatex}
+\usepackage[bookmarks=true, colorlinks=true, linkcolor=blue!50!black,
+citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperref}
+\usepackage[capitalize]{cleveref}
+
+\usepackage{tikz}
+
+\usepackage{amssymb}
+\usepackage{newpxtext}
+\usepackage[varg,bigdelims]{newpxmath}
+\usepackage{mathrsfs}
+\usepackage{dutchcal}
+\usepackage{fontawesome}
+\usepackage{ebproof}
+\usepackage{stmaryrd}
+
+
+% cleveref %
+  \newcommand{\creflastconjunction}{, and\nobreakspace} % serial comma
+  \crefformat{enumi}{\##2#1#3}
+  \crefalias{chapter}{section}
+
+
+% biblatex %
+  \addbibresource{Library20211226.bib} 
+
+% hyperref %
+  \hypersetup{final}
+
+% enumitem %
+  \setlist{nosep}
+  \setlistdepth{6}
+
+
+
+% tikz %
+
+
+
+  \usetikzlibrary{ 
+  	cd,
+  	math,
+  	decorations.markings,
+		decorations.pathreplacing,
+  	positioning,
+  	arrows.meta,
+  	shapes,
+		shadows,
+		shadings,
+  	calc,
+  	fit,
+  	quotes,
+  	intersections,
+    circuits,
+    circuits.ee.IEC
+  }
+  
+  \tikzset{
+biml/.tip={Glyph[glyph math command=triangleleft, glyph length=.95ex]},
+bimr/.tip={Glyph[glyph math command=triangleright, glyph length=.95ex]},
+}
+
+\tikzset{
+	tick/.style={postaction={
+  	decorate,
+    decoration={markings, mark=at position 0.5 with
+    	{\draw[-] (0,.4ex) -- (0,-.4ex);}}}
+  }
+} 
+\tikzset{
+	slash/.style={postaction={
+  	decorate,
+    decoration={markings, mark=at position 0.5 with
+    	{\draw[-] (.3ex,.3ex) -- (-.3ex,-.3ex);}}}
+  }
+} 
+
+\newcommand{\upp}{\begin{tikzcd}[row sep=6pt]~\\~\ar[u, bend left=50pt, looseness=1.3, start anchor=east, end anchor=east]\end{tikzcd}}
+
+\newcommand{\bito}[1][]{
+	\begin{tikzcd}[ampersand replacement=\&, cramped]\ar[r, biml-bimr, "#1"]\&~\end{tikzcd}  
+}
+\newcommand{\bifrom}[1][]{
+	\begin{tikzcd}[ampersand replacement=\&, cramped]\ar[r, bimr-biml, "{#1}"]\&~\end{tikzcd}  
+}
+\newcommand{\bifromlong}[2][]{
+	\begin{tikzcd}[ampersand replacement=\&, column sep=#2, cramped]\ar[r, bimr-biml, "#1"]\&~\end{tikzcd}  
+}
+
+% Adjunctions
+\newcommand{\adj}[5][30pt]{%[size] Cat L, Left, Right, Cat R.
+\begin{tikzcd}[ampersand replacement=\&, column sep=#1]
+  #2\ar[r, shift left=7pt, "#3"]
+  \ar[r, phantom, "\scriptstyle\Rightarrow"]\&
+  #5\ar[l, shift left=7pt, "#4"]
+\end{tikzcd}
+}
+
+\newcommand{\adjr}[5][30pt]{%[size] Cat R, Right, Left, Cat L.
+\begin{tikzcd}[ampersand replacement=\&, column sep=#1]
+  #2\ar[r, shift left=7pt, "#3"]\&
+  #5\ar[l, shift left=7pt, "#4"]
+  \ar[l, phantom, "\scriptstyle\Leftarrow"]
+\end{tikzcd}
+}
+
+\newcommand{\xtickar}[1]{\begin{tikzcd}[baseline=-0.5ex,cramped,sep=small,ampersand 
+replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
+\newcommand{\xslashar}[1]{\begin{tikzcd}[baseline=-0.5ex,cramped,sep=small,ampersand 
+replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
+
+
+
+  
+  % amsthm %
+\theoremstyle{definition}
+\newtheorem{definitionx}{Definition}[chapter]
+\newtheorem{examplex}[definitionx]{Example}
+\newtheorem{remarkx}[definitionx]{Remark}
+\newtheorem{notation}[definitionx]{Notation}
+
+
+\theoremstyle{plain}
+
+\newtheorem{theorem}[definitionx]{Theorem}
+\newtheorem{proposition}[definitionx]{Proposition}
+\newtheorem{corollary}[definitionx]{Corollary}
+\newtheorem{lemma}[definitionx]{Lemma}
+\newtheorem{warning}[definitionx]{Warning}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{warning*}{Warning}
+%\theoremstyle{definition}
+%\newtheorem{definition}[theorem]{Definition}
+%\newtheorem{construction}[theorem]{Construction}
+
+\newenvironment{example}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\examplex}
+  {\popQED\endexamplex}
+  
+ \newenvironment{remark}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\remarkx}
+  {\popQED\endremarkx}
+  
+  \newenvironment{definition}
+  {\pushQED{\qed}\renewcommand{\qedsymbol}{$\lozenge$}\definitionx}
+  {\popQED\enddefinitionx} 
+
+    
+%-------- Single symbols --------%
+	
+\DeclareSymbolFont{stmry}{U}{stmry}{m}{n}
+\DeclareMathSymbol\fatsemi\mathop{stmry}{"23}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+
+
+%-------- Renewed commands --------%
+
+\renewcommand{\ss}{\subseteq}
+
+%-------- Other Macros --------%
+
+
+\DeclarePairedDelimiter{\present}{\langle}{\rangle}
+\DeclarePairedDelimiter{\copair}{[}{]}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\corners}{\ulcorner}{\urcorner}
+\DeclarePairedDelimiter{\ihom}{[}{]}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Mor}{Mor}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\cod}{cod}
+\DeclareMathOperator{\idy}{idy}
+\DeclareMathOperator{\comp}{com}
+\DeclareMathOperator*{\colim}{colim}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\ob}{Ob}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\el}{El}
+
+
+
+
+\newcommand{\const}[1]{\texttt{#1}}%a constant, or named element of a set
+\newcommand{\Set}[1]{\mathsf{#1}}%a named set
+\newcommand{\ord}[1]{\mathsf{#1}}%an ordinal
+\newcommand{\cat}[1]{\mathcal{#1}}%a generic category
+\newcommand{\Cat}[1]{\mathbf{#1}}%a named category
+\newcommand{\fun}[1]{\mathrm{#1}}%a function
+\newcommand{\Fun}[1]{\mathit{#1}}%a named functor
+
+
+
+
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\then}{\mathbin{\fatsemi}}
+
+\newcommand{\cocolon}{:\!}
+
+
+\newcommand{\iso}{\cong}
+\newcommand{\too}{\longrightarrow}
+\newcommand{\tto}{\rightrightarrows}
+\newcommand{\To}[2][]{\xrightarrow[#1]{#2}}
+\renewcommand{\Mapsto}[1]{\xmapsto{#1}}
+\newcommand{\Tto}[3][13pt]{\begin{tikzcd}[sep=#1, cramped, ampersand replacement=\&, text height=1ex, text depth=.3ex]\ar[r, shift left=2pt, "#2"]\ar[r, shift right=2pt, "#3"']\&{}\end{tikzcd}}
+\newcommand{\Too}[1]{\xrightarrow{\;\;#1\;\;}}
+\newcommand{\from}{\leftarrow}
+\newcommand{\ffrom}{\leftleftarrows}
+\newcommand{\From}[1]{\xleftarrow{#1}}
+\newcommand{\Fromm}[1]{\xleftarrow{\;\;#1\;\;}}
+\newcommand{\surj}{\twoheadrightarrow}
+\newcommand{\inj}{\rightarrowtail}
+\newcommand{\wavyto}{\rightsquigarrow}
+\newcommand{\lollipop}{\multimap}
+\newcommand{\imp}{\Rightarrow}
+\renewcommand{\iff}{\Leftrightarrow}
+\newcommand{\down}{\mathbin{\downarrow}}
+\newcommand{\fromto}{\leftrightarrows}
+\newcommand{\tickar}{\xtickar{}}
+\newcommand{\slashar}{\xslashar{}}
+
+
+
+\newcommand{\inv}{^{-1}}
+\newcommand{\op}{^\tn{op}}
+
+\newcommand{\tn}[1]{\textnormal{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\wc}[1]{\widecheck{#1}}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+
+
+
+\newcommand{\bb}{\mathbb{B}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\rr}{\mathbb{R}}
+
+
+\newcommand{\finset}{\Cat{Fin}}
+\newcommand{\smset}{\Cat{Set}}
+\newcommand{\smcat}{\Cat{Cat}}
+\newcommand{\catsharp}{\Cat{Cat}^{\sharp}}
+\newcommand{\ppolyfun}{\mathbb{P}\Cat{olyFun}}
+\newcommand{\ccatsharp}{\mathbb{C}\Cat{at}^{\sharp}}
+\newcommand{\ccatsharpdisc}{\mathbb{C}\Cat{at}^{\sharp}_{\tn{disc}}}
+\newcommand{\ccatsharplin}{\mathbb{C}\Cat{at}^{\sharp}_{\tn{lin}}}
+\newcommand{\ccatsharpdisccon}{\mathbb{C}\Cat{at}^{\sharp}_{\tn{disc,con}}}
+\newcommand{\sspan}{\mathbb{S}\Cat{pan}}
+\newcommand{\en}{\Cat{End}}
+
+\newcommand{\List}{\Fun{List}}
+\newcommand{\set}{\tn{-}\Cat{Set}}
+
+
+
+
+\newcommand{\yon}{\mathcal{y}}
+\newcommand{\poly}{\Cat{Poly}}
+\newcommand{\polycart}{\poly^{\Cat{Cart}}}
+\newcommand{\ppoly}{\mathbb{P}\Cat{oly}}
+\newcommand{\0}{\textsf{0}}
+\newcommand{\1}{\tn{\textsf{1}}}
+\newcommand{\U}{\tn{\textsf{U}}}
+\newcommand{\tri}{\mathbin{\triangleleft}}
+\newcommand{\triright}{\mathbin{\triangleright}}
+\newcommand{\tripow}[1]{^{\tri #1}}
+\newcommand{\indep}{\Fun{Indep}}
+\newcommand{\duoid}{\Fun{Duoid}}
+\newcommand{\jump}{\pi}
+\newcommand{\jumpmap}{\ol{\jump}}
+\newcommand{\founds}{\Yleft}
+
+
+% lenses
+\newcommand{\biglens}[2]{
+     \begin{bmatrix}{\vphantom{f_f^f}#2} \\ {\vphantom{f_f^f}#1} \end{bmatrix}
+}
+\newcommand{\littlelens}[2]{
+     \begin{bsmallmatrix}{\vphantom{f}#2} \\ {\vphantom{f}#1} \end{bsmallmatrix}
+}
+\newcommand{\lens}[2]{
+  \relax\if@display
+     \biglens{#1}{#2}
+  \else
+     \littlelens{#1}{#2}
+  \fi
+}
+
+
+
+\newcommand{\qand}{\quad\text{and}\quad}
+\newcommand{\qqand}{\qquad\text{and}\qquad}
+
+
+\newcommand{\coto}{\nrightarrow}
+\newcommand{\cofun}{{\raisebox{2pt}{\resizebox{2.5pt}{2.5pt}{$\setminus$}}}}
+
+\newcommand{\coalg}{\tn{-}\Cat{Coalg}}
+
+\newcommand{\bic}[2]{{}_{#1}\Cat{Comod}_{#2}}
+
+% ---- Changeable document parameters ---- %
+
+\linespread{1.1}
+\allowdisplaybreaks
+\setsecnumdepth{subsection}
+\settocdepth{subsection}
+\setlength{\parindent}{15pt}
+\setcounter{tocdepth}{1}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Polynomial Universes and Dependent Types},
+  pdfauthor={C.B. Aberlé; David I. Spivak},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Polynomial Universes and Dependent Types}
+\author{C.B. Aberlé \and David I. Spivak}
+\date{}
+
+\begin{document}
+\makeatletter
+\@ifclassloaded{memoir}{\ifartopt\else\frontmatter\fi}{\frontmatter}
+\makeatother
+\maketitle
+
+\makeatletter
+\@ifclassloaded{memoir}{\ifartopt\else\mainmatter\fi}{\mainmatter}
+\makeatother
+\begin{abstract}
+Awodey, later with Newstead, showed how polynomial monads $(u,\1,\Sigma)$ with extra structure hold within them the syntax and rules for dependent type theory. Their work presented these ideas cleanly but within a complex setting: using pseudomonads and pseudo-algebras in a tricategory.
+
+This paper builds off that work---explicating the syntax and rules for dependent type theory by axiomatizing them in the language of polynomial functors---but from a different starting point. First we work in a more basic setting, that of a 1-category with two monoidal products. Second, rather than considering pseudo-algebras of any sort, we define a seemingly new categorical structure that houses the axioms for dependent type theory in a polynomial setting. This structure picks up something that Awodey-Newstead seem to have missed: the distributive law for products over sums. Indeed, one result of our axiomatization is that any universe monad will always carry a self-distributive law $u\tri u\to u\tri u$.
+\end{abstract}
+
+\chapter{Introduction}\label{introduction}
+
+Dependent type theory \cite{martin-lof1975intuitionistic} was founded by
+Per Martin-Löf in 1975 to formalize constructive mathematics. The basic
+idea is that \emph{order of events} is fundamental to a mathematical
+story arc: when playing out any specific example story in that arc, the
+beginning of the story affects not only the later events, but even the
+very terms with which the later events will be described. For example,
+in the story arc of conditional probability, one may say ``now if the
+set \(P\) that we are asked to condition on happens to have measure
+zero, we must stop; but assuming that's not the case then the result
+will be a new probability measure.'\,' Here the story teller is saying
+that no terms will describe what happens if \(P\) has measure zero,
+whereas otherwise the terms of standard probability will apply.
+
+Dependent types form a logical system with syntax, conversion rules, and
+methods of deduction. In \cite{awodey2014natural,awodey2018polynomial},
+Awodey and later Newstead show that there is a strong connection between
+dependent type theory and polynomial functors. The present work follows
+from this remarkable discovery, but differs in two key respects:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{module}\NormalTok{ poly{-}universes }\KeywordTok{where}
+
+\KeywordTok{open} \KeywordTok{import}\NormalTok{ Agda}\OtherTok{.}\NormalTok{Builtin}\OtherTok{.}\NormalTok{Equality}
+\end{Highlighting}
+\end{Shaded}
+
+\chapter{Background on HoTT and Polynomial
+Functors}\label{background-on-hott-and-polynomial-functors}
+
+\section{Homotopy Type Theory}\label{homotopy-type-theory}
+
+\section{Polynomials in HoTT}\label{polynomials-in-hott}
+
+\subsection{Basics}\label{basics}
+
+\subsection{Univalence}\label{univalence}
+
+\subsection{The Vertical-Cartesian Factorization
+System}\label{the-vertical-cartesian-factorization-system}
+
+\subsection{The Composition and Dirichlet Monoidal
+Products}\label{the-composition-and-dirichlet-monoidal-products}
+
+\subsection{\texorpdfstring{The \(\upuparrows\) and \((-)^=\)
+Functors}{The \textbackslash upuparrows and (-)\^{}= Functors}}\label{the-upuparrows-and---functors}
+
+\chapter{Polynomial Universes \& Jump
+Monads}\label{polynomial-universes-jump-monads}
+
+\section{Polynomial Universes}\label{polynomial-universes}
+
+\section{Jump Monads \& Distributive
+Laws}\label{jump-monads-distributive-laws}
+
+\makeatletter
+\@ifclassloaded{memoir}{\ifartopt\else\backmatter\fi}{\backmatter}
+\makeatother
+\end{document}
