@@ -97,6 +97,30 @@
 \usepackage[utf8]{inputenc} %allows non-ascii in bib file
 \usepackage{xcolor}
 
+\usepackage{newunicodechar}
+\newunicodechar{λ}{\ensuremath{\mathnormal\lambda}}
+\newunicodechar{∀}{\ensuremath{\mathnormal\forall}}
+\newunicodechar{≡}{\ensuremath{\mathnormal\equiv}}
+\newunicodechar{ℓ}{\ensuremath{\mathnormal\ell}}
+\newunicodechar{κ}{\ensuremath{\mathnormal\kappa}}
+\newunicodechar{Σ}{\ensuremath{\mathnormal\Sigma}}
+\newunicodechar{⊔}{\ensuremath{\mathnormal\sqcup}}
+\newunicodechar{♭}{\ensuremath{\mathnormal\flat}}
+\newunicodechar{ε}{\ensuremath{\mathnormal\epsilon}}
+\newunicodechar{₀}{\ensuremath{\mathnormal{_0}}}
+\newunicodechar{⊥}{\ensuremath{\mathnormal\bot}}
+\newunicodechar{⊤}{\ensuremath{\mathnormal\top}}
+\newunicodechar{α}{\ensuremath{\mathnormal\alpha}}
+\newunicodechar{β}{\ensuremath{\mathnormal\beta}}
+\newunicodechar{η}{\ensuremath{\mathnormal\eta}}
+\newunicodechar{⁻}{\ensuremath{\mathnormal{^-}}}
+\newunicodechar{¹}{\ensuremath{\mathnormal{^1}}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ω}{\ensuremath{\mathnormal\omega}}
+\newunicodechar{∘}{\ensuremath{\mathnormal\circ}}
+\newunicodechar{◃}{\ensuremath{\mathnormal\triangleleft}}
+\newunicodechar{⊗}{\ensuremath{\mathnormal\otimes}}
+
 \usepackage[backend=biber, backref=true, maxbibnames = 10, style = alphabetic]{biblatex}
 \usepackage[bookmarks=true, colorlinks=true, linkcolor=blue!50!black,
 citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperref}
@@ -450,56 +474,195 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \@ifclassloaded{memoir}{\ifartopt\else\mainmatter\fi}{\mainmatter}
 \makeatother
 \begin{abstract}
-Awodey, later with Newstead, showed how polynomial monads $(u,\1,\Sigma)$ with extra structure hold within them the syntax and rules for dependent type theory. Their work presented these ideas cleanly but within a complex setting: using pseudomonads and pseudo-algebras in a tricategory.
 
-This paper builds off that work---explicating the syntax and rules for dependent type theory by axiomatizing them in the language of polynomial functors---but from a different starting point. First we work in a more basic setting, that of a 1-category with two monoidal products. Second, rather than considering pseudo-algebras of any sort, we define a seemingly new categorical structure that houses the axioms for dependent type theory in a polynomial setting. This structure picks up something that Awodey-Newstead seem to have missed: the distributive law for products over sums. Indeed, one result of our axiomatization is that any universe monad will always carry a self-distributive law $u\tri u\to u\tri u$.
+Awodey, later with Newstead, showed how polynomial pseudomonads $(u,\1,\Sigma)$ with extra structure (termed "natural models" by Awodey) hold within them the syntax and rules for dependent type theory. Their work presented these ideas clearly but ultimately led them outside of the category of polynomial functors in order to explicate all of the structure possessed by such models of type theory.
+
+This paper builds off that work---explicating the syntax and rules for dependent type theory by axiomatizing them \emph{entirely} in the language of polynomial functors. In order to handle the higher-categorical coherences required by such an explication, we work with polynomial functors internally in the language of Homotopy Type Theory, which allows for higher-dimensional structures such as pseudomonads, etc. to be expressed purely in terms of the structure of a suitably-chosen $(2,1)$-category of polynomial functors. The move from set theory to Homotopy Type Theory thus has a twofold effect of enabling a simpler exposition of natural models, which is at the same time amenable to formalization in a proof assistant, such as Agda.
+
+Moreover, the choice to remain firmly within the setting of polynomial functors reveals many additional structures of natural models that were otherwise left implicit or not considered by Awodey \& Newstead. Chief among these, we highlight the fact that every polynomial pseudomonad $(u,\1,\Sigma)$ as above that is also equipped with structure to interpret dependent product types gives rise to a self-distributive law $u\tri u\to u\tri u$, which witnesses the usual distributive law of dependent products over dependent sums.
 \end{abstract}
 
 \chapter{Introduction}\label{introduction}
 
 Dependent type theory \cite{martin-lof1975intuitionistic} was founded by
 Per Martin-Löf in 1975 to formalize constructive mathematics. The basic
-idea is that \emph{order of events} is fundamental to a mathematical
-story arc: when playing out any specific example story in that arc, the
-beginning of the story affects not only the later events, but even the
-very terms with which the later events will be described. For example,
-in the story arc of conditional probability, one may say ``now if the
-set \(P\) that we are asked to condition on happens to have measure
-zero, we must stop; but assuming that's not the case then the result
-will be a new probability measure.'\,' Here the story teller is saying
-that no terms will describe what happens if \(P\) has measure zero,
-whereas otherwise the terms of standard probability will apply.
+idea is that the \emph{order of events} is fundamental to the
+mathematical story arc: when playing out any specific example story in
+that arc, the beginning of the story affects not only the later events,
+but even the very terms with which the later events will be described.
+For example, in the story arc of conditional probability, one may say
+``now if the set \(P\) that we are asked to condition on happens to have
+measure zero, we must stop; but assuming that's not the case then the
+result will be a new probability measure.'\,' Here the story teller is
+saying that no terms will describe what happens if \(P\) has measure
+zero, whereas otherwise the terms of standard probability will apply.
 
-Dependent types form a logical system with syntax, conversion rules, and
-methods of deduction. In \cite{awodey2014natural,awodey2018polynomial},
-Awodey and later Newstead show that there is a strong connection between
-dependent type theory and polynomial functors. The present work follows
-from this remarkable discovery, but differs in two key respects:
+Dependent types form a logical system with syntax, rules of computation,
+and methods of deduction. In
+\cite{awodey2014natural,awodey2018polynomial}, Awodey and later Newstead
+show that there is a strong connection between dependent type theory and
+polynomial functors, via their concept of \emph{natural models}, which
+cleanly solve the problem of \emph{strictififying} certain identities
+that typically hold only up to isomorphism in arbitrary categories, but
+must hold \emph{strictly} in order for these to soundly model dependent
+type theory. The solution to this problem offered by Awodey and Newstead
+makes use of the type-theoretic concept of a \emph{universe}. Such
+universes then turn out to naturally be regarded as polynomial functors
+on a suitably-chosen category of presheaves, satisfying a certain
+\emph{representability} condition.
+
+Although the elementary structure of natural models is thus
+straightforwardly described by considering them as objects in the
+category of polynomial functors, Awodey and Newstead were ultimately led
+outside of this category in order to fully explicate those parts of
+natural models that require identities to hold only \emph{up to
+isomorphism}, rather than strictly. There is thus an evident tension
+between \emph{strict} and \emph{weak} identities that has not yet been
+fully resolved in the story of natural models. In the present work, we
+build on Awodey and Newstead's work to fully resolve this impasse by
+showing how type universes can be fully axiomatized in terms of
+polynomial functors, by working with polynomial functors internally in
+the language of \emph{Homotopy Type Theory} (HoTT). We thus come full
+circle from Awodey's original motivation to develop natural models
+\emph{of} Homotopy Type Theory, to describing natural models \emph{in}
+Homotopy Type Theory.
+
+The ability for us to tell the story of natural models as set entirely
+in the category of polynomial functors has a great simplifying effect
+upon the resultant theory, and reveals many additional structures, both
+of polynomial universes, and of the category of polynomial functors as a
+whole. As an illustration of this, we show how every polynomial
+universe, regarded as a polynomial pseudomonad with additional
+structure, gives rise to self-distributive law \(u\tri u\to u\tri u\),
+which witnesses the usual distributive law of dependent products over
+dependent sums.
+
+Moreover, the move from set theory to HoTT as a setting in which to tell
+this story enables new tools to be applied for its telling. In
+particular, the account of polynomial universes we develop is
+well-suited to formalization in a proof assistant, and we present such a
+formalization in Agda. This paper is thus itself a literate Agda
+document in which all results have been fully formalized and checked for
+validity.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{module}\NormalTok{ poly{-}universes }\KeywordTok{where}
 
+\KeywordTok{open} \KeywordTok{import}\NormalTok{ Agda}\OtherTok{.}\NormalTok{Primitive}
 \KeywordTok{open} \KeywordTok{import}\NormalTok{ Agda}\OtherTok{.}\NormalTok{Builtin}\OtherTok{.}\NormalTok{Equality}
+\KeywordTok{open} \KeywordTok{import}\NormalTok{ Agda}\OtherTok{.}\NormalTok{Builtin}\OtherTok{.}\NormalTok{Sigma}
 \end{Highlighting}
 \end{Shaded}
+
+The structure of this paper is as follows:
 
 \chapter{Background on HoTT and Polynomial
 Functors}\label{background-on-hott-and-polynomial-functors}
 
+We begin with a quick recap of the basics of HoTT and polynomial
+functors.
+
 \section{Homotopy Type Theory}\label{homotopy-type-theory}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Type }\OtherTok{:} \OtherTok{(}\NormalTok{ℓ }\OtherTok{:}\NormalTok{ Level}\OtherTok{)} \OtherTok{→} \DataTypeTok{Set} \OtherTok{(}\NormalTok{lsuc ℓ}\OtherTok{)}
+\NormalTok{Type ℓ }\OtherTok{=} \DataTypeTok{Set}\NormalTok{ ℓ}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{isContr }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{→}\NormalTok{ Type ℓ }\OtherTok{→}\NormalTok{ Type ℓ}
+\NormalTok{isContr A }\OtherTok{=}\NormalTok{ Σ A }\OtherTok{(λ}\NormalTok{ a }\OtherTok{→} \OtherTok{(}\NormalTok{b }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ a ≡ b}\OtherTok{)}
+
+\NormalTok{isProp }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{→}\NormalTok{ Type ℓ }\OtherTok{→}\NormalTok{ Type ℓ}
+\NormalTok{isProp A }\OtherTok{=} \OtherTok{(}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ a ≡ b}
+
+\NormalTok{isSet }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{→}\NormalTok{ Type ℓ }\OtherTok{→}\NormalTok{ Type ℓ}
+\NormalTok{isSet A }\OtherTok{=} \OtherTok{(}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ isProp }\OtherTok{(}\NormalTok{a ≡ b}\OtherTok{)}
+
+\NormalTok{isGrpd }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{→}\NormalTok{ Type ℓ }\OtherTok{→}\NormalTok{ Type ℓ}
+\NormalTok{isGrpd A }\OtherTok{=} \OtherTok{(}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ isSet }\OtherTok{(}\NormalTok{a ≡ b}\OtherTok{)}
+
+\NormalTok{isEquiv }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type κ}\OtherTok{\}}
+          \OtherTok{→} \OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{→} \DataTypeTok{Set} \OtherTok{(}\NormalTok{ℓ ⊔ κ}\OtherTok{)}
+\NormalTok{isEquiv }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ A}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{=}\NormalTok{ B}\OtherTok{\}}\NormalTok{ f }\OtherTok{=} \OtherTok{(}\NormalTok{b }\OtherTok{:}\NormalTok{ B}\OtherTok{)} \OtherTok{→}\NormalTok{ isContr }\OtherTok{(}\NormalTok{Σ A }\OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ f a ≡ b}\OtherTok{))}
+\end{Highlighting}
+\end{Shaded}
+
 \section{Polynomials in HoTT}\label{polynomials-in-hott}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{PrePoly }\OtherTok{:} \OtherTok{(}\NormalTok{ℓ κ }\OtherTok{:}\NormalTok{ Level}\OtherTok{)} \OtherTok{→}\NormalTok{ Type }\OtherTok{((}\NormalTok{lsuc ℓ}\OtherTok{)}\NormalTok{ ⊔ }\OtherTok{(}\NormalTok{lsuc κ}\OtherTok{))}
+\NormalTok{PrePoly ℓ κ }\OtherTok{=}\NormalTok{ Σ }\OtherTok{(}\DataTypeTok{Set}\NormalTok{ ℓ}\OtherTok{)} \OtherTok{(λ}\NormalTok{ A }\OtherTok{→}\NormalTok{ A }\OtherTok{→} \DataTypeTok{Set}\NormalTok{ κ}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Lens }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{→}\NormalTok{ PrePoly ℓ κ }\OtherTok{→}\NormalTok{ PrePoly ℓ\textquotesingle{} κ\textquotesingle{} }\OtherTok{→}\NormalTok{ Type }\OtherTok{(}\NormalTok{ℓ ⊔ ℓ\textquotesingle{} ⊔ κ ⊔ κ\textquotesingle{}}\OtherTok{)}
+\NormalTok{Lens }\OtherTok{(}\NormalTok{A , B}\OtherTok{)} \OtherTok{(}\NormalTok{C , D}\OtherTok{)} \OtherTok{=}\NormalTok{ Σ }\OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ C}\OtherTok{)} \OtherTok{(λ}\NormalTok{ f }\OtherTok{→} \OtherTok{(}\NormalTok{a }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ D }\OtherTok{(}\NormalTok{f a}\OtherTok{)} \OtherTok{→}\NormalTok{ B a}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{record}\NormalTok{ Poly }\OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{:}\NormalTok{ Type }\OtherTok{((}\NormalTok{lsuc ℓ}\OtherTok{)}\NormalTok{ ⊔ }\OtherTok{(}\NormalTok{lsuc κ}\OtherTok{))} \KeywordTok{where}
+    \KeywordTok{constructor}\NormalTok{ poly}
+    \KeywordTok{field}
+\NormalTok{        Pos }\OtherTok{:}\NormalTok{ Type ℓ}
+\NormalTok{        Dir }\OtherTok{:}\NormalTok{ Pos }\OtherTok{→}\NormalTok{ Type κ}
+\NormalTok{        posIsGrpd }\OtherTok{:}\NormalTok{ isGrpd Pos}
+\NormalTok{        dirIsSet }\OtherTok{:} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Pos}\OtherTok{)} \OtherTok{→}\NormalTok{ isSet }\OtherTok{(}\NormalTok{Dir p}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \subsection{Basics}\label{basics}
 
 \subsection{Univalence}\label{univalence}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{idToEquiv }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ PrePoly ℓ κ}\OtherTok{)} \OtherTok{(}\NormalTok{a b }\OtherTok{:}\NormalTok{ fst p}\OtherTok{)}
+            \OtherTok{→}\NormalTok{ a ≡ b }\OtherTok{→}\NormalTok{ Σ }\OtherTok{(}\NormalTok{snd p a }\OtherTok{→}\NormalTok{ snd p b}\OtherTok{)}\NormalTok{ isEquiv}
+\NormalTok{idToEquiv p a b refl }\OtherTok{=} \OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ x}\OtherTok{)}\NormalTok{ , }\OtherTok{(λ}\NormalTok{ y }\OtherTok{→} \OtherTok{(}\NormalTok{y , refl}\OtherTok{)}\NormalTok{ , }\OtherTok{(λ} \OtherTok{\{} \OtherTok{(}\NormalTok{y\textquotesingle{} , refl}\OtherTok{)} \OtherTok{→}\NormalTok{ refl }\OtherTok{\}))}
+
+\NormalTok{isUnivalent }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{→}\NormalTok{ PrePoly ℓ κ }\OtherTok{→}\NormalTok{ Type }\OtherTok{(}\NormalTok{ℓ ⊔ κ}\OtherTok{)}
+\NormalTok{isUnivalent }\OtherTok{(}\NormalTok{A , B}\OtherTok{)} \OtherTok{=} 
+    \OtherTok{(}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{(}\NormalTok{idToEquiv }\OtherTok{(}\NormalTok{A , B}\OtherTok{)}\NormalTok{ a b}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \subsection{The Vertical-Cartesian Factorization
 System}\label{the-vertical-cartesian-factorization-system}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{isVertical }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{p }\OtherTok{:}\NormalTok{ PrePoly ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{q }\OtherTok{:}\NormalTok{ PrePoly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{\}}
+             \OtherTok{→}\NormalTok{ Lens p q }\OtherTok{→} \DataTypeTok{Set} \OtherTok{(}\NormalTok{ℓ ⊔ ℓ\textquotesingle{}}\OtherTok{)}
+\NormalTok{isVertical }\OtherTok{(}\NormalTok{f , g}\OtherTok{)} \OtherTok{=}\NormalTok{ isEquiv f}
+
+\NormalTok{isCartesian }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{p }\OtherTok{:}\NormalTok{ PrePoly ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{q }\OtherTok{:}\NormalTok{ PrePoly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{\}}
+             \OtherTok{→}\NormalTok{ Lens p q }\OtherTok{→} \DataTypeTok{Set} \OtherTok{(}\NormalTok{ℓ ⊔ κ ⊔ κ\textquotesingle{}}\OtherTok{)}
+\NormalTok{isCartesian }\OtherTok{\{}\NormalTok{p }\OtherTok{=} \OtherTok{(}\NormalTok{A , B}\OtherTok{)\}} \OtherTok{(}\NormalTok{f , g}\OtherTok{)} \OtherTok{=} \OtherTok{(}\NormalTok{a }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{(}\NormalTok{g a}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \subsection{The Composition and Dirichlet Monoidal
 Products}\label{the-composition-and-dirichlet-monoidal-products}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OtherTok{\_}\NormalTok{◃}\OtherTok{\_} \OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{→}\NormalTok{ PrePoly ℓ κ }\OtherTok{→}\NormalTok{ PrePoly ℓ\textquotesingle{} κ\textquotesingle{} }\OtherTok{→}\NormalTok{ PrePoly }\OtherTok{(}\NormalTok{ℓ ⊔ κ ⊔ ℓ\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{κ ⊔ κ\textquotesingle{}}\OtherTok{)}
+\OtherTok{(}\NormalTok{A , B}\OtherTok{)}\NormalTok{ ◃ }\OtherTok{(}\NormalTok{C , D}\OtherTok{)} \OtherTok{=} \OtherTok{(}\NormalTok{Σ A }\OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ B a }\OtherTok{→}\NormalTok{ C}\OtherTok{)}\NormalTok{ , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , f}\OtherTok{)} \OtherTok{→}\NormalTok{ Σ }\OtherTok{(}\NormalTok{B a}\OtherTok{)} \OtherTok{(λ}\NormalTok{ b }\OtherTok{→}\NormalTok{ D }\OtherTok{(}\NormalTok{f b}\OtherTok{)))}
+
+\OtherTok{\_}\NormalTok{⊗}\OtherTok{\_} \OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{→}\NormalTok{ PrePoly ℓ κ }\OtherTok{→}\NormalTok{ PrePoly ℓ\textquotesingle{} κ\textquotesingle{} }\OtherTok{→}\NormalTok{ PrePoly }\OtherTok{(}\NormalTok{ℓ ⊔ ℓ\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{κ ⊔ κ\textquotesingle{}}\OtherTok{)}
+\OtherTok{(}\NormalTok{A , B}\OtherTok{)}\NormalTok{ ⊗ }\OtherTok{(}\NormalTok{C , D}\OtherTok{)} \OtherTok{=} \OtherTok{(}\NormalTok{Σ A }\OtherTok{(λ} \OtherTok{\_} \OtherTok{→}\NormalTok{ C}\OtherTok{)}\NormalTok{ , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , c}\OtherTok{)} \OtherTok{→}\NormalTok{ Σ }\OtherTok{(}\NormalTok{B a}\OtherTok{)} \OtherTok{(λ} \OtherTok{\_} \OtherTok{→}\NormalTok{ D c}\OtherTok{))}
+\end{Highlighting}
+\end{Shaded}
 
 \subsection{\texorpdfstring{The \(\upuparrows\) and \((-)^=\)
 Functors}{The \textbackslash upuparrows and (-)\^{}= Functors}}\label{the-upuparrows-and---functors}

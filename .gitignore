@@ -1,3 +1,4 @@
+.DS_Store
 poly-dependent-types.aux
 poly-dependent-types.bbl
 poly-dependent-types.bcf
@@ -15,3 +16,4 @@ poly-universes.fdb_latexmk
 poly-universes.fls
 poly-universes.log
 poly-universes.run.xml
+poly-universes.synctex.gz
