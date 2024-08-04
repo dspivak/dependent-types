@@ -76,9 +76,31 @@ inv : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ} {f : A → B}
       → isEquiv f → B → A
 inv e b = fst (fst (e b))
 
+transp⁻¹ : ∀ {ℓ κ} {A : Type ℓ} (B : A → Type κ) {a b : A}
+           → a ≡ b → B b → B a
+transp⁻¹ B refl b = b
+
+ap : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ} (f : A → B) {a b : A}
+     → (e : a ≡ b) → f a ≡ f b
+ap f refl = refl
+
+sym : ∀ {ℓ} {A : Type ℓ} {a b : A}
+      → a ≡ b → b ≡ a
+sym refl = refl
+
+compIsEquiv : ∀ {ℓ ℓ' ℓ''} {A : Type ℓ} {B : Type ℓ'} {C : Type ℓ''}
+              → {f : A → B} {g : B → C}
+              → isEquiv g → isEquiv f → isEquiv (λ x → g (f x))
+compIsEquiv eg ef c = ((inv ef (inv eg c) , {!   !}) , {!   !})
+```
+
 ap : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
      → f ≡ g → (x : A) → f x ≡ g x
 ap refl x = refl
+
+invIsEquiv : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ} {f : A → B}
+             → (e : isEquiv f) → isEquiv (inv e)
+invIsEquiv {f = f} e a = ((f a , ap fst {!   !}) , {!   !})
 
 postulate
     funext1 : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
@@ -86,7 +108,6 @@ postulate
     funext2 : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f : (x : A) → B x}
               → funext1 {f = f} {g = f} (λ x → refl) ≡ refl
     {-# REWRITE funext2 #-}
-```
 
 ## Polynomials in HoTT
 
@@ -271,10 +292,76 @@ record Universe (ℓ κ : Level) : Type ((lsuc ℓ) ⊔ (lsuc κ)) where
 open Universe
 ```
 
-```agda
-{- UΣassoc : ∀ {ℓ κ} {u : Universe ℓ κ}
-          → (UΣ u) ∘ ((UΣ u) ◃◃ id) ≡ (UΣ u) ∘ (id ◃◃ (UΣ u)) ∘ ◃assoc
-UΣassoc = refl -}
-```
+Think about how we have a Cartesian morphism
+
+(p ◃ q) ◃ r ⇆ p ◃ (q ◃ r)
+
+The associativity law for u should somehow just be a reflection of this...
+
+Let σ : F(p1,...,pn) ⇆ G(p1,...,pn) be any natural family of Cartesian morphisms, for all p1,...,pn. If u is "closed" under F and G, in the sense that there are Cartesian morphisms F(u,...,u) ⇆ u and G(u,...,u) ⇆ u, and u is univalent, then the evident triangle automatically commutes.
+
+What is the higher version of this condition?
+
+Can be formulated globularly, simplicialy, cubically, etc. Ultimately, it boils down to: any higher shape of natural Cartesian morphisms gets reflected to a (higher) identity on elements of the universe.
+
+Given a Cartesian morphism p ⇆ q and Cartesian morphisms p ⇆ u and q ⇆ u, the forward direction of the evident triangle commutes, and therefore the triangle as a whole commutes iff the backward direction commutes.
+
+lemma1 : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} {u : Poly ℓ2 κ2}
+         → isUnivalent u → (f : p ⇆ q) (g : p ⇆ u) (h : q ⇆ u)
+         → isCartesian {p = p} {q = q} f → isCartesian {p = p} {q = u} g → isCartesian {p = q} {q = u} h
+         → (x : fst p) → fst h (fst f x) ≡ fst g x
+lemma1 univ f g h cf cg ch x = 
+    inv (univ (fst h (fst f x)) (fst g x)) 
+        ( (λ y → inv (cg x) (snd f x (snd h (fst f x) y))) 
+        , λ z → ( ( inv (ch (fst f x)) (inv (cf x) (snd g x z)) 
+                  , {!   !}) 
+                , {!   !}))
+
 
 ## Jump Monads \& Distributive Laws  
+
+---
+
+
+postulate
+    u : Poly lzero lzero
+    u⊤ : fst u
+    u⊤≡ : snd u u⊤ ≡ ⊤
+    uΣ : (A : fst u) → ((snd u A) → fst u) → fst u
+    uΣ≡ : (A : fst u) → (B : (snd u A) → fst u) → snd u (uΣ A B) ≡ Σ (snd u A) (λ x → snd u (B x))
+    uΠ : (A : fst u) → ((snd u A) → fst u) → fst u
+    uΠ≡ : (A : fst u) → (B : (snd u A) → fst u) → snd u (uΠ A B) ≡ ((x : snd u A) → snd u (B x))
+    {-# REWRITE u⊤≡ #-}
+    {-# REWRITE uΣ≡ #-}
+    {-# REWRITE uΠ≡ #-}
+    uUniv : isUnivalent u
+
+uΣassoc : (A : fst u) (B : (snd u A) → fst u) (C : (Σ (snd u A) (λ x → snd u (B x))) → fst u)
+          → uΣ (uΣ A B) C ≡ uΣ A (λ x → uΣ (B x) (λ y → C (x , y)))
+uΣassoc A B C = inv (uUniv (uΣ (uΣ A B) C) (uΣ A (λ x → uΣ (B x) (λ y → C (x , y))))) 
+                    ( (λ ((a , b) , c) → (a , (b , c))) 
+                    , λ (a , (b , c)) → ( ((((a , b) , c)) , refl) 
+                                        , λ {(x , refl) → refl}))
+
+
+
+{- UΣassoc1 : ∀ {ℓ κ} (u : Universe ℓ κ)
+           → (A : fst (UPoly u)) (B : snd (UPoly u) A → fst (UPoly u)) 
+           → (C : Σ (snd (UPoly u) A) (λ x → snd (UPoly u) (B x)) → fst (UPoly u))
+           → fst (UΣ u) (fst (UΣ u) (A , B) , λ z → C (snd (UΣ u) (A , B) z)) 
+             ≡ fst (UΣ u) (A , λ x → fst (UΣ u) (B x , λ y → C (x , y)))
+UΣassoc1 u A B C = inv (UUniv u (fst (UΣ u) (fst (UΣ u) (A , B) , λ z → C (snd (UΣ u) (A , B) z))) 
+                                (fst (UΣ u) (A , λ x → fst (UΣ u) (B x , λ y → C (x , y))))) 
+                       ( (λ x → inv (UΣCart u (A , λ y → fst (UΣ u) ((B y , λ z → C (y , z)))))
+                                    let b' = (snd (UΣ u) ( (fst (UΣ u) (A , B) 
+                                                         , λ z → C (snd (UΣ u) (A , B) z))) 
+                                                         x) in
+                                    let a' = (snd (UΣ u) (A , B) (fst b')) in
+                                    let a = fst a' in
+                                    (a , inv (UΣCart u ((B a) , λ z → C (a , z))) 
+                                                     (snd a' , snd b')))
+                       , λ b → ( ( inv (UΣCart u ( fst (UΣ u) (A , B) 
+                                                 , λ z → C (snd (UΣ u) (A , B) z))) 
+                                                 {!   !} 
+                                 , {!   !}) 
+                               , {!   !})) -}  
