@@ -131,7 +131,7 @@
 \newunicodechar{𝕪}{\ensuremath{\mathnormal\mathbb{y}}}
 \newunicodechar{≃}{\ensuremath{\mathnormal\simeq}}
 \newunicodechar{μ}{\ensuremath{\mathnormal\mu}}
-
+\newunicodechar{ρ}{\ensuremath{\mathnormal\rho}}
 
 
 
@@ -909,7 +909,7 @@ of equality proofs:
 \begin{Highlighting}[]
 \OtherTok{\_}\NormalTok{≡〈}\OtherTok{\_}\NormalTok{〉}\OtherTok{\_} \OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{(}\NormalTok{a }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{\{}\NormalTok{b c }\OtherTok{:}\NormalTok{ A}\OtherTok{\}} 
           \OtherTok{→}\NormalTok{ a ≡ b }\OtherTok{→}\NormalTok{ b ≡ c }\OtherTok{→}\NormalTok{ a ≡ c}
-\NormalTok{a ≡〈 refl 〉 e }\OtherTok{=}\NormalTok{ e}
+\NormalTok{a ≡〈 e 〉 refl }\OtherTok{=}\NormalTok{ e}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1218,6 +1218,152 @@ given by transport along \texttt{sym\ e}, as follows:
 \end{Highlighting}
 \end{Shaded}
 
+And\ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{transpAp }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A\textquotesingle{} }\OtherTok{:}\NormalTok{ Type ℓ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+           \OtherTok{→} \OtherTok{(}\NormalTok{B }\OtherTok{:}\NormalTok{ A\textquotesingle{} }\OtherTok{→}\NormalTok{ Type κ}\OtherTok{)} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ A\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{e }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ B }\OtherTok{(}\NormalTok{f a}\OtherTok{))}
+           \OtherTok{→}\NormalTok{ transp }\OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ B }\OtherTok{(}\NormalTok{f x}\OtherTok{))}\NormalTok{ e x ≡ transp B }\OtherTok{(}\NormalTok{ap f e}\OtherTok{)}\NormalTok{ x}
+\NormalTok{transpAp B f refl x }\OtherTok{=}\NormalTok{ refl}
+
+\NormalTok{≡siml }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+        \OtherTok{→} \OtherTok{(}\NormalTok{e }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)} \OtherTok{→}\NormalTok{ refl ≡ }\OtherTok{(}\NormalTok{b ≡〈 sym e 〉 e}\OtherTok{)}
+\NormalTok{≡siml refl }\OtherTok{=}\NormalTok{ refl}
+
+\NormalTok{≡idr }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+       \OtherTok{→} \OtherTok{(}\NormalTok{e }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)} \OtherTok{→}\NormalTok{ e ≡ }\OtherTok{(}\NormalTok{a ≡〈 refl 〉 e}\OtherTok{)}
+\NormalTok{≡idr refl }\OtherTok{=}\NormalTok{ refl}
+
+\NormalTok{conj }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b c d }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+       \OtherTok{→} \OtherTok{(}\NormalTok{e1 }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)} \OtherTok{(}\NormalTok{e2 }\OtherTok{:}\NormalTok{ a ≡ c}\OtherTok{)} \OtherTok{(}\NormalTok{e3 }\OtherTok{:}\NormalTok{ b ≡ d}\OtherTok{)} \OtherTok{(}\NormalTok{e4 }\OtherTok{:}\NormalTok{ c ≡ d}\OtherTok{)}
+       \OtherTok{→} \OtherTok{(}\NormalTok{a ≡〈 e1 〉 e3}\OtherTok{)}\NormalTok{ ≡ }\OtherTok{(}\NormalTok{a ≡〈 e2 〉 e4}\OtherTok{)}
+       \OtherTok{→}\NormalTok{ e3 ≡ }\OtherTok{(}\NormalTok{b ≡〈 sym e1 〉}\OtherTok{(}\NormalTok{a ≡〈 e2 〉 e4}\OtherTok{))}
+\NormalTok{conj e1 e2 refl refl refl }\OtherTok{=}\NormalTok{ ≡siml e1}
+
+\NormalTok{nat }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{f g }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ B}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+      \OtherTok{→} \OtherTok{(}\NormalTok{α }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ f x ≡ g x}\OtherTok{)} \OtherTok{(}\NormalTok{e }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)}
+      \OtherTok{→} \OtherTok{((}\NormalTok{f a}\OtherTok{)}\NormalTok{ ≡〈 α a 〉 }\OtherTok{(}\NormalTok{ap g e}\OtherTok{))}\NormalTok{ ≡ }\OtherTok{((}\NormalTok{f a}\OtherTok{)}\NormalTok{ ≡〈 ap f e 〉 }\OtherTok{(}\NormalTok{α b}\OtherTok{))}
+\NormalTok{nat }\OtherTok{\{}\NormalTok{a }\OtherTok{=}\NormalTok{ a}\OtherTok{\}}\NormalTok{ α refl }\OtherTok{=}\NormalTok{ ≡idr }\OtherTok{(}\NormalTok{α a}\OtherTok{)}
+
+\NormalTok{cancel }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b c }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+         \OtherTok{→} \OtherTok{(}\NormalTok{e1 e2 }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)} \OtherTok{(}\NormalTok{e3 }\OtherTok{:}\NormalTok{ b ≡ c}\OtherTok{)}
+         \OtherTok{→} \OtherTok{(}\NormalTok{a ≡〈 e1 〉 e3}\OtherTok{)}\NormalTok{ ≡ }\OtherTok{(}\NormalTok{a ≡〈 e2 〉 e3}\OtherTok{)}
+         \OtherTok{→}\NormalTok{ e1 ≡ e2}
+\NormalTok{cancel e1 e2 refl refl }\OtherTok{=}\NormalTok{ refl}
+
+\NormalTok{apId }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+       \OtherTok{→} \OtherTok{(}\NormalTok{e }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)} \OtherTok{→}\NormalTok{ ap }\OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ x}\OtherTok{)}\NormalTok{ e ≡ e}
+\NormalTok{apId refl }\OtherTok{=}\NormalTok{ refl}
+
+\NormalTok{apComp }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type ℓ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{C }\OtherTok{:}\NormalTok{ Type ℓ\textquotesingle{}\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+         \OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{(}\NormalTok{g }\OtherTok{:}\NormalTok{ B }\OtherTok{→}\NormalTok{ C}\OtherTok{)} \OtherTok{(}\NormalTok{e }\OtherTok{:}\NormalTok{ a ≡ b}\OtherTok{)}
+         \OtherTok{→}\NormalTok{ ap }\OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{f x}\OtherTok{))}\NormalTok{ e ≡ ap g }\OtherTok{(}\NormalTok{ap f e}\OtherTok{)}
+\NormalTok{apComp f g refl }\OtherTok{=}\NormalTok{ refl}
+
+\NormalTok{apHtpy }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{a }\OtherTok{:}\NormalTok{ A}\OtherTok{\}}
+         \OtherTok{→} \OtherTok{(}\NormalTok{i }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ A}\OtherTok{)} \OtherTok{(}\NormalTok{α }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ i x ≡ x}\OtherTok{)}
+         \OtherTok{→}\NormalTok{ ap i }\OtherTok{(}\NormalTok{α a}\OtherTok{)}\NormalTok{ ≡ α }\OtherTok{(}\NormalTok{i a}\OtherTok{)}
+\NormalTok{apHtpy }\OtherTok{\{}\NormalTok{a }\OtherTok{=}\NormalTok{ a}\OtherTok{\}}\NormalTok{ i α }\OtherTok{=} 
+\NormalTok{    cancel }\OtherTok{(}\NormalTok{ap i }\OtherTok{(}\NormalTok{α a}\OtherTok{))} \OtherTok{(}\NormalTok{α }\OtherTok{(}\NormalTok{i a}\OtherTok{))} \OtherTok{(}\NormalTok{α a}\OtherTok{)} 
+           \OtherTok{((}\NormalTok{i }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ ≡〈 ap i }\OtherTok{(}\NormalTok{α a}\OtherTok{)}\NormalTok{ 〉 α a}\OtherTok{)} 
+\NormalTok{           ≡〈 sym }\OtherTok{(}\NormalTok{nat α }\OtherTok{(}\NormalTok{α a}\OtherTok{))}\NormalTok{ 〉 }
+           \OtherTok{((}\NormalTok{i }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ ≡〈 α }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ 〉 ap }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ z}\OtherTok{)} \OtherTok{(}\NormalTok{α a}\OtherTok{))} 
+\NormalTok{           ≡〈 ap }\OtherTok{(λ}\NormalTok{ e }\OtherTok{→}\NormalTok{ i }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ ≡〈 α }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ 〉 e}\OtherTok{)} \OtherTok{(}\NormalTok{apId }\OtherTok{(}\NormalTok{α a}\OtherTok{))}\NormalTok{ 〉 }
+           \OtherTok{((}\NormalTok{i }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ ≡〈 α }\OtherTok{(}\NormalTok{i a}\OtherTok{)}\NormalTok{ 〉 α a}\OtherTok{)}\NormalTok{ □}\OtherTok{)))}
+
+\NormalTok{HAdj }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type κ}\OtherTok{\}}
+       \OtherTok{→} \OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{→} \DataTypeTok{Set} \OtherTok{(}\NormalTok{ℓ ⊔ κ}\OtherTok{)}
+\NormalTok{HAdj }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ A}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{=}\NormalTok{ B}\OtherTok{\}}\NormalTok{ f }\OtherTok{=}
+\NormalTok{    Σ }\OtherTok{(}\NormalTok{B }\OtherTok{→}\NormalTok{ A}\OtherTok{)} \OtherTok{(λ}\NormalTok{ g }\OtherTok{→} 
+\NormalTok{      Σ }\OtherTok{((}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{f x}\OtherTok{)}\NormalTok{ ≡ x}\OtherTok{)} \OtherTok{(λ}\NormalTok{ η }\OtherTok{→} 
+\NormalTok{        Σ }\OtherTok{((}\NormalTok{y }\OtherTok{:}\NormalTok{ B}\OtherTok{)} \OtherTok{→}\NormalTok{ f }\OtherTok{(}\NormalTok{g y}\OtherTok{)}\NormalTok{ ≡ y}\OtherTok{)} \OtherTok{(λ}\NormalTok{ ε }\OtherTok{→} 
+          \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ ap f }\OtherTok{(}\NormalTok{η x}\OtherTok{)}\NormalTok{ ≡ ε }\OtherTok{(}\NormalTok{f x}\OtherTok{))))}
+
+\NormalTok{Iso→HAdj }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{f }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ B}\OtherTok{\}}
+           \OtherTok{→}\NormalTok{ Iso f }\OtherTok{→}\NormalTok{ HAdj f}
+\NormalTok{Iso→HAdj }\OtherTok{\{}\NormalTok{f }\OtherTok{=}\NormalTok{ f}\OtherTok{\}} \OtherTok{(}\NormalTok{g , η , ε}\OtherTok{)} \OtherTok{=}
+\NormalTok{    g , }\OtherTok{(}\NormalTok{η }
+\NormalTok{    , }\OtherTok{(} \OtherTok{(λ}\NormalTok{ y }\OtherTok{→} 
+\NormalTok{           f }\OtherTok{(}\NormalTok{g y}\OtherTok{)}\NormalTok{         ≡〈 sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g y}\OtherTok{)))}\NormalTok{ 〉 }
+          \OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g y}\OtherTok{)))}\NormalTok{ ≡〈 ap f }\OtherTok{(}\NormalTok{η }\OtherTok{(}\NormalTok{g y}\OtherTok{))}\NormalTok{ 〉 }
+          \OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g y}\OtherTok{)}\NormalTok{         ≡〈 ε y 〉 }
+          \OtherTok{(}\NormalTok{y               □}\OtherTok{))))} 
+\NormalTok{      , }\OtherTok{λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ conj }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{))))} \OtherTok{(}\NormalTok{ap f }\OtherTok{(}\NormalTok{η }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{))))} 
+                   \OtherTok{(}\NormalTok{ap f }\OtherTok{(}\NormalTok{η x}\OtherTok{))} \OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{))} 
+                   \OtherTok{(((}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{))))}\NormalTok{ ≡〈 ε }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ 〉 ap f }\OtherTok{(}\NormalTok{η x}\OtherTok{)))} 
+\NormalTok{                    ≡〈 nat }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ ε }\OtherTok{(}\NormalTok{f z}\OtherTok{))} \OtherTok{(}\NormalTok{η x}\OtherTok{)}\NormalTok{ 〉 }
+                    \OtherTok{(((}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{))))}\NormalTok{ ≡〈 ap }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f z}\OtherTok{)))} \OtherTok{(}\NormalTok{η x}\OtherTok{)}\NormalTok{ 〉 ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))} 
+\NormalTok{                    ≡〈 ap }\OtherTok{(λ}\NormalTok{ e }\OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{))))}\NormalTok{ ≡〈 e 〉 ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))} 
+                          \OtherTok{((}\NormalTok{ap }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f z}\OtherTok{)))} \OtherTok{(}\NormalTok{η x}\OtherTok{))} 
+\NormalTok{                           ≡〈 apComp }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{f z}\OtherTok{))}\NormalTok{ f }\OtherTok{(}\NormalTok{η x}\OtherTok{)}\NormalTok{ 〉 }
+                           \OtherTok{((}\NormalTok{ap f }\OtherTok{(}\NormalTok{ap }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{f z}\OtherTok{))} \OtherTok{(}\NormalTok{η x}\OtherTok{)))} 
+\NormalTok{                           ≡〈 ap }\OtherTok{(}\NormalTok{ap f}\OtherTok{)} \OtherTok{(}\NormalTok{apHtpy }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{f z}\OtherTok{))}\NormalTok{ η}\OtherTok{)}\NormalTok{ 〉 }
+                           \OtherTok{(}\NormalTok{ap f }\OtherTok{(}\NormalTok{η }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ □}\OtherTok{)))}\NormalTok{ 〉 }
+                    \OtherTok{(((}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{))))}\NormalTok{ ≡〈 ap f }\OtherTok{(}\NormalTok{η }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ 〉 ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ □}\OtherTok{)))))}
+
+\NormalTok{pairEquiv1 }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A\textquotesingle{} }\OtherTok{:}\NormalTok{ Type ℓ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ A\textquotesingle{} }\OtherTok{→}\NormalTok{ Type κ}\OtherTok{\}}
+             \OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ A\textquotesingle{}}\OtherTok{)} \OtherTok{→}\NormalTok{ isEquiv f}
+             \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ Σ A }\OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ B }\OtherTok{(}\NormalTok{f x}\OtherTok{))\}} \OtherTok{\{}\NormalTok{B }\OtherTok{=}\NormalTok{ Σ A\textquotesingle{} B}\OtherTok{\}} 
+                       \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{f x , y}\OtherTok{))}
+\NormalTok{pairEquiv1 }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ A}\OtherTok{\}} \OtherTok{\{}\NormalTok{A\textquotesingle{} }\OtherTok{=}\NormalTok{ A\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{=}\NormalTok{ B}\OtherTok{\}}\NormalTok{ f ef }\OtherTok{=}
+\NormalTok{  Iso→isEquiv}
+    \OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{g x , transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε x}\OtherTok{))}\NormalTok{ y}\OtherTok{))}
+\NormalTok{    , }\OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→}\NormalTok{ pairEq }\OtherTok{(}\NormalTok{η x}\OtherTok{)} \OtherTok{(}\NormalTok{lemma x y}\OtherTok{))} 
+\NormalTok{      , }\OtherTok{λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→}\NormalTok{ pairEq }\OtherTok{(}\NormalTok{ε x}\OtherTok{)} \OtherTok{(}\NormalTok{symr }\OtherTok{(}\NormalTok{ε x}\OtherTok{)}\NormalTok{ y}\OtherTok{)} \OtherTok{)} \OtherTok{)}
+  \KeywordTok{where}
+\NormalTok{    g }\OtherTok{:}\NormalTok{ A\textquotesingle{} }\OtherTok{→}\NormalTok{ A}
+\NormalTok{    g }\OtherTok{=}\NormalTok{ fst }\OtherTok{(}\NormalTok{Iso→HAdj }\OtherTok{(}\NormalTok{isEquiv→Iso ef}\OtherTok{))}
+\NormalTok{    η }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{f x}\OtherTok{)}\NormalTok{ ≡ x}
+\NormalTok{    η }\OtherTok{=}\NormalTok{ fst }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{Iso→HAdj }\OtherTok{(}\NormalTok{isEquiv→Iso ef}\OtherTok{)))}
+\NormalTok{    ε }\OtherTok{:} \OtherTok{(}\NormalTok{y }\OtherTok{:}\NormalTok{ A\textquotesingle{}}\OtherTok{)} \OtherTok{→}\NormalTok{ f }\OtherTok{(}\NormalTok{g y}\OtherTok{)}\NormalTok{ ≡ y}
+\NormalTok{    ε }\OtherTok{=}\NormalTok{ fst }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{Iso→HAdj }\OtherTok{(}\NormalTok{isEquiv→Iso ef}\OtherTok{))))}
+\NormalTok{    ρ }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ ap f }\OtherTok{(}\NormalTok{η x}\OtherTok{)}\NormalTok{ ≡ ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)}
+\NormalTok{    ρ }\OtherTok{=}\NormalTok{ snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{Iso→HAdj }\OtherTok{(}\NormalTok{isEquiv→Iso ef}\OtherTok{))))}
+\NormalTok{    lemma }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{(}\NormalTok{y }\OtherTok{:}\NormalTok{ B }\OtherTok{(}\NormalTok{f x}\OtherTok{))}
+            \OtherTok{→}\NormalTok{ transp }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ B }\OtherTok{(}\NormalTok{f z}\OtherTok{))} \OtherTok{(}\NormalTok{η x}\OtherTok{)}
+                     \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ y}\OtherTok{)}
+\NormalTok{              ≡ y}
+\NormalTok{    lemma x y }\OtherTok{=} \OtherTok{(}\NormalTok{transp }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ B }\OtherTok{(}\NormalTok{f z}\OtherTok{))} \OtherTok{(}\NormalTok{η x}\OtherTok{)} 
+                        \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ y}\OtherTok{))} 
+\NormalTok{                ≡〈 transpAp B f }\OtherTok{(}\NormalTok{η x}\OtherTok{)} 
+                            \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ y}\OtherTok{)}\NormalTok{ 〉 }
+                \OtherTok{(}\NormalTok{ transp B }\OtherTok{(}\NormalTok{ap f }\OtherTok{(}\NormalTok{η x}\OtherTok{))} 
+                           \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ y}\OtherTok{)} 
+\NormalTok{                ≡〈 ap }\OtherTok{(λ}\NormalTok{ e }\OtherTok{→}\NormalTok{ transp B e }
+                                \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ y}\OtherTok{))} 
+                      \OtherTok{(}\NormalTok{ρ x}\OtherTok{)}\NormalTok{ 〉 }
+                \OtherTok{(} \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{))} 
+                          \OtherTok{(}\NormalTok{transp B }\OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{)))}\NormalTok{ y}\OtherTok{))} 
+\NormalTok{                ≡〈 }\OtherTok{(}\NormalTok{symr }\OtherTok{(}\NormalTok{ε }\OtherTok{(}\NormalTok{f x}\OtherTok{))}\NormalTok{ y}\OtherTok{)}\NormalTok{ 〉 }
+                \OtherTok{(}\NormalTok{y □}\OtherTok{)))}
+
+\NormalTok{pairEquiv2 }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ Type κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B\textquotesingle{} }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ Type κ\textquotesingle{}}\OtherTok{\}}
+             \OtherTok{→} \OtherTok{(}\NormalTok{g }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ B x }\OtherTok{→}\NormalTok{ B\textquotesingle{} x}\OtherTok{)} \OtherTok{→} \OtherTok{((}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{(}\NormalTok{g x}\OtherTok{))}
+             \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ Σ A B}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{=}\NormalTok{ Σ A B\textquotesingle{}}\OtherTok{\}}
+                       \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{x , g x y}\OtherTok{))}
+\NormalTok{pairEquiv2 g eg }\OtherTok{=}
+    \KeywordTok{let}\NormalTok{ isog }\OtherTok{=} \OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ isEquiv→Iso }\OtherTok{(}\NormalTok{eg x}\OtherTok{))} 
+    \KeywordTok{in}\NormalTok{ Iso→isEquiv }\OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{x , fst }\OtherTok{(}\NormalTok{isog x}\OtherTok{)}\NormalTok{ y}\OtherTok{))} 
+\NormalTok{                   , }\OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} 
+\NormalTok{                          pairEq refl }\OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{isog x}\OtherTok{))}\NormalTok{ y}\OtherTok{))} 
+\NormalTok{                     , }\OtherTok{λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} 
+\NormalTok{                         pairEq refl }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{isog x}\OtherTok{))}\NormalTok{ y}\OtherTok{)))}
+
+\NormalTok{pairEquiv }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A\textquotesingle{} }\OtherTok{:}\NormalTok{ Type ℓ\textquotesingle{}}\OtherTok{\}}
+            \OtherTok{→} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ Type κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B\textquotesingle{} }\OtherTok{:}\NormalTok{ A\textquotesingle{} }\OtherTok{→}\NormalTok{ Type κ\textquotesingle{}}\OtherTok{\}}
+            \OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ A }\OtherTok{→}\NormalTok{ A\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{g }\OtherTok{:} \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ B x }\OtherTok{→}\NormalTok{ B\textquotesingle{} }\OtherTok{(}\NormalTok{f x}\OtherTok{))}
+            \OtherTok{→}\NormalTok{ isEquiv f }\OtherTok{→} \OtherTok{((}\NormalTok{x }\OtherTok{:}\NormalTok{ A}\OtherTok{)} \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{(}\NormalTok{g x}\OtherTok{))}
+            \OtherTok{→}\NormalTok{ isEquiv }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ Σ A B}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{=}\NormalTok{ Σ A\textquotesingle{} B\textquotesingle{}}\OtherTok{\}}
+                      \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{f x , g x y}\OtherTok{))}
+\NormalTok{pairEquiv f g ef eg }\OtherTok{=} 
+\NormalTok{    compIsEquiv }\OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{f x , y}\OtherTok{))} 
+                \OtherTok{(λ} \OtherTok{(}\NormalTok{x , y}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{x , g x y}\OtherTok{))} 
+                \OtherTok{(}\NormalTok{pairEquiv1 f ef}\OtherTok{)} 
+                \OtherTok{(}\NormalTok{pairEquiv2 g eg}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \chapter{Polynomials in HoTT}\label{polynomials-in-hott}
 
 \section{Basics}\label{basics}
@@ -1418,17 +1564,21 @@ We can therefore use Cartesian lenses to detect which types are
 contained in a natural model \texttt{𝔲}.
 
 A further fact about Cartesian lenses is that they are closed under
-composition, as a direct consequence of the closure of equivalences
-under composition:
+identity and composition, as a direct consequence of the closure of
+equivalences under identity and composition:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{idCart }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)}
+         \OtherTok{→}\NormalTok{ isCartesian p p }\OtherTok{(}\NormalTok{id p}\OtherTok{)}
+\NormalTok{idCart p a }\OtherTok{=}\NormalTok{ idIsEquiv}
+
 \NormalTok{compCartesian }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{} κ κ\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{\}}
-                \OtherTok{→} \OtherTok{\{}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{\}}
+                \OtherTok{→} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{(}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{)}
                 \OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ p ⇆ q}\OtherTok{)} \OtherTok{(}\NormalTok{g }\OtherTok{:}\NormalTok{ q ⇆ r}\OtherTok{)}
                 \OtherTok{→}\NormalTok{ isCartesian p q f }\OtherTok{→}\NormalTok{ isCartesian q r g }
                 \OtherTok{→}\NormalTok{ isCartesian p r }\OtherTok{(}\NormalTok{comp p q r f g}\OtherTok{)}
-\NormalTok{compCartesian f g cf cg a }\OtherTok{=} 
+\NormalTok{compCartesian p q r f g cf cg a }\OtherTok{=} 
 \NormalTok{    compIsEquiv }\OtherTok{(}\NormalTok{snd f a}\OtherTok{)} \OtherTok{(}\NormalTok{snd g }\OtherTok{(}\NormalTok{fst f a}\OtherTok{))} \OtherTok{(}\NormalTok{cf a}\OtherTok{)} \OtherTok{(}\NormalTok{cg }\OtherTok{(}\NormalTok{fst f a}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
@@ -1589,6 +1739,25 @@ that:
 \begin{itemize}
 \tightlist
 \item
+  There is an element \texttt{η\ tt\ :\ 𝓤} which represents the unit
+  type. This corresponds to the type formation rule
+  \[ \inferrule{~}{\Gamma \vdash \top : \mathsf{Type}}\]
+\item
+  The ``elimination rule'' \texttt{η♯\ tt\ :\ u(η\ tt)\ →\ ⊤}, applied
+  to an element \texttt{x\ :\ u(η\ tt)} is trivial, in that it simply
+  discards \texttt{x}. This corresponds to the fact that, in the
+  ordinary type-theoretic presentation, \(\top\) does not have an
+  elimination rule.
+\item
+  However, since this trivial elimination rule has an inverse
+  \texttt{η♯⁻¹\ tt\ :\ ⊤\ →\ u\ (η\ tt)}, it follows that there is a
+  (unique) element \texttt{η♯⁻¹\ tt\ tt\ :\ u\ (η\ tt)}, which
+  corresponds to the introduction rule for \(\top\):
+  \[\inferrule{~}{\Gamma \vdash \mathsf{tt} : \top}\]
+\item
+  Moreover, the uniqueness of this element corresponds to the
+  \(\eta\)-law for \(\top\):
+  \[\frac{\Gamma \vdash x : \top}{\Gamma \vdash x = \mathsf{tt}}\]
 \end{itemize}
 
 But then, what sorts of laws can we expect Cartesian lenses as above to
@@ -1616,9 +1785,9 @@ associativity of \texttt{Σ}-types,
 \NormalTok{    , }\OtherTok{λ} \OtherTok{((}\NormalTok{a , f}\OtherTok{)}\NormalTok{ , g}\OtherTok{)} \OtherTok{(}\NormalTok{b , }\OtherTok{(}\NormalTok{d , x}\OtherTok{))} \OtherTok{→} \OtherTok{((}\NormalTok{b , d}\OtherTok{)}\NormalTok{ , x}\OtherTok{))}
 
 \NormalTok{◃assocCart }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{} κ κ\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{\}}
-             \OtherTok{→} \OtherTok{\{}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{\}} \OtherTok{\{}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{\}}
+             \OtherTok{→} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{(}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{)}
              \OtherTok{→}\NormalTok{ isCartesian }\OtherTok{((}\NormalTok{p ◃ q}\OtherTok{)}\NormalTok{ ◃ r}\OtherTok{)} \OtherTok{(}\NormalTok{p ◃ }\OtherTok{(}\NormalTok{q ◃ r}\OtherTok{))} \OtherTok{(}\NormalTok{◃assoc p q r}\OtherTok{)}
-\NormalTok{◃assocCart }\OtherTok{(}\NormalTok{a , f}\OtherTok{)} \OtherTok{=} 
+\NormalTok{◃assocCart p q r }\OtherTok{(}\NormalTok{a , f}\OtherTok{)} \OtherTok{=} 
 \NormalTok{    Iso→isEquiv }\OtherTok{(} \OtherTok{(λ} \OtherTok{((}\NormalTok{b , d}\OtherTok{)}\NormalTok{ , x}\OtherTok{)} \OtherTok{→}\NormalTok{ b , d , x}\OtherTok{)}
 \NormalTok{                , }\OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{b , d , x}\OtherTok{)} \OtherTok{→}\NormalTok{ refl}\OtherTok{)} 
 \NormalTok{                  , }\OtherTok{λ} \OtherTok{((}\NormalTok{b , d}\OtherTok{)}\NormalTok{ , x}\OtherTok{)} \OtherTok{→}\NormalTok{ refl}\OtherTok{))}
@@ -1652,10 +1821,29 @@ that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.
 \end{Highlighting}
 \end{Shaded}
 
+In fact, \texttt{◃} restricts to a monoidal product on
+\(\mathbf{Poly^{Cart}}\), since the functorial action of \texttt{◃} on
+lenses preserves Cartesian lenses:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{◃LensCart }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{}\textquotesingle{} κ κ\textquotesingle{} κ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}\textquotesingle{}}\OtherTok{\}}
+            \OtherTok{→} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{(}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{)}
+            \OtherTok{→} \OtherTok{(}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{s }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}\textquotesingle{}}\OtherTok{)}
+            \OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ p ⇆ q}\OtherTok{)} \OtherTok{(}\NormalTok{g }\OtherTok{:}\NormalTok{ r ⇆ s}\OtherTok{)}
+            \OtherTok{→}\NormalTok{ isCartesian p q f }\OtherTok{→}\NormalTok{ isCartesian r s g}
+            \OtherTok{→}\NormalTok{ isCartesian }\OtherTok{(}\NormalTok{p ◃ r}\OtherTok{)} \OtherTok{(}\NormalTok{q ◃ s}\OtherTok{)}
+                          \OtherTok{(}\NormalTok{◃Lens p q r s f g}\OtherTok{)}
+\NormalTok{◃LensCart p q r s }\OtherTok{(}\NormalTok{f , f♯}\OtherTok{)} \OtherTok{(}\NormalTok{g , g♯}\OtherTok{)}\NormalTok{ cf cg }\OtherTok{(}\NormalTok{a , h}\OtherTok{)} \OtherTok{=} 
+\NormalTok{    pairEquiv }\OtherTok{(}\NormalTok{f♯ a}\OtherTok{)} \OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ g♯ }\OtherTok{(}\NormalTok{h }\OtherTok{(}\NormalTok{f♯ a x}\OtherTok{)))} 
+              \OtherTok{(}\NormalTok{cf a}\OtherTok{)} \OtherTok{(λ}\NormalTok{ x }\OtherTok{→}\NormalTok{ cg }\OtherTok{(}\NormalTok{h }\OtherTok{(}\NormalTok{f♯ a x}\OtherTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
 We should expect, then, for these equivalences to be somehow reflected
 in the structure of a Cartesian lenses \texttt{η\ :\ 𝕪\ ⇆\ 𝔲} and
 \texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}. This would be the case, e.g., if the
-following diagrams were to commute \[
+following diagrams in \(\mathbf{Poly^{Cart}}\) were to commute \[
 \begin{tikzcd}
     {y \triangleleft \mathfrak{u}} & {\mathfrak{u} \triangleleft \mathfrak{u} } & {\mathfrak{u} \triangleleft y} \\
     & {\mathfrak{u}}
@@ -1712,9 +1900,8 @@ For any polynomial \texttt{𝔲\ =\ (A\ ,\ B)} and elements
 \end{Highlighting}
 \end{Shaded}
 
-We say that a polynomial \texttt{𝔲} is \emph{univalent} or a
-\emph{polynomial universe} if for all \texttt{a,b\ :\ A}, this function
-is an equivalence.
+We say that a polynomial \texttt{𝔲} is \emph{univalent} if for all
+\texttt{a,b\ :\ A}, this function is an equivalence.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1738,9 +1925,20 @@ itself univalent.
 
 A key property of polynomial universes -- qua polynomial functors -- is
 that every polynomial universe \texttt{𝔲} is a \emph{subterminal object}
-in \(\mathbf{Poly^{Cat}}\), i.e.~for any other polynomial \texttt{p},
+in \(\mathbf{Poly^{Cart}}\), i.e.~for any other polynomial \texttt{p},
 the type of Cartesian lenses \texttt{p\ ⇆\ 𝔲} is a proposition, i.e.~any
 two Cartesian lenses with codomain \texttt{𝔲} are equal.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{isSubterminal }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{u }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ Setω}
+\NormalTok{isSubterminal u }\OtherTok{=} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{)}
+                  \OtherTok{→} \OtherTok{(}\NormalTok{f g }\OtherTok{:}\NormalTok{ p ⇆ u}\OtherTok{)}
+                  \OtherTok{→}\NormalTok{ isCartesian p u f}
+                  \OtherTok{→}\NormalTok{ isCartesian p u g}
+                  \OtherTok{→}\NormalTok{ EqLens p u f g}
+\end{Highlighting}
+\end{Shaded}
 
 To show this, we first prove the following \emph{transport lemma}, which
 says that transporting along an identity \texttt{a\ ≡\ b} induced by an
@@ -1763,19 +1961,17 @@ The result then follows:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{univ→Subterminal }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{(}\NormalTok{u }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{)}
-                   \OtherTok{→}\NormalTok{ isUnivalent u }\OtherTok{→} \OtherTok{(}\NormalTok{f g }\OtherTok{:}\NormalTok{ p ⇆ u}\OtherTok{)}
-                   \OtherTok{→}\NormalTok{ isCartesian p u f }\OtherTok{→}\NormalTok{ isCartesian p u g }
-                   \OtherTok{→}\NormalTok{ EqLens p u f g}
-\NormalTok{univ→Subterminal p u univ f g cf cg a }\OtherTok{=} 
+\NormalTok{univ→Subterminal }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{u }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)}
+                   \OtherTok{→}\NormalTok{ isUnivalent u}
+                   \OtherTok{→}\NormalTok{ isSubterminal u}
+\NormalTok{univ→Subterminal u univ p f g cf cg a }\OtherTok{=} 
     \OtherTok{(}\NormalTok{ inv univfg }\OtherTok{(}\NormalTok{fg⁻¹ , efg⁻¹}\OtherTok{)} 
 \NormalTok{    , }\OtherTok{(λ}\NormalTok{ b }\OtherTok{→}\NormalTok{ sym }\OtherTok{((}\NormalTok{snd g a }\OtherTok{(}\NormalTok{transp }\OtherTok{(}\NormalTok{snd u}\OtherTok{)}  \OtherTok{(}\NormalTok{inv univfg }\OtherTok{(}\NormalTok{fg⁻¹ , efg⁻¹}\OtherTok{))}\NormalTok{ b}\OtherTok{))} 
 \NormalTok{                  ≡〈 }\OtherTok{(}\NormalTok{ap }\OtherTok{(}\NormalTok{snd g a}\OtherTok{)} \OtherTok{(}\NormalTok{transpLemma univ fg⁻¹ efg⁻¹ b}\OtherTok{))}\NormalTok{ 〉 }
                   \OtherTok{((}\NormalTok{snd g a }\OtherTok{(}\NormalTok{fg⁻¹ b}\OtherTok{))} 
 \NormalTok{                  ≡〈 snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{cg a}\OtherTok{))} \OtherTok{(}\NormalTok{snd f a b}\OtherTok{)}\NormalTok{ 〉 }
                   \OtherTok{((}\NormalTok{snd f a b}\OtherTok{)}\NormalTok{ □}\OtherTok{)))))}
-    \KeywordTok{where}\NormalTok{ univfg }\OtherTok{:}\NormalTok{ isEquiv }\OtherTok{(}\NormalTok{idToEquiv }\OtherTok{(}\NormalTok{fst u , snd u}\OtherTok{)} 
-                                      \OtherTok{(}\NormalTok{fst f a}\OtherTok{)} \OtherTok{(}\NormalTok{fst g a}\OtherTok{))}
+    \KeywordTok{where}\NormalTok{ univfg }\OtherTok{:}\NormalTok{ isEquiv }\OtherTok{(}\NormalTok{idToEquiv u }\OtherTok{(}\NormalTok{fst f a}\OtherTok{)} \OtherTok{(}\NormalTok{fst g a}\OtherTok{))}
 \NormalTok{          univfg }\OtherTok{=}\NormalTok{ univ }\OtherTok{(}\NormalTok{fst f a}\OtherTok{)} \OtherTok{(}\NormalTok{fst g a}\OtherTok{)}
 \NormalTok{          fg⁻¹ }\OtherTok{:}\NormalTok{ snd u }\OtherTok{(}\NormalTok{fst f a}\OtherTok{)} \OtherTok{→}\NormalTok{ snd u }\OtherTok{(}\NormalTok{fst g a}\OtherTok{)}
 \NormalTok{          fg⁻¹ x }\OtherTok{=}\NormalTok{ inv }\OtherTok{(}\NormalTok{cg a}\OtherTok{)} \OtherTok{(}\NormalTok{snd f a x}\OtherTok{)}
@@ -1784,6 +1980,11 @@ The result then follows:
                               \OtherTok{(}\NormalTok{invIsEquiv }\OtherTok{(}\NormalTok{cg a}\OtherTok{))} \OtherTok{(}\NormalTok{cf a}\OtherTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+We shall refer to polynomial functors with this property of being
+subterminal objects in \(\mathbf{Poly^{Cart}}\) as \emph{polynomial
+universes.} As we shall see, such polynomial universes have many
+desirable properties as models of type theory.
 
 If we think of a polynomial \texttt{p} as representing a family of
 types, then what this tells us is that if \texttt{𝔲} is a polynomial
@@ -1806,25 +2007,181 @@ and the closure of Cartesian lenses under composition:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\{{-} univ◃unitl : ∀ \{ℓ κ\} (𝔲 : Poly ℓ κ) → isUnivalent 𝔲}
-\CommentTok{             → (η : 𝕪 ⇆ 𝔲) (μ : (𝔲 ◃ 𝔲) ⇆ 𝔲)}
-\CommentTok{             → isCartesian 𝕪 𝔲 η → isCartesian (𝔲 ◃ 𝔲) 𝔲 μ}
-\CommentTok{             → EqLens (𝕪 ◃ 𝔲) 𝔲 }
-\CommentTok{                      (◃unitl 𝔲)}
-\CommentTok{                      (comp (𝕪 ◃ 𝔲) (𝔲 ◃ 𝔲) 𝔲}
-\CommentTok{                            (◃Lens 𝕪 𝔲 𝔲 𝔲 η (id 𝔲)) μ)}
-\CommentTok{univ◃unitl 𝔲 univ η μ cη cμ = }
-\CommentTok{    univ→Subterminal (𝕪 ◃ 𝔲) 𝔲 univ (◃unitl 𝔲) }
-\CommentTok{                     (comp (𝕪 ◃ 𝔲) (𝔲 ◃ 𝔲) 𝔲 }
-\CommentTok{                           (◃Lens 𝕪 𝔲 𝔲 𝔲 η (id 𝔲)) μ) }
-\CommentTok{                     (◃unitlCart 𝔲) }
-\CommentTok{                     (compCartesian (◃Lens 𝕪 𝔲 𝔲 𝔲 η (id 𝔲)) μ }
-\CommentTok{                                    \{!   !\} }
-\CommentTok{                                    \{!   !\}) {-}\}}
+\NormalTok{univ◃unitl }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{𝔲 }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ isUnivalent 𝔲}
+             \OtherTok{→} \OtherTok{(}\NormalTok{η }\OtherTok{:}\NormalTok{ 𝕪 ⇆ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{μ }\OtherTok{:} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ⇆ 𝔲}\OtherTok{)}
+             \OtherTok{→}\NormalTok{ isCartesian 𝕪 𝔲 η }\OtherTok{→}\NormalTok{ isCartesian }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 μ}
+             \OtherTok{→}\NormalTok{ EqLens }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                      \OtherTok{(}\NormalTok{◃unitl 𝔲}\OtherTok{)}
+                      \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
+                            \OtherTok{(}\NormalTok{◃Lens 𝕪 𝔲 𝔲 𝔲 η }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ}\OtherTok{)}
+\NormalTok{univ◃unitl 𝔲 univ η μ cη cμ }\OtherTok{=}
+\NormalTok{    univ→Subterminal }
+\NormalTok{        𝔲 univ }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{◃unitl 𝔲}\OtherTok{)}
+        \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+              \OtherTok{(}\NormalTok{◃Lens 𝕪 𝔲 𝔲 𝔲 η }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{◃unitlCart 𝔲}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{compCartesian }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
+                       \OtherTok{(}\NormalTok{◃Lens 𝕪 𝔲 𝔲 𝔲 η }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ }
+                       \OtherTok{(}\NormalTok{◃LensCart 𝕪 𝔲 𝔲 𝔲 η }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)} 
+\NormalTok{                                  cη }\OtherTok{(}\NormalTok{idCart 𝔲}\OtherTok{))}\NormalTok{ cμ}\OtherTok{)}
+
+\NormalTok{univ◃unitr }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{𝔲 }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ isUnivalent 𝔲}
+             \OtherTok{→} \OtherTok{(}\NormalTok{η }\OtherTok{:}\NormalTok{ 𝕪 ⇆ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{μ }\OtherTok{:} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ⇆ 𝔲}\OtherTok{)}
+             \OtherTok{→}\NormalTok{ isCartesian 𝕪 𝔲 η }\OtherTok{→}\NormalTok{ isCartesian }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 μ}
+             \OtherTok{→}\NormalTok{ EqLens }\OtherTok{(}\NormalTok{𝔲 ◃ 𝕪}\OtherTok{)}\NormalTok{ 𝔲}
+                      \OtherTok{(}\NormalTok{◃unitr 𝔲}\OtherTok{)}
+                      \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝔲 ◃ 𝕪}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
+                            \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 𝕪 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ η}\OtherTok{)}\NormalTok{ μ}\OtherTok{)}
+\NormalTok{univ◃unitr 𝔲 univ η μ cη cμ }\OtherTok{=}
+\NormalTok{    univ→Subterminal }
+\NormalTok{        𝔲 univ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝕪}\OtherTok{)} \OtherTok{(}\NormalTok{◃unitr 𝔲}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝔲 ◃ 𝕪}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+              \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 𝕪 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ η}\OtherTok{)}\NormalTok{ μ}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{◃unitrCart 𝔲}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{compCartesian }\OtherTok{(}\NormalTok{𝔲 ◃ 𝕪}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                       \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 𝕪 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ η}\OtherTok{)}\NormalTok{ μ }
+                       \OtherTok{(}\NormalTok{◃LensCart 𝔲 𝔲 𝕪 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ η }
+                                  \OtherTok{(}\NormalTok{idCart 𝔲}\OtherTok{)}\NormalTok{ cη}\OtherTok{)}\NormalTok{ cμ}\OtherTok{)}
+
+
+\NormalTok{univ◃assoc }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{𝔲 }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ isUnivalent 𝔲}
+             \OtherTok{→} \OtherTok{(}\NormalTok{η }\OtherTok{:}\NormalTok{ 𝕪 ⇆ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{μ }\OtherTok{:} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ⇆ 𝔲}\OtherTok{)}
+             \OtherTok{→}\NormalTok{ isCartesian 𝕪 𝔲 η }\OtherTok{→}\NormalTok{ isCartesian }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 μ}
+             \OtherTok{→}\NormalTok{ EqLens }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
+                      \OtherTok{(}\NormalTok{comp }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
+                            \OtherTok{(}\NormalTok{◃Lens }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 𝔲 𝔲 μ }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ}\OtherTok{)}
+                      \OtherTok{(}\NormalTok{comp }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))}\NormalTok{ 𝔲}
+                            \OtherTok{(}\NormalTok{◃assoc 𝔲 𝔲 𝔲}\OtherTok{)}
+                            \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
+                                  \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                                         \OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ μ}\OtherTok{)}\NormalTok{ μ}\OtherTok{))}
+\NormalTok{univ◃assoc 𝔲 univ η μ cη cμ }\OtherTok{=}
+\NormalTok{    univ→Subterminal }
+\NormalTok{        𝔲 univ }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{comp }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+              \OtherTok{(}\NormalTok{◃Lens }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 𝔲 𝔲 μ }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ}\OtherTok{)} 
+        \OtherTok{(}\NormalTok{comp }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))}\NormalTok{ 𝔲 }
+              \OtherTok{(}\NormalTok{◃assoc 𝔲 𝔲 𝔲}\OtherTok{)} 
+              \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                    \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ μ}\OtherTok{)}\NormalTok{ μ}\OtherTok{))} 
+        \OtherTok{(}\NormalTok{compCartesian }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                       \OtherTok{(}\NormalTok{◃Lens }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 𝔲 𝔲 μ }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ }
+                       \OtherTok{(}\NormalTok{◃LensCart }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 𝔲 𝔲 μ }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)} 
+\NormalTok{                                  cμ }\OtherTok{(}\NormalTok{idCart 𝔲}\OtherTok{))}\NormalTok{ cμ}\OtherTok{)}
+        \OtherTok{(}\NormalTok{compCartesian }\OtherTok{((}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))}\NormalTok{ 𝔲 }
+                       \OtherTok{(}\NormalTok{◃assoc 𝔲 𝔲 𝔲}\OtherTok{)} 
+                       \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                             \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                                    \OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ μ}\OtherTok{)}\NormalTok{ μ}\OtherTok{)} 
+                       \OtherTok{(}\NormalTok{◃assocCart 𝔲 𝔲 𝔲}\OtherTok{)}
+                       \OtherTok{(}\NormalTok{compCartesian }
+                          \OtherTok{(}\NormalTok{𝔲 ◃ }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{))} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }
+                          \OtherTok{(}\NormalTok{◃Lens 𝔲 𝔲 }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ μ}\OtherTok{)}\NormalTok{ μ }
+                          \OtherTok{(}\NormalTok{◃LensCart 𝔲 𝔲 }\OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲 }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{)}\NormalTok{ μ }
+                                     \OtherTok{(}\NormalTok{idCart 𝔲}\OtherTok{)}\NormalTok{ cμ}\OtherTok{)}\NormalTok{ cμ}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Rezk Completion}\label{rezk-completion}
+And more generally, all the higher coherences of an \(\infty\)-monad
+should follow from the contractibility of the types of Cartesian lenses
+\texttt{p\ ⇆\ 𝔲} that can be formed using \texttt{μ} and \texttt{η}.
+
+\subsection{Rezk Completion of Natural
+Models}\label{rezk-completion-of-natural-models}
+
+We have so far seen that polynomial universes are quite special objects
+in the theory of polynomial functors in HoTT, but what good would such
+special objects do us if they turned out to be exceedingly rare or
+difficult to construct? Moreover, although we have just demonstrated
+that any polynomial universe is a natural model in Awodey \& Newstead's
+sense, one might be inclined to wonder what can be said about the
+converse direction -- does every natural model give rise to a polynomial
+universe?
+
+In fact, we can answer this latter question in the affirmative, using a
+familiar construct from the theory of categories in HoTT -- the
+\emph{Rezk Completion.} In the case of polynomial functors/natural
+models, we will show that this construction allows us to quotient any
+polynomial functor to a corresponding polynomial universe, which
+classifies the unit type and is closed under \texttt{Σ} types if the
+original polynomial is.
+
+By our assumption of the univalence axiom, every polynomial functor
+\texttt{p} is classified by \emph{some} univalent polynomial:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{classifier }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ p ⇆ }\OtherTok{(}\NormalTok{Type κ , }\OtherTok{λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)}
+\NormalTok{classifier }\OtherTok{(}\NormalTok{A , B}\OtherTok{)} \OtherTok{=} \OtherTok{(}\NormalTok{B , }\OtherTok{λ}\NormalTok{ a b }\OtherTok{→}\NormalTok{ b}\OtherTok{)}
+
+\NormalTok{classifierCart }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} 
+                 \OtherTok{→}\NormalTok{ isCartesian p }\OtherTok{(}\NormalTok{Type κ , }\OtherTok{λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)}
+                               \OtherTok{(}\NormalTok{classifier p}\OtherTok{)}
+\NormalTok{classifierCart p a }\OtherTok{=}\NormalTok{ idIsEquiv}
+\end{Highlighting}
+\end{Shaded}
+
+We then obtain the Rezk completion of \texttt{p} as the image
+factorization in \(\mathbf{Poly^{Cart}}\) of this classifying lens:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Rezk }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ Poly }\OtherTok{(}\NormalTok{lsuc κ}\OtherTok{)}\NormalTok{ κ}
+\NormalTok{Rezk }\OtherTok{(}\NormalTok{A , B}\OtherTok{)} \OtherTok{=} \OtherTok{(}\NormalTok{Im B}\OtherTok{)}\NormalTok{ , }\OtherTok{(λ} \OtherTok{(}\NormalTok{X , }\OtherTok{\_)} \OtherTok{→}\NormalTok{ X}\OtherTok{)}
+
+\NormalTok{→Rezk }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ p ⇆ }\OtherTok{(}\NormalTok{Rezk p}\OtherTok{)}
+\NormalTok{→Rezk }\OtherTok{\{}\NormalTok{κ }\OtherTok{=}\NormalTok{ κ}\OtherTok{\}}\NormalTok{ p }\OtherTok{=} 
+\NormalTok{    factorcart1 p }\OtherTok{(}\NormalTok{Type κ , }\OtherTok{λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)} 
+                  \OtherTok{(}\NormalTok{classifier p}\OtherTok{)} 
+                  \OtherTok{(}\NormalTok{classifierCart p}\OtherTok{)}
+
+\NormalTok{Rezk→ }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{Rezk p}\OtherTok{)}\NormalTok{ ⇆ }\OtherTok{(}\NormalTok{Type κ , }\OtherTok{λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)}
+\NormalTok{Rezk→ }\OtherTok{\{}\NormalTok{κ }\OtherTok{=}\NormalTok{ κ}\OtherTok{\}}\NormalTok{ p }\OtherTok{=}
+\NormalTok{    factorcart2 p }\OtherTok{(}\NormalTok{Type κ , }\OtherTok{λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)} 
+                  \OtherTok{(}\NormalTok{classifier p}\OtherTok{)} 
+                  \OtherTok{(}\NormalTok{classifierCart p}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Because the map \texttt{Rezk→} defined above is a Cartesian embedding,
+and the polynomial \texttt{(Type\ κ\ ,\ λ\ X\ →\ X)} is univalent, it
+follows that \texttt{Rezk\ p} is a polynomial universe:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RezkSubterminal }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{→}\NormalTok{ isSubterminal }\OtherTok{(}\NormalTok{Rezk p}\OtherTok{)}
+\NormalTok{RezkSubterminal }\OtherTok{\{}\NormalTok{κ }\OtherTok{=}\NormalTok{ κ}\OtherTok{\}}\NormalTok{ p q }\OtherTok{(}\NormalTok{f , f♯}\OtherTok{)} \OtherTok{(}\NormalTok{g , g♯}\OtherTok{)}\NormalTok{ cf cg x }\OtherTok{=}
+    \OtherTok{(}\NormalTok{ pairEq }\OtherTok{(}\NormalTok{inv }\OtherTok{(}\NormalTok{ua }\OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{f x}\OtherTok{))} \OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g x}\OtherTok{)))} 
+                  \OtherTok{(} \OtherTok{(λ}\NormalTok{ y }\OtherTok{→}\NormalTok{ inv }\OtherTok{(}\NormalTok{cg x}\OtherTok{)} \OtherTok{(}\NormalTok{f♯ x y}\OtherTok{))} 
+\NormalTok{                  , compIsEquiv }\OtherTok{(}\NormalTok{inv }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} 
+                                \OtherTok{(}\NormalTok{f♯ x}\OtherTok{)} 
+                                \OtherTok{(}\NormalTok{invIsEquiv }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} 
+                                \OtherTok{(}\NormalTok{cf x}\OtherTok{)))}\NormalTok{ ∥{-}∥IsProp }
+\NormalTok{    , }\OtherTok{λ}\NormalTok{ y }\OtherTok{→}\NormalTok{ f♯ x y }
+\NormalTok{            ≡〈 sym }\OtherTok{(}\NormalTok{g♯ x }\OtherTok{(}\NormalTok{transp }\OtherTok{(λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)} 
+                                  \OtherTok{(}\NormalTok{inv }\OtherTok{(}\NormalTok{ua }\OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{f x}\OtherTok{))} \OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g x}\OtherTok{)))} 
+                                       \OtherTok{((λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ inv }\OtherTok{(}\NormalTok{cg x}\OtherTok{)} \OtherTok{(}\NormalTok{f♯ x z}\OtherTok{))}\NormalTok{ , }\OtherTok{(}\NormalTok{compIsEquiv }\OtherTok{(}\NormalTok{inv }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} \OtherTok{(}\NormalTok{f♯ x}\OtherTok{)} 
+                                                    \OtherTok{(}\NormalTok{invIsEquiv }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} 
+                                                    \OtherTok{(}\NormalTok{cf x}\OtherTok{))))}\NormalTok{ y}\OtherTok{)}
+\NormalTok{                    ≡〈 }\OtherTok{(}\NormalTok{ap }\OtherTok{(}\NormalTok{g♯ x}\OtherTok{)} 
+                          \OtherTok{(}\NormalTok{transpLemma ua }
+                             \OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ inv }\OtherTok{(}\NormalTok{cg x}\OtherTok{)} \OtherTok{(}\NormalTok{f♯ x z}\OtherTok{))} 
+                             \OtherTok{(}\NormalTok{compIsEquiv }\OtherTok{(}\NormalTok{inv }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} \OtherTok{(}\NormalTok{f♯ x}\OtherTok{)} 
+                                          \OtherTok{(}\NormalTok{invIsEquiv }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} \OtherTok{(}\NormalTok{cf x}\OtherTok{))} 
+\NormalTok{                             y}\OtherTok{))}\NormalTok{ 〉 }
+\NormalTok{                    snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{cg x}\OtherTok{))} \OtherTok{(}\NormalTok{f♯ x y}\OtherTok{))}\NormalTok{ 〉 }
+\NormalTok{            ap }\OtherTok{(}\NormalTok{g♯ x}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{lemma1 ∥{-}∥IsProp y}\OtherTok{))} \OtherTok{)}
+    \KeywordTok{where}\NormalTok{ lemma1 }\OtherTok{:} \OtherTok{\{}\NormalTok{a b }\OtherTok{:}\NormalTok{ fst }\OtherTok{(}\NormalTok{Rezk p}\OtherTok{)\}}
+                   \OtherTok{→} \OtherTok{\{}\NormalTok{e }\OtherTok{:}\NormalTok{ fst a ≡ fst b}\OtherTok{\}} 
+                   \OtherTok{→} \OtherTok{(}\NormalTok{e\textquotesingle{} }\OtherTok{:}\NormalTok{ transp }\OtherTok{(λ}\NormalTok{ c }\OtherTok{→}\NormalTok{ ∥ }\OtherTok{(}\NormalTok{Fibre }\OtherTok{(}\NormalTok{snd p}\OtherTok{)}\NormalTok{ c}\OtherTok{)}\NormalTok{ ∥}\OtherTok{)} 
+\NormalTok{                                  e }\OtherTok{(}\NormalTok{snd a}\OtherTok{)} 
+\NormalTok{                           ≡ }\OtherTok{(}\NormalTok{snd b}\OtherTok{))}
+                   \OtherTok{→} \OtherTok{(}\NormalTok{z }\OtherTok{:}\NormalTok{ fst a}\OtherTok{)}
+                   \OtherTok{→}\NormalTok{ transp }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{Rezk p}\OtherTok{))} \OtherTok{(}\NormalTok{pairEq e e\textquotesingle{}}\OtherTok{)}\NormalTok{ z}
+\NormalTok{                     ≡ transp }\OtherTok{(λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)}\NormalTok{ e z}
+\NormalTok{          lemma1 }\OtherTok{\{}\NormalTok{e }\OtherTok{=}\NormalTok{ refl}\OtherTok{\}}\NormalTok{ refl z }\OtherTok{=}\NormalTok{ refl}
+\end{Highlighting}
+\end{Shaded}
 
 \chapter{\texorpdfstring{\(\Pi\)-Types, Jump Monads \& Distributive
 Laws}{\textbackslash Pi-Types, Jump Monads \& Distributive Laws}}\label{pi-types-jump-monads-distributive-laws}
