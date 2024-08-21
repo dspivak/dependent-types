@@ -459,6 +459,10 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\bic}[2]{{}_{#1}\Cat{Comod}_{#2}}
 
+\newcommand{\dnote}[1]{{\quad \color{blue}$\lozenge$\;David says:}~#1\;{\color{blue}$\lozenge$}\quad}
+\newcommand{\cbnote}[1]{{\quad \color{red}$\lozenge$\;C.B.\ says:}~#1\;{\color{red}$\lozenge$}\quad}
+
+
 % ---- Changeable document parameters ---- %
 
 \linespread{1.1}
@@ -510,7 +514,7 @@ will be described. For example, in the story arc of conditional
 probability, one may say ``now if the set \(P\) that we are asked to
 condition on happens to have measure zero, we must stop; but assuming
 that's not the case then the result will be a new probability
-measure.'\,' Here the story teller is saying that no terms will describe
+measure.'' Here the story teller is saying that no terms will describe
 what happens if \(P\) has measure zero, whereas otherwise the terms of
 standard probability will apply.
 
@@ -544,7 +548,7 @@ circle from Awodey's original motivation to develop natural models
 \emph{of} Homotopy Type Theory, to describing natural models \emph{in}
 Homotopy Type Theory.
 
-The ability for us to tell the story of natural models as set entirely
+The ability for us to tell the story of natural models as set entirely \dnote{Is that true?}
 in the category of polynomial functors has a great simplifying effect
 upon the resultant theory, and reveals many additional structures, both
 of polynomial universes, and of the category of polynomial functors as a
@@ -574,6 +578,7 @@ validity.
 \end{Shaded}
 
 The structure of this paper is as follows:
+\dnote{Fill}
 
 \chapter{Background on Type Theory, Natural Models \&
 HoTT}\label{background-on-type-theory-natural-models-hott}
@@ -607,7 +612,7 @@ represent types.\footnote{For consistency with the usage of the term
   \emph{truncation} condition, to be explained shortly,) we relabel
   Agda's universes of types as \texttt{Type}, rather than the default
   \texttt{Set}.} So e.g.~to say that \texttt{⊤}, as defined above, is a
-type, we may simply write \texttt{⊤\ :\ Type}.
+type, we may simply write \texttt{⊤\ :\ Type}.\dnote{The agda below involves levels and sets, but they aren't discussed above. Say something about levels?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -655,7 +660,7 @@ respectively. E.g. we can define the Cartesian product of two types
 
 In more traditional type-theoretic notation, one might see the rules for
 these types written as follows: \[ 
-\inferrule{}{\Gamma \vdash \top : \mathsf{Type}} \qquad \inferrule{}{\Gamma \vdash \mathsf{tt} : \top} \qquad \inferrule{\Gamma \vdash x : \top}{\Gamma \vdash x = tt}
+\inferrule{}{\Gamma \vdash \top : \mathsf{Type}} \qquad \inferrule{}{\Gamma \vdash \mathsf{tt} : \top} \qquad \inferrule{\Gamma \vdash x : \top}{\Gamma \vdash x = \mathsf{tt}}
 \] \[
 \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] : \mathsf{Type}}{\Gamma \vdash \Pi x : A . B[x] : \mathsf{Type}} \qquad \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] : \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] : \mathsf{Type}}
 \] \[
