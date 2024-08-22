@@ -416,7 +416,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\yon}{\mathcal{y}}
 \newcommand{\poly}{\Cat{Poly}}
-\newcommand{\polycart}{\poly^{\Cat{Cart}}}
+\newcommand{\polycart}{\pol\yon^{\Cat{Cart}}}
 \newcommand{\ppoly}{\mathbb{P}\Cat{oly}}
 \newcommand{\0}{\textsf{0}}
 \newcommand{\1}{\tn{\textsf{1}}}
@@ -738,8 +738,9 @@ above categorical semantics, such iterated substitution is interpreted
 via successively taking pullbacks, which is in general only associative
 up to isomorphism. It seems, then, that something more is needed to
 account for this kind of \emph{strictness} in the semantics of dependent
-type theory. \footnote{Something something Beck-Chevalley\ldots{}} It is
-precisely this problem which natural models exist to solve.
+type theory.%
+\footnote{Something something Beck-Chevalley\ldots{}} 
+It is precisely this problem which natural models exist to solve.
 
 \section{Natural Models}\label{natural-models}
 
@@ -758,19 +759,19 @@ To interpret the syntax of dependent type theory in a category
 \emph{embed} \(\mathcal{C}\) into a category whose type-theoretic
 internal language posesses such a universe whose types correspond to
 those of \(\mathcal{C}\). For this purpose, we work in the category of
-\emph{prehseaves} \(\mathbf{Set}^{\mathcal{C}^{op}}\), with the
+\emph{prehseaves} \(\smset^{\mathcal{C}\op}\), with the
 embedding
-\(\mathcal{C} \hookrightarrow \mathbf{Set}^{\mathcal{C}^{op}}\) being
+\(\mathcal{C} \hookrightarrow \smset^{\mathcal{C}\op}\) being
 nothing other than the Yoneda embedding.
 
 The universe \(\mathcal{U}\) is then given by an object of
-\(\mathbf{Set}^{\mathcal{C}^{op}}\), i.e.~an assignment, to each context
+\(\smset^{\mathcal{C}\op}\), i.e.~an assignment, to each context
 \(\Gamma\), of a set \(\mathsf{Ty}[\Gamma]\) of types in context
 \(\Gamma\), with functions
 \(\mathsf{Ty}[\Delta] \to \mathsf{Ty}[\Gamma]\) for each substitution
 \(f : \Gamma \to \Delta\) that compose associatively, together with a
 \(\mathcal{U}\)-indexed family of objects
-\(u \in \mathbf{Set}^{\mathcal{C}^{op}}/\mathcal{U}\), i.e.~a natural
+\(u \in \smset^{\mathcal{C}\op}\)\!\(/\mathcal{U}\), i.e.~a natural
 transformation \(u : \mathcal{U}_\bullet \Rightarrow \mathcal{U}\),
 where for each context \(\Gamma\) and type
 \(A \in \mathsf{Ty}[\Gamma]\), the fibre of \(u_\Gamma\) over \(A\) is
@@ -780,7 +781,7 @@ the set \(\mathsf{Tm}[\Gamma,A]\) of inhabitants of \(A\) in context
 The condition that all types in \(\mathcal{U}\) ``belong to
 \(\mathcal{C}\)'', in an appropriate sense, can then be expressed by
 requiring \(u\) to be \emph{representable}, i.e.~for any representable
-\(\gamma \in \mathbf{Set}^{\mathcal{C}^{op}}\) with a natural
+\(\gamma \in \smset^{\mathcal{C}\op}\) with a natural
 transformation \(\alpha : \gamma \Rightarrow \mathcal{U}\), the pullback
 \[
 \begin{tikzcd}
@@ -798,7 +799,7 @@ The question, then, is how to express that \(\mathcal{C}\) has dependent
 pair types, dependent function types, etc., in terms of the structure of
 \(u\). A further insight of Awodey, toward answering this question, is
 that \(u\) gives rise to a functor (indeed, a \emph{polynomial functor})
-\(\overline{u} : \mathbf{Set}^{\mathcal{C}^{op}} \to \mathbf{Set}^{\mathcal{C}^{op}}\),
+\(\overline{u} : \smset^{\mathcal{C}\op} \to \smset^{\mathcal{C}\op}\),
 defined as follows \[
 \overline{u}(P)(\Gamma) = \sum_{A : \mathsf{Ty}[\Gamma]} P(\Gamma)^{\mathsf{Tm}[\Gamma, A]}
 \] and much of the type-theoretic structure of \(u\) can be accounted
@@ -818,6 +819,7 @@ pullback \[
     \arrow["{\overline{u}(\alpha)}"', Rightarrow, from=2-1, to=2-2]
 \end{tikzcd}
 \]
+\dnote{Say somewhere that a map of polynomials is cartesian iff for each position, the map on directions is an iso? That's certainly how I think about this.}
 
 A question that arises, then, is what structure such a natural
 transformation interpreting dependent pair types must possess. It is
@@ -838,9 +840,9 @@ However, another possibility exists to solve this dilemma -- to use the
 language of HoTT itself to reason about such equality-up-to-isomorphism
 in natural models. For this purpose, rather than taking natural models
 to be certain (representable) morphisms in
-\(\mathbf{Set}^{\mathcal{C}^{op}}\), we can instead expand the
+\(\smset^{\mathcal{C}\op}\), we can instead expand the
 mathematical universe in which these models live to
-\(\mathbf{\infty Grpd}^{\mathcal{C}^{op}}\), which, as an
+\(\mathbf{\infty Grpd}^{\mathcal{C}\op}\), which, as an
 \(\infty\)-topos, has HoTT as its internal language. Taking advantage of
 this fact, we can use HoTT itself as a language for studying the
 semantics of type theory, by postulating an abstract type
@@ -1375,19 +1377,19 @@ And\ldots{}
 
 \textbf{Remark:} for the sake of concision, since essentially all of the
 categorical structures treated in this paper will be
-infinite-dimensional, we shall generally omit the prefix ``\(\infty\)-''
+infinite-dimensional, we shall generally omit the prefix ``\((\infty,1)\)-''
 from our descriptions these structures. Hence hereafter ``category''
-generally means \(\infty\)-category, ``functor'' means
-\(\infty\)-functor, etc.
+generally means \((\infty,1)\)-category, ``functor'' means
+\((\infty,1)\)-functor, etc.
 
 Let \(\mathbf{Type}\) be the category of types and functions between
-them. Given a type \texttt{A}, let \(y^A\) denote the corresponding
+them. Given a type \texttt{A}, let \(\yon^A\) denote the corresponding
 representable functor \(\mathbf{Type} \to \mathbf{Type}\).
 
 A \emph{polynomial functor} is a coproduct of representable functors
 \(\mathbf{Type} \to \mathbf{Type}\), i.e.~an endofunctor on
 \(\mathbf{Type}\) of the form \[
-\sum_{a : A} y^{B(a)}
+\sum_{a : A} \yon^{B(a)}
 \] for some type \texttt{A} and family of types
 \texttt{B\ :\ A\ →\ Type}. The data of a polynomial functor is thus
 uniquely determined by the choice of \texttt{A} and \texttt{B}. Hence we
@@ -1414,7 +1416,7 @@ represented by the pair \texttt{(⊤\ ,\ λ\ \_\ →\ ⊤)}.
 
 The observant reader may note the striking similarity of the above-given
 formula for a polynomial functor and the endofunctor on
-\(\mathbf{Set}^{\mathcal{C}^{op}}\) defined in the previous section on
+\(\smset^{\mathcal{C}\op}\) defined in the previous section on
 natural models. Indeed, this is no accident, given a type \texttt{𝓤} and
 a function \texttt{u\ :\ 𝓤\ →\ Type} corresponding to a natural model as
 described previously, we obtain the corresponding polynomial
@@ -1423,15 +1425,15 @@ the structure of \texttt{𝓤} and \texttt{u} in terms of \texttt{𝔲}, and
 this, as we shall see, allows for some significant simplifications in
 the theory of natural models.
 
-Given polynomial functors \(p = \sum_{a : A} y^{B(a)}\) and
-\(q = \sum_{c : C} y^{D(c)}\), a natural transformation
+Given polynomial functors \(p = \sum_{a : A} \yon^{B(a)}\) and
+\(q = \sum_{c : C} \yon^{D(c)}\), a natural transformation
 \(p \Rightarrow q\) is equivalently given by the data of a
 \emph{forward} map \texttt{f\ :\ A\ →\ B} and a \emph{backward} map
 \texttt{g\ :\ (a\ :\ A)\ →\ D\ (f\ a)\ →\ B\ a}, as can be seen from the
 following argument via Yoneda: \[
 \begin{array}{rl}
-& \int_{y \in \mathbf{Type}} \left( \sum_{a : A} y^{B(a)}  \right) \to \sum_{c : C} y^{D(c)}\\
-\simeq & \prod_{a : A} \int_{y \in \mathbf{Type}} y^{B(a)} \to \sum_{c : C} y^{D(c)}\\
+& \int_{y \in \mathbf{Type}} \left( \sum_{a : A} \yon^{B(a)}  \right) \to \sum_{c : C} \yon^{D(c)}\\
+\simeq & \prod_{a : A} \int_{y \in \mathbf{Type}} \yon^{B(a)} \to \sum_{c : C} \yon^{D(c)}\\
 \simeq & \prod_{a : A} \sum_{c : C} B(a)^{D(c)}\\
 \simeq & \sum_{f : A \to C} \prod_{a : A} B(a)^{D(f(c))}
 \end{array}
@@ -1588,16 +1590,16 @@ equivalences under identity and composition:
 \end{Highlighting}
 \end{Shaded}
 
-Hence there is a category \(\mathbf{Poly^{Cart}}\) defined as the wide
+Hence there is a category \(\mathbf{Pol\yon^{Cart}}\) defined as the wide
 subcategory of \(\mathbf{Poly}\) whose morphisms are precisely Cartesian
 lenses. As we shall see, much of the categorical structure of natural
 models qua polynomial functors can be derived from the subtle interplay
-between \(\mathbf{Poly^{Cart}}\) and \(\mathbf{Poly}\).
+between \(\mathbf{Pol\yon^{Cart}}\) and \(\mathbf{Poly}\).
 
 \subsection{\texorpdfstring{Epi-Mono Factorization on
-\(\mathbf{Poly^{Cart}}\)}{Epi-Mono Factorization on \textbackslash mathbf\{Poly\^{}\{Cart\}\}}}\label{epi-mono-factorization-on-mathbfpolycart}
+\(\mathbf{Pol\yon^{Cart}}\)}{Epi-Mono Factorization on \textbackslash mathbf\{Poly\^{}\{Cart\}\}}}\label{epi-mono-factorization-on-mathbfpolycart}
 
-In fact, \(\mathbf{Poly^{Cart}}\) itself inherits a factorization system
+In fact, \(\mathbf{Pol\yon^{Cart}}\) itself inherits a factorization system
 from the epi-mono factorization on types considered previously.
 
 Define a Cartesian lens \texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ q} to be a
@@ -1681,9 +1683,9 @@ following chain of equivalences: given polynomials \texttt{(A\ ,\ B)}
 and \texttt{(C\ ,\ D)}, their composite, evaluated at a type \texttt{y}
 is \[
 \begin{array}{rl}
-& \sum_{a : A} \prod_{b : B(a)} \sum_{c : C} y^{D(c)}\\
-\simeq & \sum_{a : A} \sum_{f : B(a) \to C} \prod_{b : B(a)} y^{D(f(b))}\\
-\simeq & \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\sum_{b : B(a)} D(f(b))}
+& \sum_{a : A} \prod_{b : B(a)} \sum_{c : C} \yon^{D(c)}\\
+\simeq & \sum_{a : A} \sum_{f : B(a) \to C} \prod_{b : B(a)} \yon^{D(f(b))}\\
+\simeq & \sum_{(a , f) : \sum_{a : A} C^{B(a)}} \yon^{\sum_{b : B(a)} D(f(b))}
 \end{array}
 \] This then defines a monoidal product \(◃\) on \(\mathbf{Poly}\) with
 monoidal unit given by the identity functor \texttt{𝕪}:
@@ -1827,7 +1829,7 @@ that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.
 \end{Shaded}
 
 In fact, \texttt{◃} restricts to a monoidal product on
-\(\mathbf{Poly^{Cart}}\), since the functorial action of \texttt{◃} on
+\(\mathbf{Pol\yon^{Cart}}\), since the functorial action of \texttt{◃} on
 lenses preserves Cartesian lenses:
 
 \begin{Shaded}
@@ -1848,7 +1850,7 @@ lenses preserves Cartesian lenses:
 We should expect, then, for these equivalences to be somehow reflected
 in the structure of a Cartesian lenses \texttt{η\ :\ 𝕪\ ⇆\ 𝔲} and
 \texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}. This would be the case, e.g., if the
-following diagrams in \(\mathbf{Poly^{Cart}}\) were to commute \[
+following diagrams in \(\mathbf{Pol\yon^{Cart}}\) were to commute \[
 \begin{tikzcd}
     {y \triangleleft \mathfrak{u}} & {\mathfrak{u} \triangleleft \mathfrak{u} } & {\mathfrak{u} \triangleleft y} \\
     & {\mathfrak{u}}
@@ -1930,7 +1932,7 @@ itself univalent.
 
 A key property of polynomial universes -- qua polynomial functors -- is
 that every polynomial universe \texttt{𝔲} is a \emph{subterminal object}
-in \(\mathbf{Poly^{Cart}}\), i.e.~for any other polynomial \texttt{p},
+in \(\mathbf{Pol\yon^{Cart}}\), i.e.~for any other polynomial \texttt{p},
 the type of Cartesian lenses \texttt{p\ ⇆\ 𝔲} is a proposition, i.e.~any
 two Cartesian lenses with codomain \texttt{𝔲} are equal.
 
@@ -1987,7 +1989,7 @@ The result then follows:
 \end{Shaded}
 
 We shall refer to polynomial functors with this property of being
-subterminal objects in \(\mathbf{Poly^{Cart}}\) as \emph{polynomial
+subterminal objects in \(\mathbf{Pol\yon^{Cart}}\) as \emph{polynomial
 universes.} As we shall see, such polynomial universes have many
 desirable properties as models of type theory.
 
@@ -2127,7 +2129,7 @@ By our assumption of the univalence axiom, every polynomial functor
 \end{Shaded}
 
 We then obtain the Rezk completion of \texttt{p} as the image
-factorization in \(\mathbf{Poly^{Cart}}\) of this classifying lens:
+factorization in \(\mathbf{Pol\yon^{Cart}}\) of this classifying lens:
 
 \begin{Shaded}
 \begin{Highlighting}[]
