@@ -1892,6 +1892,8 @@ a \emph{polynomial universe}.
 
 \chapter{Polynomial Universes}\label{polynomial-universes}
 
+\dnote{Introduce the section}
+
 \section{Univalence}\label{univalence}
 
 For any polynomial \texttt{𝔲\ =\ (A\ ,\ B)} and elements
@@ -1935,7 +1937,8 @@ A key property of polynomial universes -- qua polynomial functors -- is
 that every polynomial universe \texttt{𝔲} is a \emph{subterminal object}
 in \(\mathbf{Poly^{Cart}}\), i.e.~for any other polynomial \texttt{p},
 the type of Cartesian lenses \texttt{p\ ⇆\ 𝔲} is a proposition, i.e.~any
-two Cartesian lenses with codomain \texttt{𝔲} are equal.
+two Cartesian lenses with codomain \texttt{𝔲} are equal. \dnote{What do you think of saying ``i.e.~we say a polynomial $v$ is \emph{univalent} if any
+two Cartesian lenses with codomain $v$ are equal.'' I wasn't sure why you chose to call this a universe below; I'd be tempted to call it a univalent type family and reserve ``universe'' for univalent polynomials having more structure, e.g.\ sums and products.}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1998,20 +2001,20 @@ If we think of a polynomial \texttt{p} as representing a family of
 types, then what this tells us is that if \texttt{𝔲} is a polynomial
 universe, there is essentially at most one way for \texttt{𝔲} to contain
 the types represented by \texttt{p}, where Containment is here
-understood as existence of a Cartesian lens \texttt{p\ ⇆\ 𝔲}. In this
+understood as \dnote{mere?} existence of a Cartesian lens \texttt{p\ ⇆\ 𝔲}. In this
 case, we say that \texttt{𝔲} \emph{classifies} the types represented by
 \texttt{p}.
 
-As a direct consequence of this fact, it follows that every diagram
+As a direct consequence of this fact\dnote{which fact? say again, since the last thing discussed was just terminology.}, it follows that every diagram
 consisting of parallel Cartesian lenses into a polynomial universe
 automatically commutes, and moreover, every higher diagram that can be
 formed between the cells exhibiting such commutation must also commute,
 etc.
 
-Hence the fact that \texttt{𝔲} must satisfy the laws of a monad if there
+Hence, due to the above theorem
+and the closure of Cartesian lenses under composition, it follows that \texttt{𝔲} \emph{automatically} satisfies the laws of a monad if there
 are Cartesian lenses \texttt{η\ :\ 𝕪\ ⇆\ 𝔲} and
-\texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲} follows immediately from the above theorem
-and the closure of Cartesian lenses under composition:
+\texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2022,6 +2025,7 @@ and the closure of Cartesian lenses under composition:
                       \OtherTok{(}\NormalTok{◃unitl 𝔲}\OtherTok{)}
                       \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
                             \OtherTok{(}\NormalTok{◃Lens 𝕪 𝔲 𝔲 𝔲 η }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ}\OtherTok{)}
+                            
 \NormalTok{univ◃unitl 𝔲 univ η μ cη cμ }\OtherTok{=}
 \NormalTok{    univ→Subterminal }
 \NormalTok{        𝔲 univ }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{◃unitl 𝔲}\OtherTok{)}
@@ -2091,7 +2095,7 @@ and the closure of Cartesian lenses under composition:
 \end{Shaded}
 
 And more generally, all the higher coherences of an \(\infty\)-monad
-should follow from the contractibility of the types of Cartesian lenses
+should \dnote{What work is ``should'' doing here?} follow from the contractibility of the types of Cartesian lenses
 \texttt{p\ ⇆\ 𝔲} that can be formed using \texttt{μ} and \texttt{η}.
 
 \subsection{Rezk Completion of Natural
@@ -2102,7 +2106,7 @@ in the theory of polynomial functors in HoTT, but what good would such
 special objects do us if they turned out to be exceedingly rare or
 difficult to construct? Moreover, although we have just demonstrated
 that any polynomial universe is a natural model in Awodey \& Newstead's
-sense, one might be inclined to wonder what can be said about the
+sense \dnote{We did? I missed this. I'm guessing it's on its way :)}, one might be inclined to wonder what can be said about the
 converse direction -- does every natural model give rise to a polynomial
 universe?
 
@@ -2111,8 +2115,8 @@ familiar construct from the theory of categories in HoTT -- the
 \emph{Rezk Completion.} In the case of polynomial functors/natural
 models, we will show that this construction allows us to quotient any
 polynomial functor to a corresponding polynomial universe, which
-classifies the unit type and is closed under \texttt{Σ} types if the
-original polynomial is.
+classifies the unit type and \texttt{Σ} types if the
+original polynomial does.
 
 By our assumption of the univalence axiom, every polynomial functor
 \texttt{p} is classified by \emph{some} univalent polynomial:
@@ -2189,7 +2193,7 @@ follows that \texttt{Rezk\ p} is a polynomial universe:
 \NormalTok{                     ≡ transp }\OtherTok{(λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)}\NormalTok{ e z}
 \NormalTok{          lemma1 }\OtherTok{\{}\NormalTok{e }\OtherTok{=}\NormalTok{ refl}\OtherTok{\}}\NormalTok{ refl z }\OtherTok{=}\NormalTok{ refl}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{Deal with long line.}
 
 \chapter{\texorpdfstring{\(\Pi\)-Types, Jump Monads \& Distributive
 Laws}{\textbackslash Pi-Types, Jump Monads \& Distributive Laws}}\label{pi-types-jump-monads-distributive-laws}
