@@ -793,7 +793,7 @@ transformation \(\alpha : \gamma \Rightarrow \mathcal{U}\), the pullback
     \arrow["u", Rightarrow, from=1-2, to=2-2]
     \arrow["\alpha"', Rightarrow, from=2-1, to=2-2]
 \end{tikzcd}
-\] of \(u\) along \(\alpha\) is representable.
+\] of \(u\) along \(\alpha\) is representable.\dnote{I've always been confused by this. If $\mathcal{C}=1$, then there is only one representable functor, the terminal set. So doesn't this condition say that $\mathcal{U}_\bullet=\mathcal{U}$? But this is not the universe for set-polynomials.}
 
 The question, then, is how to express that \(\mathcal{C}\) has dependent
 pair types, dependent function types, etc., in terms of the structure of
@@ -1372,14 +1372,18 @@ And\ldots{}\dnote{You probably plan to say more here? It's a lot of stuff...}
 
 \chapter{Polynomials in HoTT}\label{polynomials-in-hott}
 
-\section{Basics}\label{basics}
+\dnote{Introduce the section}
 
-\textbf{Remark:} for the sake of concision, since essentially all of the
+\begin{remark}
+Since essentially all of the
 categorical structures treated in this paper will be
 infinite-dimensional, we shall generally omit the prefix ``\((\infty,1)\)-''
 from our descriptions these structures. Hence hereafter ``category''
 generally means \((\infty,1)\)-category, ``functor'' means
 \((\infty,1)\)-functor, etc.
+\end{remark}
+
+\section{Basics}\label{basics}
 
 Let \(\mathbf{Type}\) be the category of types and functions between
 them. Given a type \texttt{A}, let \(\yon^A\) denote the corresponding
@@ -1400,7 +1404,7 @@ form:
 \NormalTok{Poly }\OtherTok{:} \OtherTok{(}\NormalTok{ℓ κ }\OtherTok{:}\NormalTok{ Level}\OtherTok{)} \OtherTok{→}\NormalTok{ Type }\OtherTok{((}\NormalTok{lsuc ℓ}\OtherTok{)}\NormalTok{ ⊔ }\OtherTok{(}\NormalTok{lsuc κ}\OtherTok{))}
 \NormalTok{Poly ℓ κ }\OtherTok{=}\NormalTok{ Σ }\OtherTok{(}\DataTypeTok{Set}\NormalTok{ ℓ}\OtherTok{)} \OtherTok{(λ}\NormalTok{ A }\OtherTok{→}\NormalTok{ A }\OtherTok{→} \DataTypeTok{Set}\NormalTok{ κ}\OtherTok{)}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{I was surprised to see $\DataTypeTok{Set}$ show up, especially in the base. I thought we were allowing an arbitrary type here?}
 
 A basic example of such a polynomial functor is the identity functor
 \texttt{𝕪} consisting of a single term of unit arity -- hence
@@ -1416,7 +1420,7 @@ represented by the pair \texttt{(⊤\ ,\ λ\ \_\ →\ ⊤)}.
 The observant reader may note the striking similarity of the above-given
 formula for a polynomial functor and the endofunctor on
 \(\smset^{\mathcal{C}\op}\) defined in the previous section on
-natural models. Indeed, this is no accident, given a type \texttt{𝓤} and
+natural models. \dnote{Either here or there, let's say that $\texttt{Type}$ means small object in $\smset^{\cat{C}\op}$, or whatever is correct along those lines.}Indeed, this is no accident, given a type \texttt{𝓤} and
 a function \texttt{u\ :\ 𝓤\ →\ Type} corresponding to a natural model as
 described previously, we obtain the corresponding polynomial
 \texttt{𝔲\ :\ Poly} as the pair \texttt{(𝓤\ ,\ u)}. Hence we can study
@@ -1481,13 +1485,13 @@ their composition may be computed as follows:
 \NormalTok{comp p q r }\OtherTok{(}\NormalTok{f , g}\OtherTok{)} \OtherTok{(}\NormalTok{h , k}\OtherTok{)} \OtherTok{=} 
     \OtherTok{(} \OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ h }\OtherTok{(}\NormalTok{f a}\OtherTok{))}\NormalTok{ , }\OtherTok{λ}\NormalTok{ a z }\OtherTok{→}\NormalTok{ g a }\OtherTok{(}\NormalTok{k }\OtherTok{(}\NormalTok{f a}\OtherTok{)}\NormalTok{ z}\OtherTok{)} \OtherTok{)}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{Use $(f, f^\sharp)$ and $(g,g^\sharp)$ here, as below?}
 
 Hence we have a category \(\mathbf{Poly}\) of polynomial functors and
 lenses between them. Our goal, then, is to show how the type-theoretic
 structure of a natural model naturally arises from the structure of this
 category. In fact, \(\mathbf{Poly}\) is replete with categorical
-structures of all kinds, of which we now mention but a few:
+structures of all kinds, of which we now mention but a few.
 
 \section{\texorpdfstring{The Vertical-Cartesian Factorization System on
 \(\mathbf{Poly}\)}{The Vertical-Cartesian Factorization System on \textbackslash mathbf\{Poly\}}}\label{the-vertical-cartesian-factorization-system-on-mathbfpoly}
@@ -1548,14 +1552,15 @@ Of these two classes of morphisms in \(\mathbf{Poly}\), it is
 \emph{Cartesian} lenses that shall be of principal interest to us. If we
 view a polynomial \texttt{p\ =\ (A\ ,\ B)} as an \texttt{A}-indexed
 family of types, given by \texttt{B}, then given a lens
-\texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ 𝔲}, we can think of the map
+\texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ 𝔲} to the universe, we can think of the map
 \texttt{f♯\ a\ :\ u\ (f\ a)\ →\ B\ a}, as an \emph{elimination form} for
 the type \texttt{u\ (f\ a)}, i.e.~a way of \emph{using} elements of the
 type \texttt{u\ (f\ a)}. If we then ask that \texttt{(f\ ,\ f♯)}
-isCartesian, this implies that the type \texttt{u\ (f\ a)} is completely
+is Cartesian, this implies that the type \texttt{u\ (f\ a)} is completely
 characterized (up to equivalence) by this elimination form, and in this
-sense, \texttt{𝔲} \emph{contains} the type \texttt{B\ a}, for all
-\texttt{a\ :\ A}.\footnote{Those familiar with type theory may recognize
+sense, that \texttt{𝔲} \emph{contains} the type \texttt{B\ a}, for all
+\texttt{a\ :\ A}.%
+\footnote{Those familiar with type theory may recognize
   this practice of defining types in terms of their elimination forms as
   characteristic of so-called \emph{negative} types (in opposition to
   \emph{positive} types, which are characterized by their introduction
@@ -1565,7 +1570,6 @@ sense, \texttt{𝔲} \emph{contains} the type \texttt{B\ a}, for all
   \emph{co-representable} functor, which reflects the fact that natural
   models are defined in terms of \emph{presheaves} on a category of
   contexts, rather than \emph{co-presheaves.}}
-
 We can therefore use Cartesian lenses to detect which types are
 contained in a natural model \texttt{𝔲}.
 
@@ -1589,16 +1593,16 @@ equivalences under identity and composition:
 \end{Highlighting}
 \end{Shaded}
 
-Hence there is a category \(\mathbf{Pol\yon^{Cart}}\) defined as the wide
+Hence there is a category \(\mathbf{Poly^{Cart}}\) defined as the wide
 subcategory of \(\mathbf{Poly}\) whose morphisms are precisely Cartesian
 lenses. As we shall see, much of the categorical structure of natural
 models qua polynomial functors can be derived from the subtle interplay
-between \(\mathbf{Pol\yon^{Cart}}\) and \(\mathbf{Poly}\).
+between \(\mathbf{Poly^{Cart}}\) and \(\mathbf{Poly}\).
 
 \subsection{\texorpdfstring{Epi-Mono Factorization on
-\(\mathbf{Pol\yon^{Cart}}\)}{Epi-Mono Factorization on \textbackslash mathbf\{Poly\^{}\{Cart\}\}}}\label{epi-mono-factorization-on-mathbfpolycart}
+\(\mathbf{Poly^{Cart}}\)}{Epi-Mono Factorization on \textbackslash mathbf\{Poly\^{}\{Cart\}\}}}\label{epi-mono-factorization-on-mathbfpolycart}
 
-In fact, \(\mathbf{Pol\yon^{Cart}}\) itself inherits a factorization system
+In fact, \(\mathbf{Poly^{Cart}}\) itself inherits a factorization system
 from the epi-mono factorization on types considered previously.
 
 Define a Cartesian lens \texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ q} to be a
@@ -1703,7 +1707,6 @@ monoidal unit given by the identity functor \texttt{𝕪}:
 \NormalTok{    , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , c}\OtherTok{)} \OtherTok{(}\NormalTok{b\textquotesingle{} , d\textquotesingle{}}\OtherTok{)} \OtherTok{→} \OtherTok{((}\NormalTok{g a b\textquotesingle{}}\OtherTok{)}\NormalTok{ , k }\OtherTok{(}\NormalTok{c }\OtherTok{(}\NormalTok{g a b\textquotesingle{}}\OtherTok{))}\NormalTok{ d\textquotesingle{}}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
-
 where \texttt{◃Lens} is the action of \texttt{◃} on lenses.
 
 By construction, the existence of a Cartesian lens
@@ -1716,7 +1719,7 @@ is closed under \texttt{Σ}-types, since:
   \texttt{σ} maps a pair (A , B) consisting of \texttt{A\ :\ 𝓤} and
   \texttt{B\ :\ (u\ A)\ →\ 𝓤} to a term \texttt{σ(A,B)} representing the
   \texttt{Σ} type. This corresponds to the type formation rule
-  \[ \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] ~ \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] ~ \mathsf{Type}} \]
+  \[ \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] ~ \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] ~ \mathsf{Type}} \]\dnote{I like the $B[x]$-bracket notation, but didn't you use $B(x)$-paren notation above? Or is there a subtle distinction coming up that I've missed?}
 \item
   For all \texttt{(A\ ,\ B)} as above, \texttt{σ♯\ (A\ ,\ B)} takes a
   term of type \texttt{σ\ (A\ ,\ B)} and yields a term
@@ -1725,7 +1728,7 @@ is closed under \texttt{Σ}-types, since:
   corresponding to the elimination rules \[
   \inferrule{\Gamma \vdash p : \Sigma x : A . B[x]}{\Gamma \vdash \pi_1(p) : A} \quad \inferrule{\Gamma \vdash p : \Sigma x : A . B[x]}{\Gamma \vdash \pi_2(p) : B[\pi_1(p)]} \]
 \item
-  The fact that \texttt{σ♯\ (A\ ,\ B)} has is an equivalence implies it
+  The fact that \texttt{σ♯\ (A\ ,\ B)} is an equivalence implies it
   has an inverse
   \texttt{σ♯⁻¹\ (A\ ,\ B)\ :\ Σ\ (u\ A)\ (λ\ x\ →\ u\ (B\ x))\ →\ u\ (σ\ (A\ ,\ B))},
   which takes a pair of terms to a term of the corresponding pair type,
@@ -1738,7 +1741,7 @@ is closed under \texttt{Σ}-types, since:
   \[ \pi_1(a , b) = a \quad \pi_2(a , b) = b \quad p = (\pi_1(p) , \pi_2(p)) \]
 \end{itemize}
 
-Similarly, the existence of a Cartesian lens \((η , η♯) : 𝕪 ⇆ 𝔲\)
+Similarly, the existence of a Cartesian lens \((η , η♯) : 𝕪\ ⇆\ 𝔲\)
 implies that \(𝔲\) contains (a type equivalent to) the unit type, in
 that:
 
@@ -1799,9 +1802,8 @@ associativity of \texttt{Σ}-types,
 \NormalTok{                  , }\OtherTok{λ} \OtherTok{((}\NormalTok{b , d}\OtherTok{)}\NormalTok{ , x}\OtherTok{)} \OtherTok{→}\NormalTok{ refl}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
-
 while the left and right unitors of \texttt{◃} correspond to the fact
-that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.
+that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.\dnote{It might be good to add the type-theoretic conversion rules here?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1828,7 +1830,7 @@ that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.
 \end{Shaded}
 
 In fact, \texttt{◃} restricts to a monoidal product on
-\(\mathbf{Pol\yon^{Cart}}\), since the functorial action of \texttt{◃} on
+\(\mathbf{Poly^{Cart}}\), since the functorial action of \texttt{◃} on
 lenses preserves Cartesian lenses:
 
 \begin{Shaded}
@@ -1849,7 +1851,7 @@ lenses preserves Cartesian lenses:
 We should expect, then, for these equivalences to be somehow reflected
 in the structure of a Cartesian lenses \texttt{η\ :\ 𝕪\ ⇆\ 𝔲} and
 \texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}. This would be the case, e.g., if the
-following diagrams in \(\mathbf{Pol\yon^{Cart}}\) were to commute \[
+following diagrams in \(\mathbf{Poly^{Cart}}\) were to commute \[
 \begin{tikzcd}
     {y \triangleleft \mathfrak{u}} & {\mathfrak{u} \triangleleft \mathfrak{u} } & {\mathfrak{u} \triangleleft y} \\
     & {\mathfrak{u}}
@@ -1859,7 +1861,7 @@ following diagrams in \(\mathbf{Pol\yon^{Cart}}\) were to commute \[
     \arrow["{\mathfrak{u} \triangleleft \eta}"', from=1-3, to=1-2]
     \arrow["{\mathsf{\triangleleft unitr}}"{description}, from=1-3, to=2-2]
 \end{tikzcd} \qquad \begin{tikzcd}
-    {(\mathfrak{u} \triangleleft \mathfrak{u}) \triangleleft \mathfrak{u}} & {\mathfrak{u} \triangleleft (\mathfrak{u} \triangleleft \mathfrak{u})} & {\mathfrak{u} \triangleleft \mathfrak{u}} \\
+    {(\mathfrak{u} \triangleleft \mathfrak{u}) \triangleleft \mathfrak{u}} &[5pt]{\mathfrak{u} \triangleleft (\mathfrak{u} \triangleleft \mathfrak{u})} & {\mathfrak{u} \triangleleft \mathfrak{u}} \\
     {\mathfrak{u} \triangleleft \mathfrak{u}} && {\mathfrak{u}}
     \arrow["{\mathsf{\triangleleft assoc}}", from=1-1, to=1-2]
     \arrow["{\mu \triangleleft \mathfrak{u}}"', from=1-1, to=2-1]
@@ -1931,7 +1933,7 @@ itself univalent.
 
 A key property of polynomial universes -- qua polynomial functors -- is
 that every polynomial universe \texttt{𝔲} is a \emph{subterminal object}
-in \(\mathbf{Pol\yon^{Cart}}\), i.e.~for any other polynomial \texttt{p},
+in \(\mathbf{Poly^{Cart}}\), i.e.~for any other polynomial \texttt{p},
 the type of Cartesian lenses \texttt{p\ ⇆\ 𝔲} is a proposition, i.e.~any
 two Cartesian lenses with codomain \texttt{𝔲} are equal.
 
@@ -1988,7 +1990,7 @@ The result then follows:
 \end{Shaded}
 
 We shall refer to polynomial functors with this property of being
-subterminal objects in \(\mathbf{Pol\yon^{Cart}}\) as \emph{polynomial
+subterminal objects in \(\mathbf{Poly^{Cart}}\) as \emph{polynomial
 universes.} As we shall see, such polynomial universes have many
 desirable properties as models of type theory.
 
@@ -2128,7 +2130,7 @@ By our assumption of the univalence axiom, every polynomial functor
 \end{Shaded}
 
 We then obtain the Rezk completion of \texttt{p} as the image
-factorization in \(\mathbf{Pol\yon^{Cart}}\) of this classifying lens:
+factorization in \(\mathbf{Poly^{Cart}}\) of this classifying lens:
 
 \begin{Shaded}
 \begin{Highlighting}[]
