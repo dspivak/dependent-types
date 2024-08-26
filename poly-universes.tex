@@ -766,7 +766,7 @@ nothing other than the Yoneda embedding.
 
 The universe \(\mathcal{U}\) is then given by an object of
 \(\smset^{\mathcal{C}\op}\), i.e.~an assignment, to each context
-\(\Gamma\), of a set \(\mathsf{Ty}[\Gamma]\) of types in context
+\(\Gamma:\ob\cat{C}\), of a set \(\mathsf{Ty}[\Gamma]\) of types in context
 \(\Gamma\), with functions
 \(\mathsf{Ty}[\Delta] \to \mathsf{Ty}[\Gamma]\) for each substitution
 \(f : \Gamma \to \Delta\) that compose associatively, together with a
@@ -800,7 +800,7 @@ pair types, dependent function types, etc., in terms of the structure of
 \(u\). A further insight of Awodey, toward answering this question, is
 that \(u\) gives rise to a functor (indeed, a \emph{polynomial functor})
 \(\overline{u} : \smset^{\mathcal{C}\op} \to \smset^{\mathcal{C}\op}\),
-defined as follows \[
+defined on $P:\mathcal{C}\op\to\smset$ as follows \[
 \overline{u}(P)(\Gamma) = \sum_{A : \mathsf{Ty}[\Gamma]} P(\Gamma)^{\mathsf{Tm}[\Gamma, A]}
 \] and much of the type-theoretic structure of \(u\) can be accounted
 for in terms of this functor. For instance (for reasons to be explained
