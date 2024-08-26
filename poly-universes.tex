@@ -1004,7 +1004,7 @@ We say that a type \texttt{A} is:
 
 We additionally postulate the existence of a \emph{propositional
 truncation,} or \emph{bracket type} operation, that takes a type
-\texttt{A} to the least proposition (wrt entailment) entailed by
+\texttt{A} to the least proposition (with respect to entailment) entailed by
 inhabitation of \texttt{A}.
 
 \begin{Shaded}
@@ -1017,11 +1017,8 @@ inhabitation of \texttt{A}.
             \OtherTok{→}\NormalTok{ isProp B }\OtherTok{→} \OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{→}\NormalTok{ ∥ A ∥ }\OtherTok{→}\NormalTok{ B}
 \end{Highlighting}
 \end{Shaded}
-
 When the type \texttt{∥\ A\ ∥} is inhabited, we say that \texttt{A} is
-\emph{merely} inhabited.
-
-From this operation on types, we straightforwardly obtain the higher
+\emph{merely} inhabited. From this operation on types, we straightforwardly obtain the higher
 analogue of the usual epi-mono factorization system on functions between
 sets, as follows:
 
@@ -1034,7 +1031,7 @@ the \emph{fibre} of \texttt{f} at \texttt{b} is the type of elements of
 \NormalTok{Fibre }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type κ}\OtherTok{\}} \OtherTok{→} \OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{→}\NormalTok{ B }\OtherTok{→}\NormalTok{ Type }\OtherTok{(}\NormalTok{ℓ ⊔ κ}\OtherTok{)}
 \NormalTok{Fibre }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ A}\OtherTok{\}}\NormalTok{ f b }\OtherTok{=}\NormalTok{ Σ A }\OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ f a ≡ b}\OtherTok{)}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{Why did we need $\{A = A\}$?}
 
 By the same token, given such an \texttt{f}, its \emph{image} is the
 type of elements of \texttt{B} whose fibres are merely inhabited.
@@ -1225,7 +1222,7 @@ given by transport along \texttt{sym\ e}, as follows:
 \end{Highlighting}
 \end{Shaded}
 
-And\ldots{}
+And\ldots{}\dnote{You probably plan to say more here? It's a lot of stuff...}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1370,6 +1367,8 @@ And\ldots{}
                 \OtherTok{(}\NormalTok{pairEquiv2 g eg}\OtherTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\dnote{Part of me does think most of this should be in the main paper, rather than the appendix. But this very last part just feels long... Maybe with more text it could be included?} 
 
 \chapter{Polynomials in HoTT}\label{polynomials-in-hott}
 
