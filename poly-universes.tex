@@ -548,7 +548,7 @@ circle from Awodey's original motivation to develop natural models
 \emph{of} Homotopy Type Theory, to describing natural models \emph{in}
 Homotopy Type Theory.
 
-The ability for us to tell the story of natural models as set entirely \dnote{Is that true?}
+The ability for us to tell the story of natural models as set entirely 
 in the category of polynomial functors has a great simplifying effect
 upon the resultant theory, and reveals many additional structures, both
 of polynomial universes, and of the category of polynomial functors as a
@@ -793,7 +793,7 @@ transformation \(\alpha : \gamma \Rightarrow \mathcal{U}\), the pullback
     \arrow["u", Rightarrow, from=1-2, to=2-2]
     \arrow["\alpha"', Rightarrow, from=2-1, to=2-2]
 \end{tikzcd}
-\] of \(u\) along \(\alpha\) is representable.\dnote{I've always been confused by this. If $\mathcal{C}=1$, then there is only one representable functor, the terminal set. So doesn't this condition say that $\mathcal{U}_\bullet=\mathcal{U}$? But this is not the universe for set-polynomials.}
+\] of \(u\) along \(\alpha\) is representable.\dnote{I've always been confused by this. If $\mathcal{C}=1$, then there is only one representable functor, the terminal set. So doesn't this condition say that $\mathcal{U}_\bullet=\mathcal{U}$? But this is not the universe for set-polynomials. Replace with something explaining why List is a universe on sets.}
 
 The question, then, is how to express that \(\mathcal{C}\) has dependent
 pair types, dependent function types, etc., in terms of the structure of
@@ -819,7 +819,7 @@ pullback \[
     \arrow["{\overline{u}(\alpha)}"', Rightarrow, from=2-1, to=2-2]
 \end{tikzcd}
 \]
-\dnote{Say somewhere that a map of polynomials is cartesian iff for each position, the map on directions is an iso? That's certainly how I think about this.}
+\dnote{Say somewhere that a map of polynomials is cartesian iff for each position, the map on directions is an iso? That's certainly how I think about this. \cite[Proposition 5.59]{Niu-Spivak-"Polybook"}}
 
 A question that arises, then, is what structure such a natural
 transformation interpreting dependent pair types must possess. It is
@@ -1031,7 +1031,7 @@ the \emph{fibre} of \texttt{f} at \texttt{b} is the type of elements of
 \NormalTok{Fibre }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ κ}\OtherTok{\}} \OtherTok{\{}\NormalTok{A }\OtherTok{:}\NormalTok{ Type ℓ}\OtherTok{\}} \OtherTok{\{}\NormalTok{B }\OtherTok{:}\NormalTok{ Type κ}\OtherTok{\}} \OtherTok{→} \OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{→}\NormalTok{ B }\OtherTok{→}\NormalTok{ Type }\OtherTok{(}\NormalTok{ℓ ⊔ κ}\OtherTok{)}
 \NormalTok{Fibre }\OtherTok{\{}\NormalTok{A }\OtherTok{=}\NormalTok{ A}\OtherTok{\}}\NormalTok{ f b }\OtherTok{=}\NormalTok{ Σ A }\OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ f a ≡ b}\OtherTok{)}
 \end{Highlighting}
-\end{Shaded}\dnote{Why did we need $\{A = A\}$?}
+\end{Shaded}
 
 By the same token, given such an \texttt{f}, its \emph{image} is the
 type of elements of \texttt{B} whose fibres are merely inhabited.
@@ -1803,7 +1803,7 @@ associativity of \texttt{Σ}-types,
 \end{Highlighting}
 \end{Shaded}
 while the left and right unitors of \texttt{◃} correspond to the fact
-that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.\dnote{It might be good to add the type-theoretic conversion rules here?}
+that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.\dnote{It might be good to add the corresponding type-theoretic consequences here?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1938,7 +1938,7 @@ that every polynomial universe \texttt{𝔲} is a \emph{subterminal object}
 in \(\mathbf{Poly^{Cart}}\), i.e.~for any other polynomial \texttt{p},
 the type of Cartesian lenses \texttt{p\ ⇆\ 𝔲} is a proposition, i.e.~any
 two Cartesian lenses with codomain \texttt{𝔲} are equal. \dnote{What do you think of saying ``i.e.~we say a polynomial $v$ is \emph{univalent} if any
-two Cartesian lenses with codomain $v$ are equal.'' I wasn't sure why you chose to call this a universe below; I'd be tempted to call it a univalent type family and reserve ``universe'' for univalent polynomials having more structure, e.g.\ sums and products.}
+two Cartesian lenses with codomain $v$ are equal''?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2001,7 +2001,7 @@ If we think of a polynomial \texttt{p} as representing a family of
 types, then what this tells us is that if \texttt{𝔲} is a polynomial
 universe, there is essentially at most one way for \texttt{𝔲} to contain
 the types represented by \texttt{p}, where Containment is here
-understood as \dnote{mere?} existence of a Cartesian lens \texttt{p\ ⇆\ 𝔲}. In this
+understood as  existence of a Cartesian lens \texttt{p\ ⇆\ 𝔲}. In this
 case, we say that \texttt{𝔲} \emph{classifies} the types represented by
 \texttt{p}.
 
@@ -2094,8 +2094,8 @@ are Cartesian lenses \texttt{η\ :\ 𝕪\ ⇆\ 𝔲} and
 \end{Highlighting}
 \end{Shaded}
 
-And more generally, all the higher coherences of an \(\infty\)-monad
-should \dnote{What work is ``should'' doing here?} follow from the contractibility of the types of Cartesian lenses
+And more generally, if written out, all the higher coherences of an \(\infty\)-monad
+would follow from the contractibility of the types of Cartesian lenses
 \texttt{p\ ⇆\ 𝔲} that can be formed using \texttt{μ} and \texttt{η}.
 
 \subsection{Rezk Completion of Natural
