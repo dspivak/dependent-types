@@ -211,7 +211,7 @@ ap f refl = refl
 By the same token, given a proof `f ≡ g` for two functions `f,g : (x : A) → B x`, it follows that for any `a : A` we have `f a ≡ g a`.
 
 ```agda
-coAp : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ} {f g : A → B}
+coAp : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
        → f ≡ g → (x : A) → f x ≡ g x
 coAp refl x = refl
 ```
@@ -1110,9 +1110,519 @@ RezkSubterminal {κ = κ} p q (f , f♯) (g , g♯) cf cg x =
 
 # $\Pi$-Types, Jump Monads & Distributive Laws
 
-## The $\upuparrows$ Functor
+We have so far considered how polynomial universes may be equipped with structure to interpret the unit type and dependent pair types. We have not yet, however, said much in the way of *dependent function types.* In order to rectify this omission, it will first be prudent to consider some additional structure on the category of polynomial functors – specifically a new functor $\upuparrows : \mathbf{Poly^{Cart}} \times \mathbf{Poly} \to \mathbf{Poly}$ that plays a similar role for `Π` types as the composition $\triangleleft : \mathbf{Poly} \times \mathbf{Poly} \to \mathbf{Poly}$ played for `Σ` types, and which in turn bears a close connection to a class of structured morphisms in $\mathbf{Poly}$, which we refer to as *jump morphisms.*
 
-## Jump Morphisms & the Universal Property of $\upuparrows$
+## The $\upuparrows$ Functor & Jump Morphisms
+
+The $\upuparrows$ functor can be loosely defined as the solution to the following problem: given a polynomial universe `𝔲`, find `𝔲 ⇈ 𝔲` such that `𝔲` classifies `𝔲 ⇈ 𝔲` if and only if `𝔲` has the structure to interpret `Π` types (in the same way that `𝔲` classifies `𝔲 ◃ 𝔲` if and only if `𝔲` has the structure to interpret `Σ` types). Generalizing this to arbitrary pairs of polynomials $p = (A , B), ~ q = (C , D)$ then yields the following formula for $p \upuparrows q$: $$
+p \upuparrows q = \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\prod_{b : B(a)} D(f(b))}
+$$
+
+```agda
+_⇈_ : ∀ {ℓ ℓ' κ κ'} → Poly ℓ κ → Poly ℓ' κ' → Poly (ℓ ⊔ κ ⊔ ℓ') (κ ⊔ κ')
+(A , B) ⇈ (C , D) = 
+    ( Σ A (λ a → B a → C) 
+    , (λ (a , f) → (b : B a) → D (f b)))
+```
+
+Note that this construction is straightforwardly functorial with respect to arbitrary lenses in its 2nd argument, but is only functorial with respect to Cartesian lenses in its first argument:
+
+```agda
+⇈Lens : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+        → (p : Poly ℓ κ) (q : Poly ℓ' κ') 
+        → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+        → (f : p ⇆ r) → isCartesian p r f
+        → (g : q ⇆ s) → (p ⇈ q) ⇆ (r ⇈ s)
+⇈Lens p q r s (f , f♯) cf (g , g♯) = 
+    ( (λ (a , h) → (f a) , (λ b → g (h (f♯ a b)))) 
+    , λ (a , h) k b
+      → g♯ (h b) (transp (snd s) 
+                   (ap g (ap h (snd (snd (cf a)) b))) 
+                   (k (inv (cf a) b))))
+```
+
+By construction, the existence of a Cartesian lens `(π , π♯) : 𝔲 ◃ 𝔲 ⇆ 𝔲` effectively shows that `𝔲` is closed under `Π`-types, since:
+
+* `π` maps a pair `(A , B)` consisting of `A : 𝓤` and `B : u(A) → 𝓤` to a term `π(A,B)` representing the corresponding `Π` type. This corresponds to the type formation rule $$ \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] ~ \mathsf{Type}}{\Gamma \vdash \Pi x : A . B[x] ~ \mathsf{Type}} $$
+* The "elimination rule" `π♯ (A , B)`, for any pair `(A , B)` as above, maps an element `f : π(A,B)` to a function `π♯ (A , B) f : (a : u(A)) → u (B x)` which takes an element `x` of `A` and yields an element of `B x`. This corresponds to the rule for function application: $$
+\inferrule{\Gamma \vdash f : \Pi x : A . B[x]\\ \Gamma \vdash a : A}{\Gamma \vdash f ~ a : B[a]}
+$$
+* Since `π♯ (A , B)` is an equivalence, it follows that there is an inverse `π♯⁻¹ (A , B) : ((x : u(A)) → u(B(x)) → u(π(A,B))`, which corresponds to $\lambda$-abstraction: $$
+\inferrule{\Gamma, x : A \vdash f[x] : B[x]}{\Gamma \vdash \lambda x . f[x] : \Pi x : A . B[x]}
+$$
+* The fact that `π♯⁻¹ (A , B)` is both a left and a right inverse to `π♯` then corresponds to the $\beta$ and $\eta$ laws for `Π` types. $$
+(\lambda x . f[x]) ~ a = f[a] \qquad f = \lambda x . f ~ x
+$$
+
+Although it is clear enough that the $\upuparrows$ functor serves its intended purpose of characterizing `Π` types in polynomial universes, its construction seems somewhat more ad hoc than that of $\triangleleft$, which similarly characterized `Σ` types in polynomial universes while arising quite naturally from simple composition of polynomial functors. We would like to better understand what additional properties $\upuparrows$ must satisfy, and how these in turn are reflected as properties of polynomial universes with `Π` types. In fact, we will now show that this construction is intimately linked with a quite simple structure on polynomial universes `𝔲`, namely a *distributive law* of `𝔲` (viewed as a monad) over itself, satisfying some additional requirements.
+
+As a first step in this direction, we make a perhaps unexpected move of further generalizing the $\upuparrows$ functor from a functor $\mathbf{Poly^{Cart}} \times \mathbf{Poly} \to \mathbf{Poly}$ to a functor $\mathbf{Poly}^\mathbb{2} \times \mathbf{Poly} \to \mathbf{Poly}$, where $\mathbf{Poly}^\mathbb{2}$ is the arrow category of $\mathbb{Poly}$, i.e. the category whose objects are lenses and whose morphisms are commuting squares of lenses.
+
+```agda
+_⇈[_][_]_ : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
+            → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+            → (p ⇆ q) → (r : Poly ℓ'' κ'')
+            → Poly (ℓ ⊔ κ ⊔ ℓ'') (κ' ⊔ κ'')
+(A , B) ⇈[ (C , D) ][ (f , f♯) ] (E , F) =
+   ( (Σ A (λ a → B a → E)) 
+   , (λ (a , ε) → (d : D (f a)) → F (ε (f♯ a d))))
+
+⇈[-][-]Lens : ∀ {ℓ ℓ' ℓ'' ℓ''' ℓ'''' ℓ''''' κ κ' κ'' κ''' κ'''' κ'''''}
+              → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+              → (p' : Poly ℓ'' κ'') (q' : Poly ℓ''' κ''')
+              → (r : Poly ℓ'''' κ'''') (r' : Poly ℓ''''' κ''''')
+              → (f : p ⇆ q) (f' : p' ⇆ q')
+              → (g : p ⇆ p') (h : q ⇆ q')
+              → (k : r ⇆ r')
+              → isCartesian q q' h
+              → EqLens p q' (comp p q q' f h) (comp p p' q' g f')
+              → (p ⇈[ q ][ f ] r) ⇆ (p' ⇈[ q' ][ f' ] r')
+⇈[-][-]Lens p q p' q' r r' 
+            (f , f♯) (f' , f'♯) (g , g♯) (h , h♯) (k , k♯) ch e =
+    ( (λ (a , γ) → g a , λ b → k (γ (g♯ a b))) 
+    , λ (a , γ) Ϝ d
+        → k♯ (γ (f♯ a d))
+             (transp (snd r') (ap k (ap γ 
+                     ((g♯ a (f'♯ (g a) (transp (snd q') (fst (e a)) 
+                                      (inv (ch (f a)) d)))) 
+                     ≡〈 (sym (snd (e a) (inv (ch (f a)) d))) 〉 
+                     ((f♯ a (h♯ (f a) (inv (ch (f a)) d))) 
+                     ≡〈 (ap (f♯ a) (snd (snd (ch (f a))) d)) 〉 
+                     ((f♯ a d) □)))))
+                 (Ϝ (transp (snd q') (fst (e a)) 
+                            (inv (ch (f a)) d)))) )
+```
+
+Straightforwardly, we have that `p ⇈ q = p ⇈[ p ][ id p ] q`. To see why this construction is important, we now introduce the novel concept of a *jump morphism* in $\mathbf{Poly}$.
+
+Given a lens $(f , f^\sharp) : p \leftrightarrows q$ with $p = (A , B)$ and $q = (C , D)$, a *jump morphism* $(g, g^\sharp) : r \xrightarrow{p \xrightarrow{(f , f^\sharp)} q} s$ for $r = (A' , B')$ and $s = (C' , D')$ is a lens $p \triangleleft r \leftrightarrows s \triangleleft q$ equipped with identities `\pi_2(g(a , h)(d')) = f(a)` for all $a : A$ with $h : {A'}^{B(a)}$ and $d' : D'(\pi_1(g(a,h)))$, and $\pi_1(g^\sharp(a,h)(d',d)) = f^\sharp(a , d)$ for all $a : A$ with $h : {A'}^{B(a)}$ and $d : D(f(a))$ and $d' : D'(g(a , h))$.
+
+```agda
+Jump : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+       → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+       → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+       → (p ⇆ q) 
+       → Set (ℓ ⊔ ℓ' ⊔ ℓ'' ⊔ ℓ''' ⊔ κ ⊔ κ' ⊔ κ'' ⊔ κ''')
+Jump (A , B) (C , D) (A' , B') (C' , D') (f , f♯) =
+    Σ (((A , B) ◃ (A' , B')) ⇆ ((C' , D') ◃ (C , D))) 
+    (λ (g , g♯) 
+       → Σ ((a : A) (h : B a → A') 
+            (d' : D' (fst (g (a , h)))) 
+            → snd (g (a , h)) d' ≡ f a) 
+           λ e → (a : A) (h : B a → A') 
+                 (d' : D' (fst (g (a , h))))
+                 (d : D (snd (g (a , h)) d'))
+                 → fst (g♯ (a , h) (d' , d)) 
+                   ≡ f♯ a (transp D (e a h d') d))
+```
+
+By application of function extensionality, we have the following type of equality proofs for jump morphisms:
+
+```agda
+transpComp : ∀ {ℓ κ} {A : Type ℓ} {a b c : A} {B : A → Type κ}
+             → (e1 : a ≡ b) (e2 : b ≡ c) (x : B a)
+             → transp B e2 (transp B e1 x)
+               ≡ transp B (a ≡〈 e1 〉 e2) x
+transpComp refl refl x = refl
+
+_•_ : ∀ {ℓ} {A : Type ℓ} {a b c : A}
+      → (a ≡ b) → (b ≡ c) → (a ≡ c)
+refl • refl = refl
+
+comprewrite : ∀ {ℓ} {A : Type ℓ} {a b c : A}
+              → (e1 : a ≡ b) (e2 : b ≡ c)
+              → (a ≡〈 e1 〉 e2) ≡ (e1 • e2)
+comprewrite refl refl = refl
+
+{-# REWRITE comprewrite #-}
+
+EqJump : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+         → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+         → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+         → (f : p ⇆ q)
+         → (g g' : Jump p q r s f)
+         → Set (ℓ ⊔ ℓ' ⊔ ℓ'' ⊔ ℓ''' ⊔ κ ⊔ κ' ⊔ κ'' ⊔ κ''')
+EqJump (A , B) (C , D) (A' , B') (C' , D') (f , f♯)
+       ((g , g♯) , e , e♯) ((g' , g'♯) , e' , e'♯) =
+    (a : A) (h : B a → A') 
+    → Σ ((fst (g (a , h))) ≡ (fst (g' (a , h)))) 
+        (λ e1 → (d' : D' (fst (g (a , h)))) 
+              → Σ ((snd (g (a , h)) d') ≡ (snd (g' (a , h)) (transp D' e1 d'))) 
+                  λ e2 → Σ (((snd (g (a , h)) d') ≡〈 e2 〉 (e' a h (transp D' e1 d'))) ≡ e a h d') 
+                           (λ e3 → (d : D (snd (g (a , h)) d')) 
+                                 → Σ ((fst (g♯ (a , h) (d' , d))) 
+                                      ≡ (fst (g'♯ (a , h) ( (transp D' e1 d') 
+                                                          , (transp D e2 d))))) 
+                                     (λ e4 → Σ ((transp (λ x → B' (h x)) e4 (snd (g♯ (a , h) (d' , d)))) 
+                                                ≡ (snd (g'♯ (a , h) ( (transp D' e1 d') 
+                                                                    , (transp D e2 d))))) 
+                                               λ e5 → (e4 • 
+                                                        ((e'♯ a h (transp D' e1 d') (transp D e2 d)) • 
+                                                          (ap (f♯ a) ((transpComp e2 (e' a h (transp D' e1 d')) d) • 
+                                                                      (ap (λ ee → transp D ee d) e3))))) 
+                                                      ≡ e♯ a h d' d)))
+```
+
+We can think of a jump morphism $g : r \xrightarrow{p \xrightarrow{f} q} s$ as one which applies $f$ to the components of $p$ and $q$ while *jumping over* its action on the components of $r$ and $s$.
+```agda
+•invl : ∀ {ℓ} {A : Type ℓ} {a b : A}
+        → (e : a ≡ b) → (sym e) • e ≡ refl
+•invl refl = refl
+
+transpCompSymr : ∀ {ℓ κ} {A : Type ℓ} {a b : A} {B : A → Type κ}
+                 → (e : a ≡ b) (x : B b)
+                 → (transpComp (sym e) e x) • 
+                     (ap (λ e' → transp B e' x) 
+                         (sym (≡siml e)))
+                   ≡ symr e x
+transpCompSymr refl x = refl
+
+apfstβ : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ}
+         → {a a' : A} {b : B a} {b' : B a'}
+         → (e1 : a ≡ a') (e2 : transp B e1 b ≡ b')
+         → ap fst (pairEq e1 e2) ≡ e1
+apfstβ refl refl = refl
+
+⇈→Jump : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (p ⇈[ q ][ f ] r) ⇆ s
+           → Jump p q r s f
+⇈→Jump p q r s (f , f♯) (g , g♯) =
+    ( ( (λ (a , h) → (g (a , h)) , λ d' → f a) 
+      , λ (a , h) (d' , d) 
+        → f♯ a d , (g♯ (a , h) d' d) ) 
+    , ( (λ a h d' → refl) 
+      , λ a h d' d → refl ) )
+
+Jump→⇈ : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → Jump p q r s f
+           → (p ⇈[ q ][ f ] r) ⇆ s
+Jump→⇈ p q r s (f , f♯) ((g , g♯) , e , e♯) =
+    ( (λ (a , h) → fst (g (a , h))) 
+    , λ (a , h) d' d 
+      → transp (snd r) 
+               (ap h (fst (g♯ (a , h) (d' , transp (snd q) (sym (e a h d')) d)) 
+                     ≡〈 e♯ a h d' (transp (snd q) (sym (e a h d')) d) 〉 
+                     ap (f♯ a) (symr (e a h d') d)))
+               (snd (g♯ (a , h) (d' , transp (snd q) (sym (e a h d')) d))) )
+
+⇈→Jumpl : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : (p ⇈[ q ][ f ] r) ⇆ s)
+           → EqLens (p ⇈[ q ][ f ] r) s 
+                    (Jump→⇈ p q r s f 
+                            (⇈→Jump p q r s f g))
+                    g
+⇈→Jumpl p q r s (f , f♯) (g , g♯) (a , h) =
+    ( refl , (λ d' → refl) )
+
+⇈→Jumpr : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : Jump p q r s f)
+           → EqJump p q r s f
+                    (⇈→Jump p q r s f 
+                            (Jump→⇈ p q r s f g)) 
+                    g
+⇈→Jumpr p q r s (f , f♯) ((g , g♯) , e , e♯) a h =
+    ( refl 
+    , λ d' → ( sym (e a h d') 
+             , sym (≡siml (e a h d')) 
+             , λ d → ( sym ((e♯ a h d' (transp (snd q) (sym (e a h d')) d)) • 
+                            (ap (f♯ a) (symr (e a h d') d))) 
+                     , ((ap (λ x → transp (λ b → snd r (h b)) 
+                                          (sym ((e♯ a h d' 
+                                                    (transp (snd q) 
+                                                            (sym (e a h d')) 
+                                                            d)) • 
+                                                (ap (f♯ a) 
+                                                    (symr (e a h d') d)))) 
+                                          x) 
+                            (sym (transpAp (snd r) h 
+                                           (fst (g♯ (a , h) 
+                                                    (d' , (transp (snd q) 
+                                                                  (sym (e a h d')) 
+                                                                  d))) 
+                                            ≡〈 (e♯ a h d' 
+                                                    (transp (snd q) 
+                                                            (sym (e a h d')) 
+                                                            d)) 〉
+                                            (ap (f♯ a) 
+                                                (symr (e a h d') d))) 
+                                           (snd (g♯ (a , h) 
+                                                    (d' , (transp (snd q) 
+                                                                  (sym (e a h d')) 
+                                                                  d))))))) • 
+                        syml (fst (g♯ (a , h) (d' , (transp (snd q) (sym (e a h d')) d))) 
+                              ≡〈 (e♯ a h d' (transp (snd q) (sym (e a h d')) d)) 〉
+                              (ap (f♯ a) (symr (e a h d') d))) 
+                             (snd (g♯ (a , h) (d' , (transp (snd q) (sym (e a h d')) d))))) 
+                     , (ap (λ ee → (sym ((e♯ a h d' (transp (snd q) (sym (e a h d')) d)) • 
+                                         (ap (f♯ a) (symr (e a h d') d)))) • 
+                                   ((e♯ a h d' (transp (snd q) (sym (e a h d')) d)) • 
+                                    (ap ((f♯ a)) ee))) 
+                           (transpCompSymr (e a h d') d) • 
+                        •invl ((e♯ a h d' (transp (snd q) (sym (e a h d')) d)) 
+                               • (ap (f♯ a) (symr (e a h d') d)))))))
+```
+
+```agda
+isJumpCartesian : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+                  → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+                  → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+                  → (f : p ⇆ q)
+                  → (g : Jump p q r s f)
+                  → Type (ℓ ⊔ ℓ'' ⊔ κ ⊔ κ' ⊔ κ'' ⊔ κ''')
+isJumpCartesian (A , B) (C , D) (A' , B') (C' , D') (f , f♯) ((g , g♯) , e , e♯) =
+    (a : A) (h : B a → A')
+    → isEquiv {A = D' (fst (g (a , h)))}
+              {B = (d : D (f a)) → B' (h (f♯ a d))}
+              (snd (Jump→⇈ (A , B) (C , D) 
+                           (A' , B') (C' , D') 
+                           (f , f♯) ((g , g♯) , e , e♯)) 
+                   (a , h))
+```
+
+```agda
+◃assoc⁻¹ : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ') (r : Poly ℓ'' κ'')
+           → (p ◃ (q ◃ r)) ⇆ ((p ◃ q) ◃ r)
+◃assoc⁻¹ p q r = 
+    ( (λ (a , h) → ( (a , (λ x → fst (h x))) 
+                   , (λ (x , y) → snd (h x) y) )) 
+    , λ (a , h) ((x , y) , z) → (x , (y , z)) )
+
+postulate
+    funext : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
+             → ((x : A) → f x ≡ g x) → f ≡ g
+    funextr : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
+              → (e : (x : A) → f x ≡ g x) → coAp (funext e) ≡ e
+    funextl : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
+              → (e : f ≡ g) → funext (coAp e) ≡ e
+
+transpDom : ∀ {ℓ ℓ' ℓ''} {A : Type ℓ} (B : A → Type ℓ') {C : Type ℓ''}
+            → {a a' : A} (f : B a → C) {b : B a'} (e : a ≡ a')
+            → transp (λ x → B x → C) e f b ≡ f (transp B (sym e) b)
+transpDom B f refl = refl
+
+⇈Curry : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2}
+         → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+         → ((p ◃ q) ⇈ r) ⇆ (p ⇈ (q ⇈ r))
+⇈Curry p q r = ( (λ ((a , h) , k) → a , (λ b → (h b) , (λ d → k (b , d)))) 
+               , λ ((a , h) , k) f (b , d) → f b d)
+
+⇈CurryCart : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2}
+             → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+             → isCartesian ((p ◃ q) ⇈ r) (p ⇈ (q ⇈ r)) (⇈Curry p q r)
+⇈CurryCart p q r ((a , h) , k) = 
+    Iso→isEquiv ( (λ f b d → f (b , d)) 
+                , ( (λ f → refl) 
+                  , λ f → refl))
+
+⇈Distr : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2}
+         → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+         → (p ⇈ (q ◃ r)) ⇆ ((p ⇈ q) ◃ (p ⇈ r))
+⇈Distr p q r = ( (λ (a , h) → (a , (λ b → fst (h b))) , λ f → a , (λ b → snd (h b) (f b))) 
+               , λ (a , h) (f , g) b → (f b) , (g b) )
+
+⇈DistrCart : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2}
+             → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+             → isCartesian (p ⇈ (q ◃ r)) ((p ⇈ q) ◃ (p ⇈ r)) (⇈Distr p q r)
+⇈DistrCart p q r (a , h) =
+    Iso→isEquiv ( (λ f → (λ b → fst (f b)) , (λ b → snd (f b))) 
+                , ( (λ (f , g) → refl) 
+                  , λ f → refl))
+
+⇈[]Curry : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 κ0 κ1 κ2 κ3 κ4}
+           → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+           → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+           → (t : Poly ℓ4 κ4)
+           → (f : p ⇆ q) (g : r ⇆ s)
+           → ((p ◃ r) ⇈[ q ◃ s ][ ◃Lens p q r s f g ] t) 
+             ⇆ (p ⇈[ q ][ f ] (r ⇈[ s ][ g ] t))
+⇈[]Curry p q r s t f g = 
+    ( (λ ((a , h) , k) → a , (λ b → (h b) , (λ d → k (b , d)))) 
+    , λ ((a , h) , k) Ϝ (b , d) → Ϝ b d)
+
+⇈[]CurryCart : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 κ0 κ1 κ2 κ3 κ4}
+               → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+               → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+               → (t : Poly ℓ4 κ4)
+               → (f : p ⇆ q) (g : r ⇆ s)
+               → isCartesian ((p ◃ r) ⇈[ q ◃ s ][ ◃Lens p q r s f g ] t) 
+                             (p ⇈[ q ][ f ] (r ⇈[ s ][ g ] t))
+                             (⇈[]Curry p q r s t f g)
+⇈[]CurryCart p q r s t f g ((a , h) , k) =
+    Iso→isEquiv ( (λ Ϝ b d → Ϝ (b , d)) 
+                , ( (λ Ϝ → refl) 
+                  , λ Ϝ → refl))
+
+transpD : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {a a' : A}
+          → (f : (x : A) → B x) (e : a ≡ a')
+          → transp B e (f a) ≡ f a'
+transpD f refl = refl
+
+transpHAdj : ∀ {ℓ ℓ' κ} {A : Type ℓ} {B : Type ℓ'} {C : B → Type κ} {a : A}
+            → {g : A → B} {h : B → A} 
+            → (f : (x : A) → C (g x)) 
+            → (e : (y : B) → g (h y) ≡ y)
+            → (e' : (x : A) → h (g x) ≡ x)
+            → (e'' : (x : A) → e (g x) ≡ ap g (e' x))
+            → transp C (e (g a)) (f (h (g a))) ≡ f a
+transpHAdj {C = C} {a = a} {g = g} {h = h} f e e' e'' = 
+    transp C (e (g a)) (f (h (g a)))               ≡〈 ap (λ ee 
+                                                             → transp C ee 
+                                                                 (f (h (g a)))) 
+                                                          (e'' a) 〉 
+    (transp C (ap g (e' a)) (f (h (g a)))          ≡〈 sym (transpAp C g 
+                                                             (e' a) (f (h (g a)))) 〉 
+    ((transp (λ x → C (g x)) (e' a) (f (h (g a)))) ≡〈 transpD f (e' a) 〉
+    ((f a) □)))
+
+⇈[]Distr : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+           → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+           → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+           → (f : p ⇆ q) → isCartesian p q f
+           → (p ⇈[ q ][ f ] (r ◃ s)) 
+             ⇆ ((p ⇈[ q ][ f ] r) ◃ (p ⇈[ q ][ f ] s))
+⇈[]Distr p q r s (f , f♯) cf = 
+    let hadj = λ a → Iso→HAdj (isEquiv→Iso (cf a)) 
+    in ( (λ (a , h) → (a , (λ b → fst (h b))) 
+                      , (λ Ϝ → a , λ b → snd (h b) 
+                                             (transp (λ x → snd r (fst (h x))) 
+                                                     (fst (snd (snd (hadj a))) b) 
+                                                     (Ϝ (fst (hadj a) b))))) 
+       , λ (a , h) (Ϝ , γ) d 
+           → (Ϝ d) , (transp (snd s) (ap (snd (h (f♯ a d)))
+                                         (transpHAdj Ϝ (fst (snd (snd (hadj a)))) 
+                                                       (fst (snd (hadj a))) 
+                                                       (λ x → sym (snd (snd (snd (hadj a))) x)))) 
+                                     (γ d)) )
+
+⇈[]PreComp : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+             → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+             → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+             → (f : p ⇆ q) (g : q ⇆ r)
+             → (p ⇈[ r ][ comp p q r f g ] s) ⇆ (q ⇈[ r ][ g ] s)
+⇈[]PreComp p q r s (f , f♯) (g , g♯) =
+    ( (λ (a , h) → f a , λ x → h (f♯ a x)) 
+    , (λ (a , h) Ϝ d → Ϝ d) )
+
+⇈[]PreCompCart : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+                 → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+                 → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+                 → (f : p ⇆ q) (g : q ⇆ r)
+                 → isCartesian (p ⇈[ r ][ comp p q r f g ] s)
+                               (q ⇈[ r ][ g ] s)
+                               (⇈[]PreComp p q r s f g)
+⇈[]PreCompCart p q r s (f , f♯) (g , g♯) (a , h) =
+    Iso→isEquiv ( (λ Ϝ d → Ϝ d) 
+                , ( (λ Ϝ → refl) 
+                  , λ Ϝ → refl))
+
+⇈[]PostComp : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+              → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+              → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+              → (f : p ⇆ q) (g : q ⇆ r)
+              → (p ⇈[ r ][ comp p q r f g ] s) ⇆ (p ⇈[ q ][ f ] s)
+⇈[]PostComp p q r s (f , f♯) (g , g♯) =
+    ( (λ (a , h) → a , h) , 
+      (λ (a , h) Ϝ d → Ϝ (g♯ (f a) d)) )
+
+⇈[]PostCompCart : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+                  → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+                  → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+                  → (f : p ⇆ q) (g : q ⇆ r) → isCartesian q r g
+                  → isCartesian (p ⇈[ r ][ comp p q r f g ] s)
+                                (p ⇈[ q ][ f ] s)
+                                (⇈[]PostComp p q r s f g)
+⇈[]PostCompCart p q r s (f , f♯) g cg (a , h) =
+    Iso→isEquiv ( (λ Ϝ d → transp (λ x → snd s (h (f♯ a x))) (snd (snd (cg (f a))) d) (Ϝ (inv (cg (f a)) d))) 
+                , ( (λ Ϝ → {!   !}) 
+                  , (λ Ϝ → {!   !})))
+```
+
+⇈[]DistrCart : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+               → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+               → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+               → (f : p ⇆ q) (cf : isCartesian p q f)
+               → isCartesian (p ⇈[ q ][ f ] (r ◃ s)) 
+                             ((p ⇈[ q ][ f ] r) ◃ (p ⇈[ q ][ f ] s))
+                             (⇈[]Distr p q r s f cf)
+⇈[]DistrCart p q r s (f , f♯) cf (a , h) = 
+    {!   !}
+
+JumpComp2 : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+            → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+            → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3) 
+            → (t : Poly ℓ4 κ5) (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+            → (f : p ⇆ q) (g : r ⇆ s)
+            → Jump p q t u f
+            → Jump r s u v g
+            → Jump (r ◃ p) (s ◃ q) t v (◃Lens r s p q g f)
+JumpComp2 p q r s t u v f g (Ϝ , e , e♯) (γ , e' , e'♯) =
+    ( (comp ((r ◃ p) ◃ t) (r ◃ (p ◃ t)) (v ◃ (s ◃ q)) 
+            (◃assoc r p t) 
+            (comp (r ◃ (p ◃ t)) (r ◃ (u ◃ q)) (v ◃ (s ◃ q)) 
+                  (◃Lens r r (p ◃ t) (u ◃ q) (id r) Ϝ) 
+                  (comp (r ◃ (u ◃ q)) ((r ◃ u) ◃ q) (v ◃ (s ◃ q)) 
+                        (◃assoc⁻¹ r u q) 
+                        (comp ((r ◃ u) ◃ q) ((v ◃ s) ◃ q) (v ◃ (s ◃ q)) 
+                              (◃Lens (r ◃ u) (v ◃ s) q q γ (id q)) 
+                              (◃assoc v s q))))) 
+    , ( (λ (a , h) k x → pairEq (e' a (λ w → fst (fst Ϝ ((h w) , (λ w' → k (w , w'))))) x) 
+                                (funext (λ α → (transpDom (snd s) 
+                                                          (λ d → {!   !}) 
+                                                          (e' a (λ w → fst (fst Ϝ ((h w) , (λ w' → k (w , w'))))) x)) 
+                                               • ( {!   !} 
+                                                 • ( (e {!   !} {!   !} (snd (snd γ (a , (λ β → fst (fst Ϝ ((h β) , (λ δ → k (β , δ)))))) (x , transp (snd s) (sym (e' a (λ β → fst (fst Ϝ ((h β) , (λ δ → k (β , δ))))) x)) α)))) 
+                                                   • {!   !}))))) 
+      , (λ (a , h) k x (y , z) → {!   !})) )
+
+JumpComp1 : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+            → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+            → (s : Poly ℓ3 κ3) (t : Poly ℓ4 κ5) 
+            → (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+            → (f : p ⇆ q) (g : q ⇆ r)
+            → Jump p q s t f
+            → Jump q r u v g
+            → Jump p r (s ◃ u) (t ◃ v) (comp p q r f g)
+JumpComp1 p q r s t u v f g (Ϝ , e , e♯) (γ , e' , e'♯) = 
+    ( comp (p ◃ (s ◃ u)) ((p ◃ s) ◃ u) ((t ◃ v) ◃ r) 
+           (◃assoc⁻¹ p s u) 
+           (comp ((p ◃ s) ◃ u) ((t ◃ q) ◃ u) ((t ◃ v) ◃ r) 
+                 (◃Lens (p ◃ s) (t ◃ q) u u Ϝ (id u)) 
+                 (comp ((t ◃ q) ◃ u) (t ◃ (q ◃ u)) ((t ◃ v) ◃ r) 
+                       (◃assoc t q u) 
+                       (comp (t ◃ (q ◃ u)) (t ◃ (v ◃ r)) ((t ◃ v) ◃ r) 
+                             (◃Lens t t (q ◃ u) (v ◃ r) (id t) γ) 
+                             (◃assoc⁻¹ t v r))))
+    , ( (λ a h (x , y) → (e' (snd (fst Ϝ (a , (λ w → fst (h w)))) x) 
+                             (λ z → snd (h (fst (snd Ϝ (a , (λ w → fst (h w))) 
+                                                       (x , z)))) 
+                                        (snd (snd Ϝ (a , (λ w → fst (h w))) 
+                                                    (x , z)))) y)
+                         • ap (fst g) (e a (λ w → fst (h w)) x))
+      , (λ a h (x , y) z → (e♯ a (λ w → fst (h w)) x 
+                               (fst (snd γ ( (snd (fst Ϝ (a , (λ w → fst (h w)))) x) 
+                                           , (λ α → snd (h (fst (snd Ϝ (a , (λ w → fst (h w))) 
+                                                                       (x , α)))) 
+                                                        (snd (snd Ϝ (a , (λ w → fst (h w))) 
+                                                                    (x , α))))) 
+                                           (y , z)))) 
+                           • ap (snd f a) ( {!   !} 
+                                          • ( (e'♯ {!   !} {!   !} {!   !} {!   !}) 
+                                            • {!   !})))) )
+
+## From Jump Morphisms to Distributive Laws
 
 # Other Type Formers in Polynomial Universes
 
@@ -1120,4 +1630,4 @@ RezkSubterminal {κ = κ} p q (f , f♯) (g , g♯) cf cg x =
 
 ## Positive Types
 
-# Conclusion  
+# Conclusion       

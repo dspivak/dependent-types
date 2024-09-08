@@ -132,6 +132,9 @@
 \newunicodechar{≃}{\ensuremath{\mathnormal\simeq}}
 \newunicodechar{μ}{\ensuremath{\mathnormal\mu}}
 \newunicodechar{ρ}{\ensuremath{\mathnormal\rho}}
+\newunicodechar{⇈}{\ensuremath{\mathnormal\upuparrows}}
+\newunicodechar{π}{\ensuremath{\mathnormal\pi}}
+
 
 
 
@@ -2086,25 +2089,17 @@ And more generally, all the higher coherences of an \(\infty\)-monad
 should follow from the contractibility of the types of Cartesian lenses
 \texttt{p\ ⇆\ 𝔲} that can be formed using \texttt{μ} and \texttt{η}.
 
-\subsection{Rezk Completion of Natural
-Models}\label{rezk-completion-of-natural-models}
+\subsection{Rezk Completion of Polynomial
+Functors}\label{rezk-completion-of-polynomial-functors}
 
 We have so far seen that polynomial universes are quite special objects
 in the theory of polynomial functors in HoTT, but what good would such
 special objects do us if they turned out to be exceedingly rare or
-difficult to construct? Moreover, although we have just demonstrated
-that any polynomial universe is a natural model in Awodey \& Newstead's
-sense, one might be inclined to wonder what can be said about the
-converse direction -- does every natural model give rise to a polynomial
-universe?
-
-In fact, we can answer this latter question in the affirmative, using a
-familiar construct from the theory of categories in HoTT -- the
-\emph{Rezk Completion.} In the case of polynomial functors/natural
-models, we will show that this construction allows us to quotient any
-polynomial functor to a corresponding polynomial universe, which
-classifies the unit type and is closed under \texttt{Σ} types if the
-original polynomial is.
+difficult to construct? In fact, we can show that for \emph{any}
+polynomial functor, there exists a corresponding polynomial universe,
+using a familiar construct from the theory of categories in HoTT -- the
+\emph{Rezk Completion.} We will show that this construction allows us to
+quotient any polynomial functor to a corresponding polynomial universe.
 
 By our assumption of the univalence axiom, every polynomial functor
 \texttt{p} is classified by \emph{some} univalent polynomial:
@@ -2186,11 +2181,101 @@ follows that \texttt{Rezk\ p} is a polynomial universe:
 \chapter{\texorpdfstring{\(\Pi\)-Types, Jump Monads \& Distributive
 Laws}{\textbackslash Pi-Types, Jump Monads \& Distributive Laws}}\label{pi-types-jump-monads-distributive-laws}
 
-\section{\texorpdfstring{The \(\upuparrows\)
-Functor}{The \textbackslash upuparrows Functor}}\label{the-upuparrows-functor}
+We have so far considered how polynomial universes may be equipped with
+structure to interpret the unit type and dependent pair types. We have
+not yet, however, said much in the way of \emph{dependent function
+types.} In order to rectify this omission, it will first be prudent to
+consider some additional structure on the category of polynomial
+functors -- specifically a new functor
+\(\upuparrows : \mathbf{Poly^{Cart}} \times \mathbf{Poly} \to \mathbf{Poly}\)
+that plays a similar role for \texttt{Π} types as the composition
+\(\triangleleft : \mathbf{Poly} \times \mathbf{Poly} \to \mathbf{Poly}\)
+played for \texttt{Σ} types, and which in turn bears a close connection
+to a class of structured morphisms in \(\mathbf{Poly}\), which we refer
+to as \emph{jump morphisms.}
 
-\subsection{\texorpdfstring{Jump Morphisms \& the Universal Property of
-\(\upuparrows\)}{Jump Morphisms \& the Universal Property of \textbackslash upuparrows}}\label{jump-morphisms-the-universal-property-of-upuparrows}
+\section{\texorpdfstring{The \(\upuparrows\) Functor \& Jump
+Morphisms}{The \textbackslash upuparrows Functor \& Jump Morphisms}}\label{the-upuparrows-functor-jump-morphisms}
+
+The \(\upuparrows\) functor can be loosely defined as the solution to
+the following problem: given a polynomial universe \texttt{𝔲}, find
+\texttt{𝔲\ ⇈\ 𝔲} such that \texttt{𝔲} classifies \texttt{𝔲\ ⇈\ 𝔲} if and
+only if \texttt{𝔲} has the structure to interpret \texttt{Π} types (in
+the same way that \texttt{𝔲} classifies \texttt{𝔲\ ◃\ 𝔲} if and only if
+\texttt{𝔲} has the structure to interpret \texttt{Σ} types).
+Generalizing this to arbitrary pairs of polynomials
+\(p = (A , B), ~ q = (C , D)\) then yields the following formula for
+\(p \upuparrows q\): \[
+p \upuparrows q = \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\prod_{b : B(a)} D(f(b))}
+\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\OtherTok{\_}\NormalTok{⇈}\OtherTok{\_} \OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} κ κ\textquotesingle{}}\OtherTok{\}} \OtherTok{→}\NormalTok{ Poly ℓ κ }\OtherTok{→}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{} }\OtherTok{→}\NormalTok{ Poly }\OtherTok{(}\NormalTok{ℓ ⊔ κ ⊔ ℓ\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{κ ⊔ κ\textquotesingle{}}\OtherTok{)}
+\OtherTok{(}\NormalTok{A , B}\OtherTok{)}\NormalTok{ ⇈ }\OtherTok{(}\NormalTok{C , D}\OtherTok{)} \OtherTok{=} 
+    \OtherTok{(}\NormalTok{ Σ A }\OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ B a }\OtherTok{→}\NormalTok{ C}\OtherTok{)} 
+\NormalTok{    , }\OtherTok{(λ} \OtherTok{(}\NormalTok{a , f}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{b }\OtherTok{:}\NormalTok{ B a}\OtherTok{)} \OtherTok{→}\NormalTok{ D }\OtherTok{(}\NormalTok{f b}\OtherTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+Note that this construction is straightforwardly functorial with respect
+to arbitrary lenses in its 2nd argument, but is only functorial with
+respect to Cartesian lenses in its first argument:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{⇈Lens }\OtherTok{:} \OtherTok{∀} \OtherTok{\{}\NormalTok{ℓ ℓ\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{} ℓ\textquotesingle{}\textquotesingle{}\textquotesingle{} κ κ\textquotesingle{} κ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}\textquotesingle{}}\OtherTok{\}}
+        \OtherTok{→} \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ κ}\OtherTok{)} \OtherTok{(}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{} κ\textquotesingle{}}\OtherTok{)} 
+        \OtherTok{→} \OtherTok{(}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}}\OtherTok{)} \OtherTok{(}\NormalTok{s }\OtherTok{:}\NormalTok{ Poly ℓ\textquotesingle{}\textquotesingle{}\textquotesingle{} κ\textquotesingle{}\textquotesingle{}\textquotesingle{}}\OtherTok{)}
+        \OtherTok{→} \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ p ⇆ r}\OtherTok{)} \OtherTok{→}\NormalTok{ isCartesian p r f}
+        \OtherTok{→} \OtherTok{(}\NormalTok{g }\OtherTok{:}\NormalTok{ q ⇆ s}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{p ⇈ q}\OtherTok{)}\NormalTok{ ⇆ }\OtherTok{(}\NormalTok{r ⇈ s}\OtherTok{)}
+\NormalTok{⇈Lens p q r s }\OtherTok{(}\NormalTok{f , f♯}\OtherTok{)}\NormalTok{ cf }\OtherTok{(}\NormalTok{g , g♯}\OtherTok{)} \OtherTok{=} 
+    \OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{a , h}\OtherTok{)} \OtherTok{→} \OtherTok{(}\NormalTok{f a}\OtherTok{)}\NormalTok{ , }\OtherTok{(λ}\NormalTok{ b }\OtherTok{→}\NormalTok{ g }\OtherTok{(}\NormalTok{h }\OtherTok{(}\NormalTok{f♯ a b}\OtherTok{))))} 
+\NormalTok{    , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , h}\OtherTok{)}\NormalTok{ k b}
+      \OtherTok{→}\NormalTok{ g♯ }\OtherTok{(}\NormalTok{h b}\OtherTok{)} \OtherTok{(}\NormalTok{transp }\OtherTok{(}\NormalTok{snd s}\OtherTok{)} 
+                   \OtherTok{(}\NormalTok{ap g }\OtherTok{(}\NormalTok{ap h }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{cf a}\OtherTok{))}\NormalTok{ b}\OtherTok{)))} 
+                   \OtherTok{(}\NormalTok{k }\OtherTok{(}\NormalTok{inv }\OtherTok{(}\NormalTok{cf a}\OtherTok{)}\NormalTok{ b}\OtherTok{))))}
+\end{Highlighting}
+\end{Shaded}
+
+By construction, the existence of a Cartesian lens
+\texttt{(π\ ,\ π♯)\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲} effectively shows that \texttt{𝔲}
+is closed under \texttt{Π}-types, since:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{π} maps a pair \texttt{(A\ ,\ B)} consisting of
+  \texttt{A\ :\ 𝓤} and \texttt{B\ :\ u(A)\ →\ 𝓤} to a term
+  \texttt{π(A,B)} representing the corresponding \texttt{Π} type. This
+  corresponds to the type formation rule
+  \[ \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] ~ \mathsf{Type}}{\Gamma \vdash \Pi x : A . B[x] ~ \mathsf{Type}} \]
+\item
+  The ``elimination rule'' \texttt{π♯\ (A\ ,\ B)}, for any pair
+  \texttt{(A\ ,\ B)} as above, maps an element \texttt{f\ :\ π(A,B)} to
+  a function \texttt{π♯\ (A\ ,\ B)\ f\ :\ (a\ :\ u(A))\ →\ u\ (B\ x)}
+  which takes an element \texttt{x} of \texttt{A} and yields an element
+  of \texttt{B\ x}. This corresponds to the rule for function
+  application: \[
+  \inferrule{\Gamma \vdash f : \Pi x : A . B[x]\\ \Gamma \vdash a : A}{\Gamma \vdash f ~ a : B[a]}
+  \]
+\item
+  Since \texttt{π♯\ (A\ ,\ B)} is an equivalence, it follows that there
+  is an inverse
+  \texttt{π♯⁻¹\ (A\ ,\ B)\ :\ ((x\ :\ u(A))\ →\ u(B(x))\ →\ u(π(A,B))},
+  which corresponds to \(\lambda\)-abstraction: \[
+  \inferrule{\Gamma, x : A \vdash f[x] : B[x]}{\Gamma \vdash \lambda x . f[x] : \Pi x : A . B[x]}
+  \]
+\item
+  The fact that \texttt{π♯⁻¹\ (A\ ,\ B)} is both a left and a right
+  inverse to \texttt{π♯} then corresponds to the \(\beta\) and \(\eta\)
+  laws for \texttt{Π} types. \[
+  (\lambda x . f[x]) ~ a = f[a] \qquad f = \lambda x . f ~ x
+  \]
+\end{itemize}
+
+\section{From Jump Morphisms to Distributive
+Laws}\label{from-jump-morphisms-to-distributive-laws}
 
 \chapter{Other Type Formers in Polynomial
 Universes}\label{other-type-formers-in-polynomial-universes}
