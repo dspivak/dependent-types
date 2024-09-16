@@ -419,7 +419,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\yon}{\mathcal{y}}
 \newcommand{\poly}{\Cat{Poly}}
-\newcommand{\polycart}{\poly^{\Cat{Cart}}}
+\newcommand{\polycart}{\pol\yon^{\Cat{Cart}}}
 \newcommand{\ppoly}{\mathbb{P}\Cat{oly}}
 \newcommand{\0}{\textsf{0}}
 \newcommand{\1}{\tn{\textsf{1}}}
@@ -461,6 +461,10 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \newcommand{\coalg}{\tn{-}\Cat{Coalg}}
 
 \newcommand{\bic}[2]{{}_{#1}\Cat{Comod}_{#2}}
+
+\newcommand{\dnote}[1]{{\quad \color{blue}$\lozenge$\;David says:}~#1\;{\color{blue}$\lozenge$}\quad}
+\newcommand{\cbnote}[1]{{\quad \color{red}$\lozenge$\;C.B.\ says:}~#1\;{\color{red}$\lozenge$}\quad}
+
 
 % ---- Changeable document parameters ---- %
 
@@ -513,7 +517,7 @@ will be described. For example, in the story arc of conditional
 probability, one may say ``now if the set \(P\) that we are asked to
 condition on happens to have measure zero, we must stop; but assuming
 that's not the case then the result will be a new probability
-measure.'\,' Here the story teller is saying that no terms will describe
+measure.'' Here the story teller is saying that no terms will describe
 what happens if \(P\) has measure zero, whereas otherwise the terms of
 standard probability will apply.
 
@@ -547,7 +551,7 @@ circle from Awodey's original motivation to develop natural models
 \emph{of} Homotopy Type Theory, to describing natural models \emph{in}
 Homotopy Type Theory.
 
-The ability for us to tell the story of natural models as set entirely
+The ability for us to tell the story of natural models as set entirely 
 in the category of polynomial functors has a great simplifying effect
 upon the resultant theory, and reveals many additional structures, both
 of polynomial universes, and of the category of polynomial functors as a
@@ -577,6 +581,7 @@ validity.
 \end{Shaded}
 
 The structure of this paper is as follows:
+\dnote{Fill}
 
 \chapter{Background on Type Theory, Natural Models \&
 HoTT}\label{background-on-type-theory-natural-models-hott}
@@ -610,7 +615,7 @@ represent types.\footnote{For consistency with the usage of the term
   \emph{truncation} condition, to be explained shortly,) we relabel
   Agda's universes of types as \texttt{Type}, rather than the default
   \texttt{Set}.} So e.g.~to say that \texttt{⊤}, as defined above, is a
-type, we may simply write \texttt{⊤\ :\ Type}.
+type, we may simply write \texttt{⊤\ :\ Type}.\dnote{The agda below involves levels and sets, but they aren't discussed above. Say something about levels?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -658,7 +663,7 @@ respectively. E.g. we can define the Cartesian product of two types
 
 In more traditional type-theoretic notation, one might see the rules for
 these types written as follows: \[ 
-\inferrule{}{\Gamma \vdash \top : \mathsf{Type}} \qquad \inferrule{}{\Gamma \vdash \mathsf{tt} : \top} \qquad \inferrule{\Gamma \vdash x : \top}{\Gamma \vdash x = tt}
+\inferrule{}{\Gamma \vdash \top : \mathsf{Type}} \qquad \inferrule{}{\Gamma \vdash \mathsf{tt} : \top} \qquad \inferrule{\Gamma \vdash x : \top}{\Gamma \vdash x = \mathsf{tt}}
 \] \[
 \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] : \mathsf{Type}}{\Gamma \vdash \Pi x : A . B[x] : \mathsf{Type}} \qquad \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] : \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] : \mathsf{Type}}
 \] \[
@@ -736,8 +741,9 @@ above categorical semantics, such iterated substitution is interpreted
 via successively taking pullbacks, which is in general only associative
 up to isomorphism. It seems, then, that something more is needed to
 account for this kind of \emph{strictness} in the semantics of dependent
-type theory. \footnote{Something something Beck-Chevalley\ldots{}} It is
-precisely this problem which natural models exist to solve.
+type theory.%
+\footnote{Something something Beck-Chevalley\ldots{}} 
+It is precisely this problem which natural models exist to solve.
 
 \section{Natural Models}\label{natural-models}
 
@@ -756,19 +762,19 @@ To interpret the syntax of dependent type theory in a category
 \emph{embed} \(\mathcal{C}\) into a category whose type-theoretic
 internal language posesses such a universe whose types correspond to
 those of \(\mathcal{C}\). For this purpose, we work in the category of
-\emph{prehseaves} \(\mathbf{Set}^{\mathcal{C}^{op}}\), with the
+\emph{prehseaves} \(\smset^{\mathcal{C}\op}\), with the
 embedding
-\(\mathcal{C} \hookrightarrow \mathbf{Set}^{\mathcal{C}^{op}}\) being
+\(\mathcal{C} \hookrightarrow \smset^{\mathcal{C}\op}\) being
 nothing other than the Yoneda embedding.
 
 The universe \(\mathcal{U}\) is then given by an object of
-\(\mathbf{Set}^{\mathcal{C}^{op}}\), i.e.~an assignment, to each context
-\(\Gamma\), of a set \(\mathsf{Ty}[\Gamma]\) of types in context
+\(\smset^{\mathcal{C}\op}\), i.e.~an assignment, to each context
+\(\Gamma:\ob\cat{C}\), of a set \(\mathsf{Ty}[\Gamma]\) of types in context
 \(\Gamma\), with functions
 \(\mathsf{Ty}[\Delta] \to \mathsf{Ty}[\Gamma]\) for each substitution
 \(f : \Gamma \to \Delta\) that compose associatively, together with a
 \(\mathcal{U}\)-indexed family of objects
-\(u \in \mathbf{Set}^{\mathcal{C}^{op}}/\mathcal{U}\), i.e.~a natural
+\(u \in \smset^{\mathcal{C}\op}\)\!\(/\mathcal{U}\), i.e.~a natural
 transformation \(u : \mathcal{U}_\bullet \Rightarrow \mathcal{U}\),
 where for each context \(\Gamma\) and type
 \(A \in \mathsf{Ty}[\Gamma]\), the fibre of \(u_\Gamma\) over \(A\) is
@@ -778,7 +784,7 @@ the set \(\mathsf{Tm}[\Gamma,A]\) of inhabitants of \(A\) in context
 The condition that all types in \(\mathcal{U}\) ``belong to
 \(\mathcal{C}\)'', in an appropriate sense, can then be expressed by
 requiring \(u\) to be \emph{representable}, i.e.~for any representable
-\(\gamma \in \mathbf{Set}^{\mathcal{C}^{op}}\) with a natural
+\(\gamma \in \smset^{\mathcal{C}\op}\) with a natural
 transformation \(\alpha : \gamma \Rightarrow \mathcal{U}\), the pullback
 \[
 \begin{tikzcd}
@@ -790,14 +796,14 @@ transformation \(\alpha : \gamma \Rightarrow \mathcal{U}\), the pullback
     \arrow["u", Rightarrow, from=1-2, to=2-2]
     \arrow["\alpha"', Rightarrow, from=2-1, to=2-2]
 \end{tikzcd}
-\] of \(u\) along \(\alpha\) is representable.
+\] of \(u\) along \(\alpha\) is representable.\dnote{I've always been confused by this. If $\mathcal{C}=1$, then there is only one representable functor, the terminal set. So doesn't this condition say that $\mathcal{U}_\bullet=\mathcal{U}$? But this is not the universe for set-polynomials. Replace with something explaining why List is a universe on sets.}
 
 The question, then, is how to express that \(\mathcal{C}\) has dependent
 pair types, dependent function types, etc., in terms of the structure of
 \(u\). A further insight of Awodey, toward answering this question, is
 that \(u\) gives rise to a functor (indeed, a \emph{polynomial functor})
-\(\overline{u} : \mathbf{Set}^{\mathcal{C}^{op}} \to \mathbf{Set}^{\mathcal{C}^{op}}\),
-defined as follows \[
+\(\overline{u} : \smset^{\mathcal{C}\op} \to \smset^{\mathcal{C}\op}\),
+defined on $P:\mathcal{C}\op\to\smset$ as follows \[
 \overline{u}(P)(\Gamma) = \sum_{A : \mathsf{Ty}[\Gamma]} P(\Gamma)^{\mathsf{Tm}[\Gamma, A]}
 \] and much of the type-theoretic structure of \(u\) can be accounted
 for in terms of this functor. For instance (for reasons to be explained
@@ -816,6 +822,7 @@ pullback \[
     \arrow["{\overline{u}(\alpha)}"', Rightarrow, from=2-1, to=2-2]
 \end{tikzcd}
 \]
+\dnote{Say somewhere that a map of polynomials is cartesian iff for each position, the map on directions is an iso? That's certainly how I think about this. \cite[Proposition 5.59]{Niu-Spivak-"Polybook"}}
 
 A question that arises, then, is what structure such a natural
 transformation interpreting dependent pair types must possess. It is
@@ -836,9 +843,9 @@ However, another possibility exists to solve this dilemma -- to use the
 language of HoTT itself to reason about such equality-up-to-isomorphism
 in natural models. For this purpose, rather than taking natural models
 to be certain (representable) morphisms in
-\(\mathbf{Set}^{\mathcal{C}^{op}}\), we can instead expand the
+\(\smset^{\mathcal{C}\op}\), we can instead expand the
 mathematical universe in which these models live to
-\(\mathbf{\infty Grpd}^{\mathcal{C}^{op}}\), which, as an
+\(\mathbf{\infty Grpd}^{\mathcal{C}\op}\), which, as an
 \(\infty\)-topos, has HoTT as its internal language. Taking advantage of
 this fact, we can use HoTT itself as a language for studying the
 semantics of type theory, by postulating an abstract type
@@ -1000,7 +1007,7 @@ We say that a type \texttt{A} is:
 
 We additionally postulate the existence of a \emph{propositional
 truncation,} or \emph{bracket type} operation, that takes a type
-\texttt{A} to the least proposition (wrt entailment) entailed by
+\texttt{A} to the least proposition (with respect to entailment) entailed by
 inhabitation of \texttt{A}.
 
 \begin{Shaded}
@@ -1013,11 +1020,8 @@ inhabitation of \texttt{A}.
             \OtherTok{→}\NormalTok{ isProp B }\OtherTok{→} \OtherTok{(}\NormalTok{A }\OtherTok{→}\NormalTok{ B}\OtherTok{)} \OtherTok{→}\NormalTok{ ∥ A ∥ }\OtherTok{→}\NormalTok{ B}
 \end{Highlighting}
 \end{Shaded}
-
 When the type \texttt{∥\ A\ ∥} is inhabited, we say that \texttt{A} is
-\emph{merely} inhabited.
-
-From this operation on types, we straightforwardly obtain the higher
+\emph{merely} inhabited. From this operation on types, we straightforwardly obtain the higher
 analogue of the usual epi-mono factorization system on functions between
 sets, as follows:
 
@@ -1221,7 +1225,7 @@ given by transport along \texttt{sym\ e}, as follows:
 \end{Highlighting}
 \end{Shaded}
 
-And\ldots{}
+And\ldots{}\dnote{You probably plan to say more here? It's a lot of stuff...}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1367,25 +1371,31 @@ And\ldots{}
 \end{Highlighting}
 \end{Shaded}
 
+\dnote{Part of me does think most of this should be in the main paper, rather than the appendix. But this very last part just feels long... Maybe with more text it could be included?} 
+
 \chapter{Polynomials in HoTT}\label{polynomials-in-hott}
+
+\dnote{Introduce the section}
+
+\begin{remark}
+Since essentially all of the
+categorical structures treated in this paper will be
+infinite-dimensional, we shall generally omit the prefix ``\((\infty,1)\)-''
+from our descriptions these structures. Hence hereafter ``category''
+generally means \((\infty,1)\)-category, ``functor'' means
+\((\infty,1)\)-functor, etc.
+\end{remark}
 
 \section{Basics}\label{basics}
 
-\textbf{Remark:} for the sake of concision, since essentially all of the
-categorical structures treated in this paper will be
-infinite-dimensional, we shall generally omit the prefix ``\(\infty\)-''
-from our descriptions these structures. Hence hereafter ``category''
-generally means \(\infty\)-category, ``functor'' means
-\(\infty\)-functor, etc.
-
 Let \(\mathbf{Type}\) be the category of types and functions between
-them. Given a type \texttt{A}, let \(y^A\) denote the corresponding
+them. Given a type \texttt{A}, let \(\yon^A\) denote the corresponding
 representable functor \(\mathbf{Type} \to \mathbf{Type}\).
 
 A \emph{polynomial functor} is a coproduct of representable functors
 \(\mathbf{Type} \to \mathbf{Type}\), i.e.~an endofunctor on
 \(\mathbf{Type}\) of the form \[
-\sum_{a : A} y^{B(a)}
+\sum_{a : A} \yon^{B(a)}
 \] for some type \texttt{A} and family of types
 \texttt{B\ :\ A\ →\ Type}. The data of a polynomial functor is thus
 uniquely determined by the choice of \texttt{A} and \texttt{B}. Hence we
@@ -1397,7 +1407,7 @@ form:
 \NormalTok{Poly }\OtherTok{:} \OtherTok{(}\NormalTok{ℓ κ }\OtherTok{:}\NormalTok{ Level}\OtherTok{)} \OtherTok{→}\NormalTok{ Type }\OtherTok{((}\NormalTok{lsuc ℓ}\OtherTok{)}\NormalTok{ ⊔ }\OtherTok{(}\NormalTok{lsuc κ}\OtherTok{))}
 \NormalTok{Poly ℓ κ }\OtherTok{=}\NormalTok{ Σ }\OtherTok{(}\DataTypeTok{Set}\NormalTok{ ℓ}\OtherTok{)} \OtherTok{(λ}\NormalTok{ A }\OtherTok{→}\NormalTok{ A }\OtherTok{→} \DataTypeTok{Set}\NormalTok{ κ}\OtherTok{)}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{I was surprised to see $\DataTypeTok{Set}$ show up, especially in the base. I thought we were allowing an arbitrary type here?}
 
 A basic example of such a polynomial functor is the identity functor
 \texttt{𝕪} consisting of a single term of unit arity -- hence
@@ -1412,8 +1422,8 @@ represented by the pair \texttt{(⊤\ ,\ λ\ \_\ →\ ⊤)}.
 
 The observant reader may note the striking similarity of the above-given
 formula for a polynomial functor and the endofunctor on
-\(\mathbf{Set}^{\mathcal{C}^{op}}\) defined in the previous section on
-natural models. Indeed, this is no accident, given a type \texttt{𝓤} and
+\(\smset^{\mathcal{C}\op}\) defined in the previous section on
+natural models. \dnote{Either here or there, let's say that $\texttt{Type}$ means small object in $\smset^{\cat{C}\op}$, or whatever is correct along those lines.}Indeed, this is no accident, given a type \texttt{𝓤} and
 a function \texttt{u\ :\ 𝓤\ →\ Type} corresponding to a natural model as
 described previously, we obtain the corresponding polynomial
 \texttt{𝔲\ :\ Poly} as the pair \texttt{(𝓤\ ,\ u)}. Hence we can study
@@ -1421,15 +1431,15 @@ the structure of \texttt{𝓤} and \texttt{u} in terms of \texttt{𝔲}, and
 this, as we shall see, allows for some significant simplifications in
 the theory of natural models.
 
-Given polynomial functors \(p = \sum_{a : A} y^{B(a)}\) and
-\(q = \sum_{c : C} y^{D(c)}\), a natural transformation
+Given polynomial functors \(p = \sum_{a : A} \yon^{B(a)}\) and
+\(q = \sum_{c : C} \yon^{D(c)}\), a natural transformation
 \(p \Rightarrow q\) is equivalently given by the data of a
 \emph{forward} map \texttt{f\ :\ A\ →\ B} and a \emph{backward} map
 \texttt{g\ :\ (a\ :\ A)\ →\ D\ (f\ a)\ →\ B\ a}, as can be seen from the
 following argument via Yoneda: \[
 \begin{array}{rl}
-& \int_{y \in \mathbf{Type}} \left( \sum_{a : A} y^{B(a)}  \right) \to \sum_{c : C} y^{D(c)}\\
-\simeq & \prod_{a : A} \int_{y \in \mathbf{Type}} y^{B(a)} \to \sum_{c : C} y^{D(c)}\\
+& \int_{y \in \mathbf{Type}} \left( \sum_{a : A} \yon^{B(a)}  \right) \to \sum_{c : C} \yon^{D(c)}\\
+\simeq & \prod_{a : A} \int_{y \in \mathbf{Type}} \yon^{B(a)} \to \sum_{c : C} \yon^{D(c)}\\
 \simeq & \prod_{a : A} \sum_{c : C} B(a)^{D(c)}\\
 \simeq & \sum_{f : A \to C} \prod_{a : A} B(a)^{D(f(c))}
 \end{array}
@@ -1478,13 +1488,13 @@ their composition may be computed as follows:
 \NormalTok{comp p q r }\OtherTok{(}\NormalTok{f , g}\OtherTok{)} \OtherTok{(}\NormalTok{h , k}\OtherTok{)} \OtherTok{=} 
     \OtherTok{(} \OtherTok{(λ}\NormalTok{ a }\OtherTok{→}\NormalTok{ h }\OtherTok{(}\NormalTok{f a}\OtherTok{))}\NormalTok{ , }\OtherTok{λ}\NormalTok{ a z }\OtherTok{→}\NormalTok{ g a }\OtherTok{(}\NormalTok{k }\OtherTok{(}\NormalTok{f a}\OtherTok{)}\NormalTok{ z}\OtherTok{)} \OtherTok{)}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{Use $(f, f^\sharp)$ and $(g,g^\sharp)$ here, as below?}
 
 Hence we have a category \(\mathbf{Poly}\) of polynomial functors and
 lenses between them. Our goal, then, is to show how the type-theoretic
 structure of a natural model naturally arises from the structure of this
 category. In fact, \(\mathbf{Poly}\) is replete with categorical
-structures of all kinds, of which we now mention but a few:
+structures of all kinds, of which we now mention but a few.
 
 \section{\texorpdfstring{The Vertical-Cartesian Factorization System on
 \(\mathbf{Poly}\)}{The Vertical-Cartesian Factorization System on \textbackslash mathbf\{Poly\}}}\label{the-vertical-cartesian-factorization-system-on-mathbfpoly}
@@ -1545,14 +1555,15 @@ Of these two classes of morphisms in \(\mathbf{Poly}\), it is
 \emph{Cartesian} lenses that shall be of principal interest to us. If we
 view a polynomial \texttt{p\ =\ (A\ ,\ B)} as an \texttt{A}-indexed
 family of types, given by \texttt{B}, then given a lens
-\texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ 𝔲}, we can think of the map
+\texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ 𝔲} to the universe, we can think of the map
 \texttt{f♯\ a\ :\ u\ (f\ a)\ →\ B\ a}, as an \emph{elimination form} for
 the type \texttt{u\ (f\ a)}, i.e.~a way of \emph{using} elements of the
 type \texttt{u\ (f\ a)}. If we then ask that \texttt{(f\ ,\ f♯)}
-isCartesian, this implies that the type \texttt{u\ (f\ a)} is completely
+is Cartesian, this implies that the type \texttt{u\ (f\ a)} is completely
 characterized (up to equivalence) by this elimination form, and in this
-sense, \texttt{𝔲} \emph{contains} the type \texttt{B\ a}, for all
-\texttt{a\ :\ A}.\footnote{Those familiar with type theory may recognize
+sense, that \texttt{𝔲} \emph{contains} the type \texttt{B\ a}, for all
+\texttt{a\ :\ A}.%
+\footnote{Those familiar with type theory may recognize
   this practice of defining types in terms of their elimination forms as
   characteristic of so-called \emph{negative} types (in opposition to
   \emph{positive} types, which are characterized by their introduction
@@ -1562,7 +1573,6 @@ sense, \texttt{𝔲} \emph{contains} the type \texttt{B\ a}, for all
   \emph{co-representable} functor, which reflects the fact that natural
   models are defined in terms of \emph{presheaves} on a category of
   contexts, rather than \emph{co-presheaves.}}
-
 We can therefore use Cartesian lenses to detect which types are
 contained in a natural model \texttt{𝔲}.
 
@@ -1679,9 +1689,9 @@ following chain of equivalences: given polynomials \texttt{(A\ ,\ B)}
 and \texttt{(C\ ,\ D)}, their composite, evaluated at a type \texttt{y}
 is \[
 \begin{array}{rl}
-& \sum_{a : A} \prod_{b : B(a)} \sum_{c : C} y^{D(c)}\\
-\simeq & \sum_{a : A} \sum_{f : B(a) \to C} \prod_{b : B(a)} y^{D(f(b))}\\
-\simeq & \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\sum_{b : B(a)} D(f(b))}
+& \sum_{a : A} \prod_{b : B(a)} \sum_{c : C} \yon^{D(c)}\\
+\simeq & \sum_{a : A} \sum_{f : B(a) \to C} \prod_{b : B(a)} \yon^{D(f(b))}\\
+\simeq & \sum_{(a , f) : \sum_{a : A} C^{B(a)}} \yon^{\sum_{b : B(a)} D(f(b))}
 \end{array}
 \] This then defines a monoidal product \(◃\) on \(\mathbf{Poly}\) with
 monoidal unit given by the identity functor \texttt{𝕪}:
@@ -1700,7 +1710,6 @@ monoidal unit given by the identity functor \texttt{𝕪}:
 \NormalTok{    , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , c}\OtherTok{)} \OtherTok{(}\NormalTok{b\textquotesingle{} , d\textquotesingle{}}\OtherTok{)} \OtherTok{→} \OtherTok{((}\NormalTok{g a b\textquotesingle{}}\OtherTok{)}\NormalTok{ , k }\OtherTok{(}\NormalTok{c }\OtherTok{(}\NormalTok{g a b\textquotesingle{}}\OtherTok{))}\NormalTok{ d\textquotesingle{}}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
-
 where \texttt{◃Lens} is the action of \texttt{◃} on lenses.
 
 By construction, the existence of a Cartesian lens
@@ -1713,7 +1722,7 @@ is closed under \texttt{Σ}-types, since:
   \texttt{σ} maps a pair (A , B) consisting of \texttt{A\ :\ 𝓤} and
   \texttt{B\ :\ (u\ A)\ →\ 𝓤} to a term \texttt{σ(A,B)} representing the
   \texttt{Σ} type. This corresponds to the type formation rule
-  \[ \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] ~ \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] ~ \mathsf{Type}} \]
+  \[ \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] ~ \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] ~ \mathsf{Type}} \]\dnote{I like the $B[x]$-bracket notation, but didn't you use $B(x)$-paren notation above? Or is there a subtle distinction coming up that I've missed?}
 \item
   For all \texttt{(A\ ,\ B)} as above, \texttt{σ♯\ (A\ ,\ B)} takes a
   term of type \texttt{σ\ (A\ ,\ B)} and yields a term
@@ -1722,7 +1731,7 @@ is closed under \texttt{Σ}-types, since:
   corresponding to the elimination rules \[
   \inferrule{\Gamma \vdash p : \Sigma x : A . B[x]}{\Gamma \vdash \pi_1(p) : A} \quad \inferrule{\Gamma \vdash p : \Sigma x : A . B[x]}{\Gamma \vdash \pi_2(p) : B[\pi_1(p)]} \]
 \item
-  The fact that \texttt{σ♯\ (A\ ,\ B)} has is an equivalence implies it
+  The fact that \texttt{σ♯\ (A\ ,\ B)} is an equivalence implies it
   has an inverse
   \texttt{σ♯⁻¹\ (A\ ,\ B)\ :\ Σ\ (u\ A)\ (λ\ x\ →\ u\ (B\ x))\ →\ u\ (σ\ (A\ ,\ B))},
   which takes a pair of terms to a term of the corresponding pair type,
@@ -1735,7 +1744,7 @@ is closed under \texttt{Σ}-types, since:
   \[ \pi_1(a , b) = a \quad \pi_2(a , b) = b \quad p = (\pi_1(p) , \pi_2(p)) \]
 \end{itemize}
 
-Similarly, the existence of a Cartesian lens \((η , η♯) : 𝕪 ⇆ 𝔲\)
+Similarly, the existence of a Cartesian lens \((η , η♯) : 𝕪\ ⇆\ 𝔲\)
 implies that \(𝔲\) contains (a type equivalent to) the unit type, in
 that:
 
@@ -1796,9 +1805,8 @@ associativity of \texttt{Σ}-types,
 \NormalTok{                  , }\OtherTok{λ} \OtherTok{((}\NormalTok{b , d}\OtherTok{)}\NormalTok{ , x}\OtherTok{)} \OtherTok{→}\NormalTok{ refl}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
-
 while the left and right unitors of \texttt{◃} correspond to the fact
-that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.
+that \texttt{⊤} is both a left and a right unit for \texttt{Σ}-types.\dnote{It might be good to add the corresponding type-theoretic consequences here?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1856,7 +1864,7 @@ following diagrams in \(\mathbf{Poly^{Cart}}\) were to commute \[
     \arrow["{\mathfrak{u} \triangleleft \eta}"', from=1-3, to=1-2]
     \arrow["{\mathsf{\triangleleft unitr}}"{description}, from=1-3, to=2-2]
 \end{tikzcd} \qquad \begin{tikzcd}
-    {(\mathfrak{u} \triangleleft \mathfrak{u}) \triangleleft \mathfrak{u}} & {\mathfrak{u} \triangleleft (\mathfrak{u} \triangleleft \mathfrak{u})} & {\mathfrak{u} \triangleleft \mathfrak{u}} \\
+    {(\mathfrak{u} \triangleleft \mathfrak{u}) \triangleleft \mathfrak{u}} &[5pt]{\mathfrak{u} \triangleleft (\mathfrak{u} \triangleleft \mathfrak{u})} & {\mathfrak{u} \triangleleft \mathfrak{u}} \\
     {\mathfrak{u} \triangleleft \mathfrak{u}} && {\mathfrak{u}}
     \arrow["{\mathsf{\triangleleft assoc}}", from=1-1, to=1-2]
     \arrow["{\mu \triangleleft \mathfrak{u}}"', from=1-1, to=2-1]
@@ -1886,6 +1894,8 @@ show this, we now introduce the central concept of this paper -- that of
 a \emph{polynomial universe}.
 
 \chapter{Polynomial Universes}\label{polynomial-universes}
+
+\dnote{Introduce the section}
 
 \section{Univalence}\label{univalence}
 
@@ -1930,7 +1940,8 @@ A key property of polynomial universes -- qua polynomial functors -- is
 that every polynomial universe \texttt{𝔲} is a \emph{subterminal object}
 in \(\mathbf{Poly^{Cart}}\), i.e.~for any other polynomial \texttt{p},
 the type of Cartesian lenses \texttt{p\ ⇆\ 𝔲} is a proposition, i.e.~any
-two Cartesian lenses with codomain \texttt{𝔲} are equal.
+two Cartesian lenses with codomain \texttt{𝔲} are equal. \dnote{What do you think of saying ``i.e.~we say a polynomial $v$ is \emph{univalent} if any
+two Cartesian lenses with codomain $v$ are equal''?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1993,20 +2004,20 @@ If we think of a polynomial \texttt{p} as representing a family of
 types, then what this tells us is that if \texttt{𝔲} is a polynomial
 universe, there is essentially at most one way for \texttt{𝔲} to contain
 the types represented by \texttt{p}, where Containment is here
-understood as existence of a Cartesian lens \texttt{p\ ⇆\ 𝔲}. In this
+understood as  existence of a Cartesian lens \texttt{p\ ⇆\ 𝔲}. In this
 case, we say that \texttt{𝔲} \emph{classifies} the types represented by
 \texttt{p}.
 
-As a direct consequence of this fact, it follows that every diagram
+As a direct consequence of this fact\dnote{which fact? say again, since the last thing discussed was just terminology.}, it follows that every diagram
 consisting of parallel Cartesian lenses into a polynomial universe
 automatically commutes, and moreover, every higher diagram that can be
 formed between the cells exhibiting such commutation must also commute,
 etc.
 
-Hence the fact that \texttt{𝔲} must satisfy the laws of a monad if there
+Hence, due to the above theorem
+and the closure of Cartesian lenses under composition, it follows that \texttt{𝔲} \emph{automatically} satisfies the laws of a monad if there
 are Cartesian lenses \texttt{η\ :\ 𝕪\ ⇆\ 𝔲} and
-\texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲} follows immediately from the above theorem
-and the closure of Cartesian lenses under composition:
+\texttt{μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2017,6 +2028,7 @@ and the closure of Cartesian lenses under composition:
                       \OtherTok{(}\NormalTok{◃unitl 𝔲}\OtherTok{)}
                       \OtherTok{(}\NormalTok{comp }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{𝔲 ◃ 𝔲}\OtherTok{)}\NormalTok{ 𝔲}
                             \OtherTok{(}\NormalTok{◃Lens 𝕪 𝔲 𝔲 𝔲 η }\OtherTok{(}\NormalTok{id 𝔲}\OtherTok{))}\NormalTok{ μ}\OtherTok{)}
+                            
 \NormalTok{univ◃unitl 𝔲 univ η μ cη cμ }\OtherTok{=}
 \NormalTok{    univ→Subterminal }
 \NormalTok{        𝔲 univ }\OtherTok{(}\NormalTok{𝕪 ◃ 𝔲}\OtherTok{)} \OtherTok{(}\NormalTok{◃unitl 𝔲}\OtherTok{)}
@@ -2085,8 +2097,8 @@ and the closure of Cartesian lenses under composition:
 \end{Highlighting}
 \end{Shaded}
 
-And more generally, all the higher coherences of an \(\infty\)-monad
-should follow from the contractibility of the types of Cartesian lenses
+And more generally, if written out, all the higher coherences of an \(\infty\)-monad
+would follow from the contractibility of the types of Cartesian lenses
 \texttt{p\ ⇆\ 𝔲} that can be formed using \texttt{μ} and \texttt{η}.
 
 \subsection{Rezk Completion of Polynomial
@@ -2095,11 +2107,27 @@ Functors}\label{rezk-completion-of-polynomial-functors}
 We have so far seen that polynomial universes are quite special objects
 in the theory of polynomial functors in HoTT, but what good would such
 special objects do us if they turned out to be exceedingly rare or
+<<<<<<< HEAD
 difficult to construct? In fact, we can show that for \emph{any}
 polynomial functor, there exists a corresponding polynomial universe,
 using a familiar construct from the theory of categories in HoTT -- the
 \emph{Rezk Completion.} We will show that this construction allows us to
 quotient any polynomial functor to a corresponding polynomial universe.
+=======
+difficult to construct? Moreover, although we have just demonstrated
+that any polynomial universe is a natural model in Awodey \& Newstead's
+sense \dnote{We did? I missed this. I'm guessing it's on its way :)}, one might be inclined to wonder what can be said about the
+converse direction -- does every natural model give rise to a polynomial
+universe?
+
+In fact, we can answer this latter question in the affirmative, using a
+familiar construct from the theory of categories in HoTT -- the
+\emph{Rezk Completion.} In the case of polynomial functors/natural
+models, we will show that this construction allows us to quotient any
+polynomial functor to a corresponding polynomial universe, which
+classifies the unit type and \texttt{Σ} types if the
+original polynomial does.
+>>>>>>> c4227511ca42871e9e61301e46f89843d55b675a
 
 By our assumption of the univalence axiom, every polynomial functor
 \texttt{p} is classified by \emph{some} univalent polynomial:
@@ -2176,7 +2204,7 @@ follows that \texttt{Rezk\ p} is a polynomial universe:
 \NormalTok{                     ≡ transp }\OtherTok{(λ}\NormalTok{ X }\OtherTok{→}\NormalTok{ X}\OtherTok{)}\NormalTok{ e z}
 \NormalTok{          lemma1 }\OtherTok{\{}\NormalTok{e }\OtherTok{=}\NormalTok{ refl}\OtherTok{\}}\NormalTok{ refl z }\OtherTok{=}\NormalTok{ refl}
 \end{Highlighting}
-\end{Shaded}
+\end{Shaded}\dnote{Deal with long line.}
 
 \chapter{\texorpdfstring{\(\Pi\)-Types, Jump Monads \& Distributive
 Laws}{\textbackslash Pi-Types, Jump Monads \& Distributive Laws}}\label{pi-types-jump-monads-distributive-laws}
