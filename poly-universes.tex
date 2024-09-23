@@ -1466,14 +1466,14 @@ their composition may be computed as follows:
 \end{Highlighting}
 \end{Shaded}
 
-Hence we have a category \(\mathbf{Poly}\) of polynomial functors and
+Hence we have a category \(\poly\) of polynomial functors and
 lenses between them. Our goal, then, is to show how the type-theoretic
 structure of a natural model naturally arises from the structure of this
-category. In fact, \(\mathbf{Poly}\) is replete with categorical
+category. In fact, \(\poly\) is replete with categorical
 structures of all kinds, of which we now mention but a few:
 
 \section{\texorpdfstring{The Vertical-Cartesian Factorization System on
-\(\mathbf{Poly}\)}{The Vertical-Cartesian Factorization System on \textbackslash mathbf\{Poly\}}}\label{the-vertical-cartesian-factorization-system-on-mathbfpoly}
+\(\poly\)}{The Vertical-Cartesian Factorization System on \textbackslash mathbf\{Poly\}}}\label{the-vertical-cartesian-factorization-system-on-mathbfpoly}
 
 We say that a lens \texttt{(f\ ,\ f♯)\ :\ (A\ ,\ B)\ ⇆\ (C\ ,\ D)} is
 \emph{vertical} if \texttt{f\ :\ A\ →\ C} is an equivalence, and
@@ -1525,7 +1525,7 @@ vertical lens followed by a Cartesian lens:
 \end{Highlighting}
 \end{Shaded}
 
-Of these two classes of morphisms in \(\mathbf{Poly}\), it is
+Of these two classes of morphisms in \(\poly\), it is
 \emph{Cartesian} lenses that shall be of principal interest to us. If we
 view a polynomial \texttt{p\ =\ (A\ ,\ B)} as an \texttt{A}-indexed
 family of types, given by \texttt{B}, then given a lens
@@ -1571,10 +1571,10 @@ equivalences under identity and composition:
 \end{Shaded}
 
 Hence there is a category \(\mathbf{Poly^{Cart}}\) defined as the wide
-subcategory of \(\mathbf{Poly}\) whose morphisms are precisely Cartesian
+subcategory of \(\poly\) whose morphisms are precisely Cartesian
 lenses. As we shall see, much of the categorical structure of natural
 models qua polynomial functors can be derived from the subtle interplay
-between \(\mathbf{Poly^{Cart}}\) and \(\mathbf{Poly}\).
+between \(\mathbf{Poly^{Cart}}\) and \(\poly\).
 
 \subsection{\texorpdfstring{Epi-Mono Factorization on
 \(\mathbf{Poly^{Cart}}\)}{Epi-Mono Factorization on \textbackslash mathbf\{Poly\^{}\{Cart\}\}}}\label{epi-mono-factorization-on-mathbfpolycart}
@@ -1638,7 +1638,7 @@ followed by a vertical embedding, both of which are Cartesian.
 \end{Shaded}
 
 We note in passing that the vertical embeddings are indeed the
-monomorphisms in \(\mathbf{Poly}^{\mathbf{Cart}}\), i.e.~if
+monomorphisms in \(\poly^{\mathbf{Cart}}\), i.e.~if
 \texttt{f\ :\ q\ ⇆\ r} is a both Cartesian and a vertical embedding,
 then for any Cartesian \texttt{g\ h\ :\ p\ ⇆\ q} such that
 \texttt{f\ ∘\ g\ ≡\ f\ ∘\ h}, we have \texttt{g\ =\ h}.\footnote{the
@@ -1685,7 +1685,7 @@ is \[
 \simeq & \sum_{a : A} \sum_{f : B(a) \to C} \prod_{b : B(a)} y^{D(f(b))}\\
 \simeq & \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\sum_{b : B(a)} D(f(b))}
 \end{array}
-\] This then defines a monoidal product \(◃\) on \(\mathbf{Poly}\) with
+\] This then defines a monoidal product \(◃\) on \(\poly\) with
 monoidal unit given by the identity functor \texttt{𝕪}:
 
 \begin{Shaded}
@@ -1773,7 +1773,7 @@ sense of Awodey \& Newstead's definition in terms of Cartesian
 \texttt{Π} types, or other type formers? To answer these questions, we
 will need to study the structure of \texttt{◃}, along with some closely
 related functors, in a bit more detail. In particular, we shall see that
-the structure of \texttt{◃} as a monoidal product on \(\mathbf{Poly}\)
+the structure of \texttt{◃} as a monoidal product on \(\poly\)
 reflects many of the basic identities one expects to hold of \texttt{Σ}
 types.
 
@@ -2035,14 +2035,14 @@ single example, a plethora of others can be seen to follow, many of
 which encompass familiar constructs from programming and mathematics.
 
 In a sense, the polynomial \texttt{(Type\ ,\ λ\ X\ →\ X)} is
-\emph{universal} among polynomials in \(\mathbf{Poly}^{\mathbf{Cart}}\)
+\emph{universal} among polynomials in \(\poly^{\mathbf{Cart}}\)
 in that, for any polynomial \texttt{p}, there is a (necessarily unique,
 by univalence) Cartesian morphism \texttt{p\ ⇆\ (Type\ ,\ λ\ X\ →\ X)}.
 Or rather, there would be, were it not for the size issues preventing
 \texttt{(Type\ ,\ λ\ X\ →\ X)} from being a single object. Instead, it
 can more accurately be said that the family of polynomials
 \texttt{(Type\ ℓ\ ,\ λ\ X\ →\ X)} for all \texttt{ℓ\ :\ Level} is
-universal among polynomials in \(\mathbf{Poly}^{\mathbf{Cart}}\) -- this
+universal among polynomials in \(\poly^{\mathbf{Cart}}\) -- this
 can be shown straightforwardly as follows:
 
 \begin{Shaded}
@@ -2060,7 +2060,7 @@ can be shown straightforwardly as follows:
 In other words, every polynomial functor \texttt{p} is classified by
 some polynomial universe. Moreover, if the classifying morphism
 \texttt{p\ ⇆\ (Type\ κ\ ,\ λ\ X\ →\ X)} is a Vertical embedding (i.e.~a
-monomorphism in \(\mathbf{Poly}^{\mathbf{Cart}}\)), then \texttt{p}
+monomorphism in \(\poly^{\mathbf{Cart}}\)), then \texttt{p}
 itself is also a polynomial universe -- for any pair of Cartesian
 morphisms \texttt{f\ g\ :\ q\ ⇆\ p}, since
 \texttt{(Type\ κ\ ,\ λ\ X\ →\ X)} is univalent, we have
@@ -2297,11 +2297,11 @@ not yet, however, said much in the way of \emph{dependent function
 types.} In order to rectify this omission, it will first be prudent to
 consider some additional structure on the category of polynomial
 functors -- specifically a new functor
-\({\upuparrows}[\_] : \mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}\)
+\({\upuparrows}[\_] : \mathsf{Tw}(\poly) \times \poly \to \poly\)
 that plays a similar role for \texttt{Π} types as the composition
-\(\triangleleft : \mathbf{Poly} \times \mathbf{Poly} \to \mathbf{Poly}\)
+\(\triangleleft : \poly \times \poly \to \poly\)
 played for \texttt{Σ} types, and which in turn bears a close connection
-to \emph{distributive laws} in \(\mathbf{Poly}\).
+to \emph{distributive laws} in \(\poly\).
 
 \section{\texorpdfstring{The \(\upuparrows\) and \({\upuparrows}[\_]\)
 Functors}{The \textbackslash upuparrows and \{\textbackslash upuparrows\}{[}\textbackslash\_{]} Functors}}\label{the-upuparrows-and-upuparrows_-functors}
@@ -2405,15 +2405,15 @@ namely a \emph{distributive law} of \texttt{𝔲} (viewed as a monad) over
 itself. Before that, however, we note some other key properties of
 \(\upuparrows\).
 
-Specifically, let \(\mathbf{Poly}_{R}\) be the wide subcategory of
-\(\mathbf{Poly}\) spanned by morphisms equipped with left inverses.
+Specifically, let \(\poly_{R}\) be the wide subcategory of
+\(\poly\) spanned by morphisms equipped with left inverses.
 Straightforwardly, \(\triangleleft\) restricts to a monoidal product on
-\(\mathbf{Poly}_R\), since it is functorial in both arguments and must
+\(\poly_R\), since it is functorial in both arguments and must
 preserve left/right inverses. Hence \(\upuparrows\) can be viewed as a
-functor \(\mathbf{Poly}_R \times \mathbf{Poly} \to \mathbf{Poly}\). Then
+functor \(\poly_R \times \poly \to \poly\). Then
 \(\upuparrows\) moreover naturally carries the structure of an
-\emph{action} on \(\mathbf{Poly}\) of the monoidal category
-\(\mathbf{Poly}_R\) equipped with \(\triangleleft\), in that there are
+\emph{action} on \(\poly\) of the monoidal category
+\(\poly_R\) equipped with \(\triangleleft\), in that there are
 natural transformations \[
 y \upuparrows p \to p \] \[
 (p \triangleleft q) \upuparrows r \to p \upuparrows (q \upuparrows r)
@@ -2533,9 +2533,9 @@ the affirmative shall be our task in the remainder of this section.
 
 As a first step in this direction, we make a perhaps unexpected move of
 further generalizing the \(\upuparrows\) functor to a functor
-\(\mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}\),
-where \(\mathsf{Tw}(\mathbf{Poly})\) is the \emph{twisted arrow
-category} of \(\mathbf{Poly}\), i.e.~the category whose objects are
+\(\mathsf{Tw}(\poly) \times \poly \to \poly\),
+where \(\mathsf{Tw}(\poly)\) is the \emph{twisted arrow
+category} of \(\poly\), i.e.~the category whose objects are
 lenses and whose morphisms are \emph{twisted} commuting squares of the
 form \[
 \begin{array}{ccc}
@@ -2547,9 +2547,9 @@ r & \leftarrow & s
 
 As a first step in this direction, we make a perhaps unexpected move of
 further generalizing the \(\upuparrows\) functor to a functor
-\(\mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}\),
-where \(\mathsf{Tw}(\mathbf{Poly})\) is the \emph{twisted arrow
-category} of \(\mathbb{Poly}\), i.e.~the category whose objects are
+\(\mathsf{Tw}(\poly) \times \poly \to \poly\),
+where \(\mathsf{Tw}(\poly)\) is the \emph{twisted arrow
+category} of \(\poly\), i.e.~the category whose objects are
 lenses and whose morphisms are \emph{twisted} commuting squares of the
 form \[
 \begin{array}{ccc}
@@ -2599,7 +2599,7 @@ morphisms equipped with left inverses.
 The functor \texttt{\_⇈{[}\_{]}{[}\_{]}\_} defined above moreover
 preserves Cartesian morphisms in all of its arguments, and so restricts
 to a functor
-\(\mathsf{Tw}(\mathbf{Poly}^{\mathbf{Cart}}) \times \mathbf{Poly}^\mathbf{Cart} \to \mathbf{Poly}^\mathbf{Cart}\).
+\(\mathsf{Tw}(\poly^{\mathbf{Cart}}) \times \poly^\mathbf{Cart} \to \poly^\mathbf{Cart}\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2676,14 +2676,14 @@ p {\upuparrows}[g \circ f] (r \triangleleft s) \to (p {\upuparrows}[f] r) \trian
 \end{Shaded}
 
 As we shall now see, these structures on \texttt{\_⇈{[}\_{]}{[}\_{]}\_}
-are intimately connected to a class of morphisms in \(\mathbf{Poly}\),
+are intimately connected to a class of morphisms in \(\poly\),
 which we call \emph{distributors}.
 
 \section{Distributors}\label{distributors}
 
 Given polynomials \texttt{p,q,r,s}, a \emph{distributor} of \texttt{p,q}
 over \texttt{r,s} is a morphism of the form
-\texttt{(p\ ◃\ r)\ ⇆\ (s\ ◃\ q)} in \(\mathbf{Poly}\). The name
+\texttt{(p\ ◃\ r)\ ⇆\ (s\ ◃\ q)} in \(\poly\). The name
 ``distributor'' is here drawn from the fact that, given polynomial
 monads \texttt{m,n} with \texttt{ηₘ\ :\ 𝕪\ ⇆\ m,\ ηₙ\ :\ 𝕪\ ⇆\ n} and
 \texttt{μₘ\ :\ (m\ ◃\ m)\ ⇆\ m,\ μₙ\ :\ (n\ ◃\ n)\ ⇆\ n}, a
