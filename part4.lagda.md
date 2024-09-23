@@ -140,7 +140,18 @@ Moreover, both of these natural transformations are Cartesian.
 
 The fact that `⇈Distr` is Cartesian corresponds to the distributive law of `Π` types over `Σ` types, i.e. $$
 \Pi x : A . \Sigma y : B[x] . C[x,y] \simeq \Sigma f : \Pi x : A . B[x] . \Pi x : A . C[x, f(x)]
-$$ One may wonder, then, whether this distributive law is somehow related to a distributive law ofg the monad structure on a polynomial universe 𝔲 given by Σ types (as discussed in the previous section) over itself, i.e. a morphism $$ \mathfrak{u} \triangleleft \mathfrak{u} \leftrightarrows \mathfrak{u} \triangleleft \mathfrak{u} $$ subject to certain laws. This is in fact the case, but showing as much requires some more work.
+$$ One may wonder, then, whether this distributive law is somehow related to a distributive law ofg the monad structure on a polynomial universe 𝔲 given by Σ types (as discussed in the previous section) over itself, i.e. a morphism $$ \mathfrak{u} \triangleleft \mathfrak{u} \leftrightarrows \mathfrak{u} \triangleleft \mathfrak{u} $$ subject to certain laws. Indeed, given a Lens `π : (𝔲 ⇈ 𝔲) ⇆ 𝔲` (intuitively – corresponding to the structure of `Π` types in `𝔲`), one can define a morphism of this form as follows:
+
+```agda
+distrLaw? : ∀ {ℓ κ} (𝔲 : Poly ℓ κ)
+            → (𝔲 ⇈ 𝔲) ⇆ 𝔲
+            → (𝔲 ◃ 𝔲) ⇆ (𝔲 ◃ 𝔲)
+distrLaw? 𝔲 (π , π♯) = 
+    ( (λ (a , b) → π (a , b) , (λ x → a)) 
+    , λ (a , b) (f , x) → (x , (π♯ ((a , b)) f x)) )
+```
+
+The question then becomes whether this morphism has the structure of a distributive law when `𝔲` has the structure of a polynomial universe with `Σ` types, and `π` is Cartesian (i.e. `𝔲` also has `Π` types). Answering this question in the affirmative shall be our task in the remainder of this section.
 
 As a first step in this direction, we make a perhaps unexpected move of further generalizing the $\upuparrows$ functor to a functor $\mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}$, where $\mathsf{Tw}(\mathbf{Poly})$ is the *twisted arrow category* of $\mathbb{Poly}$, i.e. the category whose objects are lenses and whose morphisms are *twisted* commuting squares of the form $$
 \begin{array}{ccc}
@@ -169,32 +180,12 @@ _⇈[_][_]_ : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
           → (p ⇈[ q ][ f ] r) ⇆ (p' ⇈[ q' ][ f' ] r')
 ⇈[]Lens p p' q q' r r' (f , f♯) (f' , f'♯) (g , g♯) (h , h♯) (k , k♯) e = 
     ( (λ (a , γ) → (g a , λ x → k (γ (g♯ a x)))) 
-    , λ (a , γ) Ϝ x → k♯ (γ (f♯ a x)) (transp (λ y → snd r' (k (γ y))) (sym (snd (e a) x)) (Ϝ (h♯ (f' (g a)) (transp (snd q) (fst (e a)) x)))) )
-
-⇈[-][-]Lens : ∀ {ℓ ℓ' ℓ'' ℓ''' ℓ'''' ℓ''''' κ κ' κ'' κ''' κ'''' κ'''''}
-              → (p : Poly ℓ κ) (q : Poly ℓ' κ')
-              → (p' : Poly ℓ'' κ'') (q' : Poly ℓ''' κ''')
-              → (r : Poly ℓ'''' κ'''') (r' : Poly ℓ''''' κ''''')
-              → (f : p ⇆ q) (f' : p' ⇆ q')
-              → (g : p ⇆ p') (h : q ⇆ q')
-              → (k : r ⇆ r')
-              → isCartesian q q' h
-              → EqLens p q' (comp p q q' f h) (comp p p' q' g f')
-              → (p ⇈[ q ][ f ] r) ⇆ (p' ⇈[ q' ][ f' ] r')
-⇈[-][-]Lens p q p' q' r r' 
-            (f , f♯) (f' , f'♯) (g , g♯) (h , h♯) (k , k♯) ch e =
-    ( (λ (a , γ) → g a , λ b → k (γ (g♯ a b))) 
-    , λ (a , γ) Ϝ d
-        → k♯ (γ (f♯ a d))
-             (transp (snd r') (ap k (ap γ 
-                     ((g♯ a (f'♯ (g a) (transp (snd q') (fst (e a)) 
-                                      (inv (ch (f a)) d)))) 
-                     ≡〈 (sym (snd (e a) (inv (ch (f a)) d))) 〉 
-                     ((f♯ a (h♯ (f a) (inv (ch (f a)) d))) 
-                     ≡〈 (ap (f♯ a) (snd (snd (ch (f a))) d)) 〉 
-                     ((f♯ a d) □)))))
-                 (Ϝ (transp (snd q') (fst (e a)) 
-                            (inv (ch (f a)) d)))) )
+    , λ (a , γ) Ϝ x →
+        k♯ (γ (f♯ a x)) 
+           (transp (λ y → snd r' (k (γ y))) 
+                   (sym (snd (e a) x)) 
+                   (Ϝ (h♯ (f' (g a)) 
+                          (transp (snd q) (fst (e a)) x)))) )
 
 postulate
     funext : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {f g : (x : A) → B x}
@@ -248,10 +239,18 @@ PostCompEquiv f ef =
     , ( (λ g x → fst (snd (ef x)) (g x)) 
       , λ g → funext (λ x → snd (snd (ef x)) (g x)))
 
-syminvol : ∀ {ℓ} {A : Type ℓ} {a b : A}
-           → (e : a ≡ b) → sym (sym e) ≡ e
-syminvol refl = refl
-{-# REWRITE syminvol #-}
+⇈[]LensCart : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 κ0 κ1 κ2 κ3 κ4 κ5}
+          → (p : Poly ℓ0 κ0) (p' : Poly ℓ3 κ3)
+          → (q : Poly ℓ1 κ1) (q' : Poly ℓ4 κ4)
+          → (r : Poly ℓ2 κ2) (r' : Poly ℓ5 κ5)
+          → (f : p ⇆ q) (f' : p' ⇆ q')
+          → (g : p ⇆ p') (h : q' ⇆ q) (k : r ⇆ r')
+          → isCartesian q' q h → isCartesian r r' k
+          → (e : EqLens p q f (comp p p' q g (comp p' q' q f' h)))
+          → isCartesian (p ⇈[ q ][ f ] r) (p' ⇈[ q' ][ f' ] r')
+                        (⇈[]Lens p p' q q' r r' f f' g h k e)
+⇈[]LensCart p p' q q' r r' (f , f♯) (f' , f'♯) (g , g♯) (h , h♯) (k , k♯) ch ck e (a , γ) = 
+    compIsEquiv (λ Ϝ x → k♯ (γ (f♯ a x)) (Ϝ x)) (λ Ϝ x → transp (λ y → snd r' (k (γ y))) (sym (snd (e a) x)) (Ϝ (h♯ (f' (g a)) (transp (snd q) (fst (e a)) x)))) (PostCompEquiv (λ x → k♯ (γ (f♯ a x))) (λ x → ck (γ (f♯ a x)))) (compIsEquiv (λ Ϝ x → transp (λ y → snd r' (k (γ y))) (sym (snd (e a) x)) (Ϝ x)) (λ Ϝ x → Ϝ (h♯ (f' (g a)) (transp (snd q) (fst (e a)) x))) (PostCompEquiv (λ x → transp (λ y → snd r' (k (γ y))) (sym (snd (e a) x))) (λ x → transpIsEquiv (sym (snd (e a) x)))) (compIsEquiv (λ Ϝ x → Ϝ (transp (snd q) (fst (e a)) x)) (λ Ϝ x → Ϝ (h♯ (f' (g a)) x)) (PreCompEquiv (transp (snd q) (fst (e a))) (transpIsEquiv (fst (e a)))) (PreCompEquiv (λ x → h♯ (f' (g a)) x) (ch (f' (g a))))))
 
 {- ⇈[]Lens≡ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
            → (p : Poly ℓ0 κ0) (p' : Poly ℓ2 κ2)
@@ -272,11 +271,36 @@ $$ $$
 (p \triangleleft r) {\upuparrows}[f \triangleleft g] q \simeq p {\upuparrows}[f] (r {\upuparrows}[g] q)
 $$
 
+```agda
+⇈[]Curry : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 κ0 κ1 κ2 κ3 κ4}
+           → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+           → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+           → (t : Poly ℓ4 κ4)
+           → (f : p ⇆ q) (g : r ⇆ s)
+           → ((p ◃ r) ⇈[ q ◃ s ][ ◃Lens p q r s f g ] t) 
+             ⇆ (p ⇈[ q ][ f ] (r ⇈[ s ][ g ] t))
+⇈[]Curry p q r s t f g = 
+    ( (λ ((a , h) , k) → a , (λ b → (h b) , (λ d → k (b , d)))) 
+    , λ ((a , h) , k) Ϝ (b , d) → Ϝ b d)
+```
+
 And similarly, we have Cartesian natural transformations $$
 p {\upuparrows}[f] \mathbb{y} → \mathbb{y}
 $$ $$
 p {\upuparrows}[g \circ f] (r \triangleleft s) \to (p {\upuparrows}[f] r) \triangleleft (q {\upuparrows}[g] s)
 $$
+
+```agda
+⇈[]Distr : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 κ0 κ1 κ2 κ3 κ4}
+           → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+           → (s : Poly ℓ3 κ3) (t : Poly ℓ4 κ4)
+           → (f : p ⇆ q) (g : q ⇆ r)
+           → (p ⇈[ r ][ comp p q r f g ] (s ◃ t)) 
+             ⇆ ((p ⇈[ q ][ f ] s) ◃ (q ⇈[ r ][ g ] t))
+⇈[]Distr p q r s t (f , f♯) (g , g♯) = 
+    ( (λ (a , h) → (a , (λ x → fst (h x))) , λ k1 → f a , λ x → snd (h (f♯ a x)) (k1 x)) 
+    , λ (a , h) (k1 , k2) d → (k1 (g♯ (f a) d)) , k2 d )
+```
 
 To see why this construction is important, we now introduce the novel concept of a *jump morphism* in $\mathbf{Poly}$.
 
@@ -302,26 +326,30 @@ Jump (A , B) (C , D) (A' , B') (C' , D') (f , f♯) (g , g♯) =
                ≡ f♯ a (transp D (e a h d') d)
 ```
 
+We can think of a jump morphism $g : r \xrightarrow{p \xrightarrow{f} q} s$ as one which applies $f$ to the components of $p$ and $q$ while *jumping over* its action on the components of $r$ and $s$. By construction the morphism `distrLaw?` defined above can naturally be equipped with the structure of a jump morphism with respect to the identity morphism on a polynomial unvierse $𝔲$:
+
+```agda
+distrLaw?Jump : ∀ {ℓ κ} (𝔲 : Poly ℓ κ)
+                → (π : (𝔲 ⇈ 𝔲) ⇆ 𝔲)
+                → Jump 𝔲 𝔲 𝔲 𝔲 (id 𝔲) (distrLaw? 𝔲 π)
+distrLaw?Jump 𝔲 π = (λ a h d' → refl) , (λ a h d' d → refl)
+```
+
+Another example of a jump morphism is given, for any polynomial $p$, by the composite $$
+\mathbb{y} \triangleleft p \leftrightarrows p \leftrightarrows p \triangleleft \mathbb{y}
+$$ of the left unitor for $◃$ with the inverse of the right unitor. This also naturally carries the structure of a Jump morphism with respect to the identity on $\mathbb{y}$ as follows:
+
+```agda
+𝕪Jump : ∀ {ℓ κ} (p : Poly ℓ κ)
+        → Jump 𝕪 𝕪 p p (id 𝕪) 
+               (comp (𝕪 ◃ p) p (p ◃ 𝕪)
+                     (◃unitl p) (◃unitr⁻¹ p))
+𝕪Jump p = (λ a h d' → refl) , (λ a h d' d → refl)
+```
+
 By application of function extensionality, we have the following type of equality proofs for jump morphisms:
 
 ```agda
-transpComp : ∀ {ℓ κ} {A : Type ℓ} {a b c : A} {B : A → Type κ}
-             → (e1 : a ≡ b) (e2 : b ≡ c) (x : B a)
-             → transp B e2 (transp B e1 x)
-               ≡ transp B (a ≡〈 e1 〉 e2) x
-transpComp refl refl x = refl
-
-_•_ : ∀ {ℓ} {A : Type ℓ} {a b c : A}
-      → (a ≡ b) → (b ≡ c) → (a ≡ c)
-refl • refl = refl
-
-comprewrite : ∀ {ℓ} {A : Type ℓ} {a b c : A}
-              → (e1 : a ≡ b) (e2 : b ≡ c)
-              → (a ≡〈 e1 〉 e2) ≡ (e1 • e2)
-comprewrite refl refl = refl
-
-{-# REWRITE comprewrite #-}
-
 EqJump1 : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
@@ -355,4 +383,345 @@ EqJump2 (A , B) (C , D) (A' , B') (C' , D') (f , f♯)
               → ((fst (ej3 d)) • ((e'♯ a h (transp D' e1 d') (transp D e2 d)) • (ap (f♯ a) ((transpComp e2 (e' a h (transp D' e1 d')) d) • (ap (λ ee → transp D ee d) e5))))) ≡ e♯ a h d' d)
 ```
 
-We can think of a jump morphism $g : r \xrightarrow{p \xrightarrow{f} q} s$ as one which applies $f$ to the components of $p$ and $q$ while *jumping over* its action on the components of $r$ and $s$.
+Some key operations on Jump morphisms are as follows:
+
+Given a jump morphism $j : r \xleftarrow{p \xrightarrow{f} q} s$ together with lenses $g : p' \leftrightarrows p$ and $h : q \leftrightarrows q'$ and $k : r' \leftrightarrows r$ and $l : s \leftrightarrows s'$, we obtain the structure of a Jump morphism $r' \xleftarrow{p' \xrightarrow{h \circ f \circ g} q'} s'$ on the composite $$
+p' \triangleleft r' \xrightarrow{g ◃ k} p \triangleleft r \xrightarrow{j} s \triangleleft q \xrightarrow{l \triangleleft h} s' \triangleleft q'
+$$ as follows:
+
+```agda
+transpLens : ∀ {ℓ ℓ' κ κ'} {A : Type ℓ} {A' : Type ℓ'} 
+              (B : A → Type κ) (B' : A' → Type κ')
+            → (f : A → A') (g : (x : A) → B' (f x) → B x) 
+            → {a a' : A} {b : B' (f a)} (e : a ≡ a')
+            → transp B e (g a b) ≡ g a' (transp B' (ap f e) b)
+transpLens B B' f g refl = refl
+
+JumpLens1 : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 ℓ7
+               κ0 κ1 κ2 κ3 κ4 κ5 κ6 κ7}
+            → (p : Poly ℓ0 κ0) (p' : Poly ℓ4 κ4)
+            → (q : Poly ℓ1 κ1) (q' : Poly ℓ5 κ5)
+            → (r : Poly ℓ2 κ2) (r' : Poly ℓ6 κ6)
+            → (s : Poly ℓ3 κ3) (s' : Poly ℓ7 κ7)
+            → (f : p ⇆ q) (j : (p ◃ r) ⇆ (s ◃ q))
+            → (g : p' ⇆ p) (h : q ⇆ q') (k : r' ⇆ r) (l : s ⇆ s')
+            → (p' ◃ r') ⇆ (s' ◃ q')
+JumpLens1 p p' q q' r r' s s' f j g h k l =
+    (comp (p' ◃ r') (p ◃ r) (s' ◃ q')
+          (◃Lens p' p r' r g k)
+          (comp (p ◃ r) (s ◃ q) (s' ◃ q')
+                j (◃Lens s s' q q' l h)))
+
+JumpLens2 : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 ℓ7
+               κ0 κ1 κ2 κ3 κ4 κ5 κ6 κ7}
+            → (p : Poly ℓ0 κ0) (p' : Poly ℓ4 κ4)
+            → (q : Poly ℓ1 κ1) (q' : Poly ℓ5 κ5)
+            → (r : Poly ℓ2 κ2) (r' : Poly ℓ6 κ6)
+            → (s : Poly ℓ3 κ3) (s' : Poly ℓ7 κ7)
+            → (f : p ⇆ q) (j : (p ◃ r) ⇆ (s ◃ q)) (jj : Jump p q r s f j)
+            → (g : p' ⇆ p) (h : q ⇆ q') (k : r' ⇆ r) (l : s ⇆ s')
+            → Jump p' q' r' s'
+                  (comp p' p q' g
+                        (comp p q q' f h))
+                  (JumpLens1 p p' q q' r r' s s' f j g h k l)
+JumpLens2 p p' q q' r r' s s' 
+          (f , f♯) (j , j♯) (jj , jj♯) 
+          (g , g♯) (h , h♯) (k , k♯) (l , l♯) =
+    ( (λ a γ d' → ap h (jj (g a) (λ x → k (γ (g♯ a x))) (l♯ (fst (j ((g a) , (λ x → k (γ (g♯ a x)))))) d'))) 
+    , λ a γ d' d → ap (g♯ a) ((jj♯ (g a) (λ x → k (γ (g♯ a x))) (l♯ (fst (j ((g a) , (λ x → k (γ (g♯ a x)))))) d') (h♯ (snd (j ((g a) , (λ x → k (γ (g♯ a x))))) (l♯ (fst (j ((g a) , (λ x → k (γ (g♯ a x)))))) d')) d)) • ap (f♯ (g a)) (transpLens (snd q) (snd q') h h♯ (jj (g a) (λ x → k (γ (g♯ a x))) (l♯ (fst (j ((g a) , (λ x → k (γ (g♯ a x)))))) d')))) )
+```
+
+Similarly, there are two distinct ways of composing jump morphisms: 
+
+1. Given jump morphisms $j1 : s \xleftarrow{p \xleftarrow{f} q} t$ and $j2 : u \xleftarrow{q \xrightarrow{g} r} v$, we obtain a Jump structure $s \triangleleft u \xleftarrow{p \xrightarrow{g \circ f} r} t \triangleleft v$ on the composite $$
+p ◃ (s \triangleleft u) \simeq (p \triangleleft s) \triangleleft u \xrightarrow{j1 \triangleleft u} (t \triangleleft q) \triangleleft u \simeq t \traingleleft (q \triangleleft u) \xrightarrow{j2} t \triangleleft (v \triangleleft r) \simeq (t \triangleleft v) \triangleleft r
+$$
+2. Given jump morphisms $j1 : t \xleftarrow{p \xrightarrow{f} q} u$ and $j2 : s \xleftarrow{r \xrightarrow{g} s} t$, we obtain a jump structure $s \xleftarrow{p \triangleleft r \xrightarrow{f \triangleleft g} q \triangleleft s} u$ on the composite $$
+(p \triangleleft r) \triangleleft s \simeq p \triangleleft (r \triangleleft s) \xrightarrow{p \triangleleft j2} p \triangleleft (t \triangleleft s) \simeq (p \triangleleft t) \triangleleft s \xrightarrow{j1} (u \triangleleft q) \triangleleft s \simeq u \triangleleft (q \triangleleft s)
+$$
+
+Which are defined as follows:
+
+```agda
+JumpComp∘ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+            → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+            → (s : Poly ℓ3 κ3) (t : Poly ℓ4 κ4) 
+            → (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+            → (p ◃ s) ⇆ (t ◃ q) → (q ◃ u) ⇆ (v ◃ r)
+            → (p ◃ (s ◃ u)) ⇆ ((t ◃ v) ◃ r)
+JumpComp∘ p q r s t u v h k =
+    comp (p ◃ (s ◃ u)) ((p ◃ s) ◃ u) ((t ◃ v) ◃ r) 
+         (◃assoc⁻¹ p s u) 
+         (comp ((p ◃ s) ◃ u) ((t ◃ q) ◃ u) ((t ◃ v) ◃ r) 
+               (◃Lens (p ◃ s) (t ◃ q) u u h (id u)) 
+               (comp ((t ◃ q) ◃ u) (t ◃ (q ◃ u)) ((t ◃ v) ◃ r) 
+                     (◃assoc t q u) 
+                     (comp (t ◃ (q ◃ u)) (t ◃ (v ◃ r)) ((t ◃ v) ◃ r) 
+                           (◃Lens t t (q ◃ u) (v ◃ r) (id t) k) 
+                           (◃assoc⁻¹ t v r))))
+
+JumpComp◃ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+            → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+            → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3) 
+            → (t : Poly ℓ4 κ4) (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+            → (r ◃ t) ⇆ (u ◃ s) → (p ◃ u) ⇆ (v ◃ q)
+            → ((p ◃ r) ◃ t) ⇆ (v ◃ (q ◃ s))
+JumpComp◃ p q r s t u v h k =
+    comp ((p ◃ r) ◃ t) (p ◃ (r ◃ t)) (v ◃ (q ◃ s)) 
+         (◃assoc p r t) 
+         (comp (p ◃ (r ◃ t)) (p ◃ (u ◃ s)) (v ◃ (q ◃ s)) 
+               (◃Lens p p (r ◃ t) (u ◃ s) (id p) h) 
+               (comp (p ◃ (u ◃ s)) ((p ◃ u) ◃ s) (v ◃ (q ◃ s)) 
+               (◃assoc⁻¹ p u s) 
+               (comp ((p ◃ u) ◃ s) ((v ◃ q) ◃ s) (v ◃ (q ◃ s)) 
+                     (◃Lens (p ◃ u) (v ◃ q) s s k (id s)) 
+                     (◃assoc v q s))))
+```
+
+Upon inspection, one sees that the operations defined on jump morphisms above are just the same as those that figure in the constituent diagrams of a distributive law. E.g. given a polynomial universe `𝔲` equipped with Cartesian morphisms `σ : 𝔲 ◃ 𝔲 ⇆ 𝔲` and `π : 𝔲 ⇈ 𝔲 ⇆ 𝔲` in order for the morphism `distrLaw? 𝔲 π` defined above to be a distributive law, the following diagrams must commute:
+
+It follows that, since $distrLaw? 𝔲 π$ is canonically equipped with the structure of a jump morphism, so are all composite morphisms appearing in these diagrams. One then wonders, perhaps, if there is some way in which the structure of a polynomial universe forces these diagrams (and all higher diagrams involving them) to commute, as was the case for the structure of the $\infty$-monad generated by $σ$. In fact, this question leads directly to the central theorem of this section, by which we shall be able to answer it in the affirmative – there is an equivalence between Jump morphisms $r \xleftarrow{p \xrightarrow{f} q} s$ and lenses $p ~{\upuparrows}[f] ~ r \leftrightarrows s$.
+
+To convert lenses out of `_⇈[_][_]_` into jump morphisms, we may straightforwardly generalize the construction of `distrLaw?` given previously:
+
+```agda
+⇈→Jump1 : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (p ⇈[ q ][ f ] r) ⇆ s
+           → (p ◃ r) ⇆ (s ◃ q)
+⇈→Jump1 p q r s (f , f♯) (g , g♯) =
+    ( (λ (a , h) → g (a , h) , λ d' → f a) 
+    , λ (a , h) (d' , d)
+        → f♯ a d , g♯ (a , h) d' d)
+
+⇈→Jump2 : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : (p ⇈[ q ][ f ] r) ⇆ s)
+           → Jump p q r s f (⇈→Jump1 p q r s f g)
+⇈→Jump2 p q r s (f , f♯) (g , g♯) = 
+    ( (λ a h d' → refl) 
+    , (λ a h d' d → refl) )
+```
+
+Conversely, to convert Jump morphisms into lenses of the above form, we may proceed as below:
+
+```agda
+Jump→⇈ : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : (p ◃ r) ⇆ (s ◃ q)) 
+           → Jump p q r s f g
+           → (p ⇈[ q ][ f ] r) ⇆ s
+Jump→⇈ p q r s (f , f♯) (g , g♯) (e , e♯) =
+    ( (λ (a , h) → fst (g (a , h))) 
+    , λ (a , h) d' d 
+      → transp (λ x → snd r (h x))
+               (fst (g♯ (a , h) (d' , transp (snd q) (sym (e a h d')) d)) 
+                     ≡〈 e♯ a h d' (transp (snd q) (sym (e a h d')) d) 〉 
+                     ap (f♯ a) (symr (e a h d') d))
+               (snd (g♯ (a , h) (d' , transp (snd q) (sym (e a h d')) d))) )
+```
+
+The proof that these two constructions are mutually inverse is then as follows:
+
+```agda
+⇈→Jumpl : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : (p ⇈[ q ][ f ] r) ⇆ s)
+           → EqLens (p ⇈[ q ][ f ] r) s 
+                    (Jump→⇈ p q r s f 
+                            (⇈→Jump1 p q r s f g)
+                            (⇈→Jump2 p q r s f g))
+                    g
+⇈→Jumpl p q r s (f , f♯) (g , g♯) (a , h) =
+    ( refl , (λ d' → refl) )
+
+⇈→Jumpr1 : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : (p ◃ r) ⇆ (s ◃ q))
+           → (j : Jump p q r s f g)
+           → EqJump1 p q r s
+                     (⇈→Jump1 p q r s f
+                              (Jump→⇈ p q r s f g j)) 
+                     g
+⇈→Jumpr1 p q r s (f , f♯) (g , g♯) (e , e♯) a h =
+    ( refl 
+    , λ d' → 
+        ( sym (e a h d') 
+        , (λ d → 
+             ( sym (e♯ a h d' (transp (snd q) (sym (e a h d')) d) • ap (f♯ a) (symr (e a h d') d))
+             , syml ((e♯ a h d' (transp (snd q) (sym (e a h d')) d)) • (ap (f♯ a) (symr (e a h d') d))) (snd (g♯ ((a , h)) (d' , (transp (snd q) (sym (e a h d')) d))))) ) ) )
+
+⇈→Jumpr2 : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
+           → (p : Poly ℓ κ) (q : Poly ℓ' κ')
+           → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
+           → (f : p ⇆ q)
+           → (g : (p ◃ r) ⇆ (s ◃ q))
+           → (j : Jump p q r s f g)
+           → EqJump2 p q r s f
+                     (⇈→Jump1 p q r s f
+                              (Jump→⇈ p q r s f g j)) 
+                     g
+                     (⇈→Jumpr1 p q r s f g j)
+                     (⇈→Jump2 p q r s f (Jump→⇈ p q r s f g j))
+                     j
+⇈→Jumpr2 p q r s (f , f♯) (g , g♯) (e , e♯) a h d' =
+    ( sym (≡siml (e a h d'))
+    , λ d → ap (λ ee → (sym (e♯ a h d' (transp (snd q) (sym (e a h d')) d) • ap (f♯ a) (symr (e a h d') d)) • (e♯ a h d' (transp (snd q) (sym (e a h d')) d) • ap (f♯ a) ee))) (transpCompSymr (e a h d') d) • sym (≡siml ((e♯ a h d' (transp (snd q) (sym (e a h d')) d)) • (ap (f♯ a) (symr (e a h d') d)))) )
+```
+
+One can moreover see that this equivalence between lenses out of `_⇈[_][_]_` converts the various operations on jump morphisms considered above into constructions involving the structures of `_⇈[_][_]_` we considered previously.
+
+Specifically, under this equivalence, composing a jump morphism with arbitrary lenses corresponds to applying the functorial action of `_⇈[_][_]_` in the following way:
+
+```
+⇈→JumpLens≡ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 ℓ7
+                 κ0 κ1 κ2 κ3 κ4 κ5 κ6 κ7}
+              → (p : Poly ℓ0 κ0) (p' : Poly ℓ4 κ4)
+              → (q : Poly ℓ1 κ1) (q' : Poly ℓ5 κ5)
+              → (r : Poly ℓ2 κ2) (r' : Poly ℓ6 κ6)
+              → (s : Poly ℓ3 κ3) (s' : Poly ℓ7 κ7)
+              → (f : p ⇆ q) (j : (p ⇈[ q ][ f ] r) ⇆ s)
+              → (g : p' ⇆ p) (h : q ⇆ q')
+              → (k : r' ⇆ r) (l : s ⇆ s')
+              → JumpLens1 p p' q q' r r' s s' f (⇈→Jump1 p q r s f j) g h k l
+                ≡ ⇈→Jump1 p' q' r' s' 
+                        (comp p' p q' g 
+                              (comp p q q' f h)) 
+                        (comp (p' ⇈[ q' ][ comp p' p q' g (comp p q q' f h) ] r') 
+                              (p ⇈[ q ][ f ] r) s' 
+                              (⇈[]Lens p' p q' q r' r (comp p' p q' g (comp p q q' f h)) f g h k (λ a → refl , (λ b → refl))) (comp (p ⇈[ q ][ f ] r) s s' j l))
+⇈→JumpLens≡ p p' q q' r r' s s' f j g h k l = refl
+
+```
+
+Additionally, Composing two jump morphisms via `jumpComp∘` corresponds to precomposing their respective representations as lenses out of `⇈` with the map `⇈[]Distr` defined above.
+
+```agda
+⇈[]Comp∘ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+           → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+           → (s : Poly ℓ3 κ3) (t : Poly ℓ4 κ4) 
+           → (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+           → (f : p ⇆ q) (g : q ⇆ r)
+           → (p ⇈[ q ][ f ] s) ⇆ t → (q ⇈[ r ][ g ] u) ⇆ v
+           → (p ⇈[ r ][ comp p q r f g ] (s ◃ u)) ⇆ (t ◃ v)
+⇈[]Comp∘ p q r s t u v f g h k = 
+     comp (p ⇈[ r ][ (comp p q r f g) ] (s ◃ u)) 
+          ((p ⇈[ q ][ f ] s) ◃ (q ⇈[ r ][ g ] u)) 
+          (t ◃ v) 
+          (⇈[]Distr p q r s u f g) 
+          (◃Lens (p ⇈[ q ][ f ] s) t 
+                 (q ⇈[ r ][ g ] u) v 
+                 h k)
+
+⇈→JumpComp∘≡ :  ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+                → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2)
+                → (s : Poly ℓ3 κ3) (t : Poly ℓ4 κ4) 
+                → (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+                → (f : p ⇆ q) (g : q ⇆ r)
+                → (h : (p ⇈[ q ][ f ] s) ⇆ t) (k : (q ⇈[ r ][ g ] u) ⇆ v)
+                → (JumpComp∘ p q r s t u v 
+                             (⇈→Jump1 p q s t f h) 
+                             (⇈→Jump1 q r u v g k)) 
+                  ≡ (⇈→Jump1 p r (s ◃ u) (t ◃ v) 
+                             (comp p q r f g) 
+                             (⇈[]Comp∘ p q r s t u v f g h k))
+⇈→JumpComp∘≡ p q r s t u v f g h k = refl
+```
+
+Similarly, composing two jump morphisms via `jumpComp◃` corresponds to composing their representations as lenses out of `⇈` with the map `⇈[]Curry` defined above.
+
+```agda
+⇈Comp◃ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+         → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+         → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3) 
+         → (t : Poly ℓ4 κ4) (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+         → (f : p ⇆ q) (g : r ⇆ s)
+         → (r ⇈[ s ][ g ] t) ⇆ u → (p ⇈[ q ][ f ] u) ⇆ v
+         → ((p ◃ r) ⇈[ (q ◃ s) ][ (◃Lens p q r s f g) ] t) ⇆ v
+⇈Comp◃ p q r s t u v f g h k =
+    comp ((p ◃ r) ⇈[ (q ◃ s) ][ (◃Lens p q r s f g) ] t) 
+         (p ⇈[ q ][ f ] (r ⇈[ s ][ g ] t)) v 
+         (⇈[]Curry p q r s t f g) 
+         (comp (p ⇈[ q ][ f ] (r ⇈[ s ][ g ] t)) 
+               (p ⇈[ q ][ f ] u) v 
+               (⇈[]Lens p p q q (r ⇈[ s ][ g ] t) u f f (id p) (id q) h (λ a → refl , (λ b → refl))) 
+               k)
+
+⇈JumpComp◃≡ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+              → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
+              → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3) 
+              → (t : Poly ℓ4 κ4) (u : Poly ℓ5 κ5) (v : Poly ℓ6 κ6)
+              → (f : p ⇆ q) (g : r ⇆ s)
+              → (h : (r ⇈[ s ][ g ] t) ⇆ u) (k : (p ⇈[ q ][ f ] u) ⇆ v)
+              → (JumpComp◃ p q r s t u v 
+                           (⇈→Jump1 r s t u g h) 
+                           (⇈→Jump1 p q u v f k)) 
+                ≡ (⇈→Jump1 (p ◃ r) (q ◃ s) t v 
+                           (◃Lens p q r s f g) 
+                           (⇈Comp◃ p q r s t u v f g h k))
+⇈JumpComp◃≡ p q r s t u v f g h k = refl
+```
+
+Additionally...
+
+We say that a jump morphism is *jumpwise Cartesian* if its corresponding lens out of `_⇈[_][_]_` is Cartesian. Since all of the structure defined above on `_⇈[_][_]_` restricts to Cartesian morphisms, it follows that the above operations on jump morphisms preserve the property of being jumpwise Cartesian. 
+
+Hence it follows that, if `distrLaw? 𝔲 π` is jumpwise Cartesian -- which will be the case precisely if π is Cartesian -- so are all of the composite morphisms appearing in the diagrams that must commute in order for `distrLaw?` to be a true distributive law. Then if `𝔲` is a polynomial universe, it follows that all of the corresponding diagrams in terms of `π` commute, and so, therefore, must the original diagrams. Hence `distrLaw? 𝔲 π` is indeed a distributive law, as desired.
+
+```agda
+ap⇈→Jump : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+           → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+           → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+           → (f : p ⇆ q) (g g' : (p ⇈[ q ][ f ] r) ⇆ s)
+           → EqLens (p ⇈[ q ][ f ] r) s g g'
+           → EqJump1 p q r s (⇈→Jump1 p q r s f g) (⇈→Jump1 p q r s f g')
+ap⇈→Jump p q r s f g g' e a γ = 
+    ( (fst (e (a , γ))) 
+    , (λ d' → ( refl 
+              , (λ d → ( refl 
+                       , coAp (snd (e (a , γ)) d') d )) )) )
+
+distrLaw1Comp1 : ∀ {ℓ κ} (𝔲 : Poly ℓ κ)
+                 → (σ : (𝔲 ◃ 𝔲) ⇆ 𝔲) (π : (𝔲 ⇈ 𝔲) ⇆ 𝔲)
+                 → ((𝔲 ◃ 𝔲) ⇈[ 𝔲 ][ σ ] 𝔲) ⇆ 𝔲
+distrLaw1Comp1 𝔲 σ π = 
+    comp ((𝔲 ◃ 𝔲) ⇈[ 𝔲 ][ σ ] 𝔲) ((𝔲 ◃ 𝔲) ⇈ 𝔲) 𝔲 
+         (⇈[]Lens (𝔲 ◃ 𝔲) (𝔲 ◃ 𝔲) 𝔲 (𝔲 ◃ 𝔲) 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) (id (𝔲 ◃ 𝔲)) σ (id 𝔲) (λ a → refl , (λ b → refl))) 
+         (⇈Comp◃ 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 (id 𝔲) (id 𝔲) π π)
+
+distrLaw1Comp2 : ∀ {ℓ κ} (𝔲 : Poly ℓ κ)
+                 → (σ : (𝔲 ◃ 𝔲) ⇆ 𝔲) (π : (𝔲 ⇈ 𝔲) ⇆ 𝔲)
+                 → ((𝔲 ◃ 𝔲) ⇈[ 𝔲 ][ σ ] 𝔲) ⇆ 𝔲
+distrLaw1Comp2 𝔲 σ π = 
+    comp ((𝔲 ◃ 𝔲) ⇈[ 𝔲 ][ σ ] 𝔲) (𝔲 ⇈ 𝔲) 𝔲 
+         (⇈[]Lens (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲 𝔲 𝔲 σ (id 𝔲) σ (id 𝔲) (id 𝔲) (λ a → refl , (λ b → refl))) π
+
+{- distrLaw1 : ∀ {ℓ κ} (𝔲 : Poly ℓ κ) → isSubterminal 𝔲
+            → (σ : (𝔲 ◃ 𝔲) ⇆ 𝔲) → isCartesian (𝔲 ◃ 𝔲) 𝔲 σ
+            → (π : (𝔲 ⇈ 𝔲) ⇆ 𝔲) → isCartesian (𝔲 ⇈ 𝔲) 𝔲 π
+            → EqJump1 (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲
+              (JumpLens1 (𝔲 ◃ 𝔲) (𝔲 ◃ 𝔲) (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲 𝔲 𝔲 (id (𝔲 ◃ 𝔲)) (JumpComp◃ 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 (distrLaw? 𝔲 π) (distrLaw? 𝔲 π)) (id (𝔲 ◃ 𝔲)) σ (id 𝔲) (id 𝔲))
+              (JumpLens1 𝔲 (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 (id 𝔲) (distrLaw? 𝔲 π) σ (id 𝔲) (id 𝔲) (id 𝔲))
+distrLaw1 𝔲 su σ cσ π cπ = ap⇈→Jump (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲 σ 
+                           (distrLaw1Comp1 𝔲 σ π) 
+                           (distrLaw1Comp2 𝔲 σ π)
+                           (su ((𝔲 ◃ 𝔲) ⇈[ 𝔲 ][ σ ] 𝔲) 
+                               (distrLaw1Comp1 𝔲 σ π) 
+                               (distrLaw1Comp2 𝔲 σ π) 
+                               (compCartesian ((𝔲 ◃ 𝔲) ⇈[ 𝔲 ][ σ ] 𝔲) ((𝔲 ◃ 𝔲) ⇈ 𝔲) 𝔲 
+                                              (⇈[]Lens (𝔲 ◃ 𝔲) (𝔲 ◃ 𝔲) 𝔲 (𝔲 ◃ 𝔲) 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) (id (𝔲 ◃ 𝔲)) σ (id 𝔲) (λ a → refl , (λ b → refl))) 
+                                              (⇈Comp◃ 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 𝔲 (id 𝔲) (id 𝔲) π π) 
+                                              (⇈[]LensCart (𝔲 ◃ 𝔲) (𝔲 ◃ 𝔲) 𝔲 (𝔲 ◃ 𝔲) 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) (id (𝔲 ◃ 𝔲)) σ (id 𝔲) cσ (idCart 𝔲) (λ a → refl , (λ b → refl))) 
+                                              {!   !}) 
+                               {!   !}) -}
+```

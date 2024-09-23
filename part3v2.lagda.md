@@ -1,13 +1,15 @@
 ```agda
-{-# OPTIONS --without-K --rewriting #-}
-module part2 where
+{-# OPTIONS --without-K --rewriting --lossy-unification #-}
+module part3v2 where
 
+open import part1v2
 open import Agda.Primitive
-open import Agda.Builtin.Unit
 open import Agda.Builtin.Sigma
+open import Agda.Builtin.Unit
 open import Agda.Builtin.Equality
 open import Agda.Builtin.Equality.Rewrite
-open import part1
+open import part2v2
+open import appendixA
 ```
 
 # Polynomials in HoTT
@@ -24,7 +26,7 @@ $$ for some type `A` and family of types `B : A → Type`. The data of a polynom
 
 ```agda
 Poly : (ℓ κ : Level) → Type ((lsuc ℓ) ⊔ (lsuc κ))
-Poly ℓ κ = Σ (Set ℓ) (λ A → A → Set κ)
+Poly ℓ κ = Σ (Type ℓ) (λ A → A → Type κ)
 ```
 
 A basic example of such a polynomial functor is the identity functor `𝕪` consisting of a single term of unit arity – hence represented by the pair `(⊤ , λ _ → ⊤)`.
@@ -46,21 +48,23 @@ Given polynomial functors $p = \sum_{a : A} y^{B(a)}$ and $q = \sum_{c : C} y^{D
 $$ We use the notation $p \leftrightarrows q$ to denote the type of natural transformations from $p$ to $q$ (aka *lenses* from $p$ to $q$), which may be written in Agda as follows:
 
 ```agda
-_⇆_ : ∀ {ℓ ℓ' κ κ'} → Poly ℓ κ → Poly ℓ' κ' → Type (ℓ ⊔ ℓ' ⊔ κ ⊔ κ')
+_⇆_ : ∀ {ℓ0 ℓ1 κ0 κ1} → Poly ℓ0 κ0 → Poly ℓ1 κ1 → Type (ℓ0 ⊔ ℓ1 ⊔ κ0 ⊔ κ1)
 (A , B) ⇆ (C , D) = Σ (A → C) (λ f → (a : A) → D (f a) → B a)
 ```
 
 By application of function extensionality, we derive the following type for proofs of equality between lenses: 
 
 ```agda
-EqLens : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-         → (p ⇆ q) → (p ⇆ q) → Set (ℓ ⊔ ℓ' ⊔ κ ⊔ κ')
-EqLens (A , B) (C , D) (f , g) (f' , g') = 
-  (a : A) → Σ (f a ≡ f' a) 
-              (λ e → (b : D (f a)) → g a b ≡ g' a (transp D e b))
+EqLens : ∀ {ℓ0 ℓ1 κ0 κ1}
+         → {p : Poly ℓ0 κ0} (q : Poly ℓ1 κ1)
+         → (f g : p ⇆ q) → Type (ℓ0 ⊔ ℓ1 ⊔ κ0 ⊔ κ1)
+EqLens {p = (A , B)} (C , D) (f , f♯) (g , g♯) =
+  Σ ((a : A) → f a ≡ g a)
+    (λ e → (a : A) (d : D (f a)) 
+           → f♯ a d ≡ g♯ a (transp D (e a) d))
 ```
 
-For each polynomial $p$, the correspnding *identity* lens is given by the following data:
+For each polynomial $p$, the correspnding identity lens is given by the following data:
 
 ```agda
 id : ∀ {ℓ κ} (p : Poly ℓ κ) → p ⇆ p
@@ -70,11 +74,11 @@ id p = ( (λ a → a) , λ a b → b )
 And given lenses $p \leftrightarrows q$ and $q \leftrightarrows r$, their composition may be computed as follows:
 
 ```agda
-comp : ∀ {ℓ ℓ' ℓ'' κ κ' κ''} 
-       → (p : Poly ℓ κ) (q : Poly ℓ' κ') (r : Poly ℓ'' κ'')
-       → p ⇆ q → q ⇆ r → p ⇆ r 
-comp p q r (f , g) (h , k) = 
-    ( (λ a → h (f a)) , λ a z → g a (k (f a) z) )
+comp : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2}
+       → {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2)
+       → p ⇆ q → q ⇆ r → p ⇆ r
+comp r (f , f♯) (g , g♯) = 
+     ( (λ a → g (f a)) , λ a z → f♯ a (g♯ (f a) z) )
 ```
 
 Hence we have a category $\mathbf{Poly}$ of polynomial functors and lenses between them. Our goal, then, is to show how the type-theoretic structure of a natural model naturally arises from the structure of this category. In fact, $\mathbf{Poly}$ is replete with categorical structures of all kinds, of which we now mention but a few:
@@ -84,45 +88,43 @@ Hence we have a category $\mathbf{Poly}$ of polynomial functors and lenses betwe
 We say that a lens `(f , f♯) : (A , B) ⇆ (C , D)` is *vertical* if `f : A → C` is an equivalence, and Cartesian if for every `a : A`, the map `f♯ a : D[f a] → B a` is an equivalence.
 
 ```agda
-isVertical : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-             → p ⇆ q → Set (ℓ ⊔ ℓ')
-isVertical p q (f , f♯) = isEquiv f
+module Vert-Cart {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0} 
+                 (q : Poly ℓ1 κ1) (f : p ⇆ q) where
 
-isCartesian : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-             → p ⇆ q → Set (ℓ ⊔ κ ⊔ κ')
-isCartesian (A , B) q (f , f♯) = (a : A) → isEquiv (f♯ a)
+    isVertical : Set (ℓ0 ⊔ ℓ1)
+    isVertical = isEquiv (fst f)
+
+    isCartesian : Set (ℓ0 ⊔ κ0 ⊔ κ1)
+    isCartesian = (a : fst p) → isEquiv (snd f a)
+
+open Vert-Cart public
 ```
 
 Every lens `(A , B) ⇆ (C , D)` can then be factored as a vertical lens followed by a Cartesian lens:
 
 ```agda
-vertfactor : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-             → (f : p ⇆ q) → p ⇆ (fst p , λ x → snd q (fst f x))
-vertfactor p q (f , f♯) = (λ x → x) , (λ a x → f♯ a x)
+module VertCartFactor {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0} 
+                      (q : Poly ℓ1 κ1) (f : p ⇆ q) where
 
-vertfactorIsVert : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) 
-                   → (q : Poly ℓ' κ') (f : p ⇆ q) 
-                   → isVertical p (fst p , λ x → snd q (fst f x))
-                                (vertfactor p q f)
-vertfactorIsVert p q f = idIsEquiv
+    vcIm : Poly ℓ0 κ1
+    vcIm = (fst p , λ x → snd q (fst f x))
 
-cartfactor : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-             → (f : p ⇆ q) → (fst p , λ x → snd q (fst f x)) ⇆ q
-cartfactor p q (f , f♯) = f , λ a x → x
+    vertfactor : p ⇆ vcIm
+    vertfactor = ( (λ x → x) , (λ a x → snd f a x) )
 
-cartfactorIsCart : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) 
-                   → (q : Poly ℓ' κ') (f : p ⇆ q) 
-                   → isCartesian (fst p , λ x → snd q (fst f x)) q
-                                 (cartfactor p q f)
-cartfactorIsCart p q f x = idIsEquiv
+    vertfactorIsVert : isVertical vcIm vertfactor
+    vertfactorIsVert = idIsEquiv
 
-vertcartfactor≡ : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) 
-                  → (q : Poly ℓ' κ') (f : p ⇆ q)
-                  → EqLens p q f
-                           (comp p (fst p , λ x → snd q (fst f x)) q
-                                 (vertfactor p q f)
-                                 (cartfactor p q f))
-vertcartfactor≡ p q f a = refl , (λ b → refl)
+    cartfactor : vcIm ⇆ q
+    cartfactor = ( fst f , (λ a x → x) )
+
+    cartfactorIsCart : isCartesian q cartfactor
+    cartfactorIsCart x = idIsEquiv
+
+    vertcartfactor≡ : EqLens q f (comp q vertfactor cartfactor)
+    vertcartfactor≡ = ( (λ a → refl) , (λ a b → refl) )
+
+open VertCartFactor public
 ```
 
 Of these two classes of morphisms in $\mathbf{Poly}$, it is *Cartesian* lenses that shall be of principal interest to us. If we view a polynomial `p = (A , B)` as an `A`-indexed family of types, given by `B`, then given a lens `(f , f♯) : p ⇆ 𝔲`, we can think of the map `f♯ a : u (f a) → B a`, as an *elimination form* for the type `u (f a)`, i.e. a way of *using* elements of the type `u (f a)`. If we then ask that `(f , f♯)` isCartesian, this implies that the type `u (f a)` is completely characterized (up to equivalence) by this elimination form, and in this sense, `𝔲` *contains* the type `B a`, for all `a : A`.[^3]
@@ -135,16 +137,16 @@ A further fact about Cartesian lenses is that they are closed under identity and
 
 ```agda
 idCart : ∀ {ℓ κ} (p : Poly ℓ κ)
-         → isCartesian p p (id p)
+         → isCartesian p (id p)
 idCart p a = idIsEquiv
 
-compCartesian : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
-                → (p : Poly ℓ κ) (q : Poly ℓ' κ') (r : Poly ℓ'' κ'')
-                → (f : p ⇆ q) (g : q ⇆ r)
-                → isCartesian p q f → isCartesian q r g 
-                → isCartesian p r (comp p q r f g)
-compCartesian p q r f g cf cg a = 
-    compIsEquiv (snd f a) (snd g (fst f a)) (cf a) (cg (fst f a))
+compCartesian : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2}
+                → {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2)
+                → {f : p ⇆ q} {g : q ⇆ r}
+                → isCartesian q f → isCartesian r g 
+                → isCartesian r (comp r f g)
+compCartesian r {f = (f , f♯)} {g = (g , g♯)} cf cg a = 
+    compIsEquiv (cf a) (cg (f a))
 ```
 
 Hence there is a category $\mathbf{Poly^{Cart}}$ defined as the wide subcategory of $\mathbf{Poly}$ whose morphisms are precisely Cartesian lenses. As we shall see, much of the categorical structure of natural models qua polynomial functors can be derived from the subtle interplay between $\mathbf{Poly^{Cart}}$ and $\mathbf{Poly}$.
@@ -153,68 +155,77 @@ Hence there is a category $\mathbf{Poly^{Cart}}$ defined as the wide subcategory
 
 In fact, $\mathbf{Poly^{Cart}}$ itself inherits a factorization system from the epi-mono factorization on types considered previously.
 
-Define a Cartesian lens `(f , f♯) : p ⇆ q` to be a *Cartesian embedding* if `f` is a monomorphism, and a *Cartesian surjection* if `f` is an epimorphism.
+Define a lens `(f , f♯) : p ⇆ q` to be a *vertical embedding* if `f` is a monomorphism, and a *vertical surjection* if `f` is an epimorphism.
 
 ```agda
-isCartesianEmbedding : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-                       → (f : p ⇆ q) → isCartesian p q f → Set (ℓ ⊔ ℓ')
-isCartesianEmbedding p q (f , f♯) cf = isMono f
+module VertEpi-Mono {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0} 
+                    (q : Poly ℓ1 κ1) (f : p ⇆ q) where
 
-isCartesianSurjection : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-                        → (f : p ⇆ q) → isCartesian p q f → Set ℓ'
-isCartesianSurjection p q (f , f♯) cf = isEpi f
+    isVerticalEmbedding : Set (ℓ0 ⊔ ℓ1)
+    isVerticalEmbedding = isMono (fst f)
+
+    isVerticalSurjection : Set ℓ1
+    isVerticalSurjection = isEpi (fst f)
+
+open VertEpi-Mono public
 ```
 
-Then every Cartesian lens can be factored into a Cartesian surjection followed by a Cartesian embedding.
+Then every Cartesian lens can be factored into a vertical surjection followed by a vertical embedding, both of which are Cartesian.
 
 ```agda
-factorcart1 : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-              → (f : p ⇆ q) → isCartesian p q f
-              → p ⇆ (Im (fst f) , λ (x , _) → snd q x)
-factorcart1 p q (f , f♯) cf = 
-    (factor1 f) , f♯
+module CartEMFactorization {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0} 
+           (q : Poly ℓ1 κ1) (f : p ⇆ q) (cf : isCartesian q f) where
 
-factorcart1IsCart : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-                    → (f : p ⇆ q) (cf : isCartesian p q f)
-                    → isCartesian p 
-                                  (Im (fst f) , λ (x , _) → snd q x)
-                                  (factorcart1 p q f cf)
-factorcart1IsCart p q (f , f♯) cf = cf
+    cartIm : Poly ℓ1 κ1
+    cartIm = (Im (fst f) , λ (x , _) → snd q x)
 
-factorcart1IsEpi : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-                   → (f : p ⇆ q) (cf : isCartesian p q f)
-                   → isCartesianSurjection p 
-                        (Im (fst f) , λ (x , _) → snd q x)
-                        (factorcart1 p q f cf)
-                        (factorcart1IsCart p q f cf)
-factorcart1IsEpi p q (f , f♯) cf = factor1IsEpi f
+    factorcart1 : p ⇆ cartIm
+    factorcart1 = ( factor1 (fst f) , snd f )
 
-factorcart2 : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-              → (f : p ⇆ q) → isCartesian p q f
-              → (Im (fst f) , λ (x , _) → snd q x) ⇆ q
-factorcart2 p q (f , f♯) cf = (factor2 f) , λ (x , _) y → y
+    factorcart1IsCart : isCartesian cartIm factorcart1
+    factorcart1IsCart = cf
 
-factorcart2IsCart : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-                    → (f : p ⇆ q) (cf : isCartesian p q f)
-                    → isCartesian (Im (fst f) , λ (x , _) → snd q x) q
-                                  (factorcart2 p q f cf)
-factorcart2IsCart p q (f , f♯) cf x = idIsEquiv
+    factorcart1IsEpi : isVerticalSurjection cartIm factorcart1
+    factorcart1IsEpi = factor1IsEpi (fst f)
 
-factorcart2IsMono : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-                    → (f : p ⇆ q) (cf : isCartesian p q f)
-                    → isCartesianEmbedding
-                        (Im (fst f) , λ (x , _) → snd q x) q
-                        (factorcart2 p q f cf)
-                        (factorcart2IsCart p q f cf)
-factorcart2IsMono p q (f , f♯) cf = factor2IsMono f
+    factorcart2 : cartIm ⇆ q
+    factorcart2 = ( factor2 (fst f) , (λ _ y → y) )
 
-factorcart≡ : ∀ {ℓ ℓ' κ κ'} (p : Poly ℓ κ) (q : Poly ℓ' κ')
-              → (f : p ⇆ q) (cf : isCartesian p q f)
-              → EqLens p q f
-                       (comp p (Im (fst f) , λ (x , _) → snd q x) q
-                             (factorcart1 p q f cf)
-                             (factorcart2 p q f cf))
-factorcart≡ p q f cf x = refl , λ y → refl
+    factorcart2IsCart : isCartesian q factorcart2
+    factorcart2IsCart _ = idIsEquiv
+
+    factorcart2IsMono : isVerticalEmbedding q factorcart2
+    factorcart2IsMono = factor2IsMono (fst f)
+
+    factorcart≡ : EqLens q f (comp q factorcart1 factorcart2)
+    factorcart≡ = ( (λ x →  refl) , (λ x y → refl) )
+
+open CartEMFactorization public
+```
+
+We note in passing that the vertical embeddings are indeed the monomorphisms in $\mathbf{Poly}^{\mathbf{Cart}}$, i.e. if `f : q ⇆ r` is a both Cartesian and a vertical embedding, then for any Cartesian `g h : p ⇆ q` such that `f ∘ g ≡ f ∘ h`, we have `g = h`.[^1]
+
+```agda
+VertEmbedding→PolyCartMono : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} {p : Poly ℓ0 κ0}
+                             {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2) {f : q ⇆ r}
+                             → isCartesian r f → isVerticalEmbedding r f
+                             → {g h : p ⇆ q} → isCartesian q g → isCartesian q h
+                             → EqLens r (comp r g f) (comp r h f)
+                             → EqLens q g h
+VertEmbedding→PolyCartMono {p = p} {q = q} r {f = (f , f♯)} cf vef 
+                           {g = (g , g♯)} {h = (h , h♯)} cg ch (e , e♯) = 
+    ( (λ a → inv vef (e a)) 
+    , (λ a d → (g♯ a d) 
+                   ≡〈 ap (g♯ a) (sym (snd (snd (cf (g a))) d)) 〉 
+               ( _ ≡〈 (e♯ a (inv (cf (g a)) d)) 〉 
+               ( _ ≡〈 (ap (h♯ a) 
+                           ( _ ≡〈 (ap (f♯ (h a)) 
+                                       (transpPre vef 
+                                         (λ x y → inv (cf x) y) 
+                                         (e a))) 〉 
+                           ( _ ≡〈 snd (snd (cf (h a))) _ 〉 
+                           ( _ □)))) 〉
+               ((h♯ a (transp (snd q) (inv vef (e a)) d)) □)))) )
 ```
 
 ## Composition of Polynomial Functors
@@ -228,16 +239,17 @@ As endofunctors on $\mathbf{Type}$, polynomial functors may straightforwardly be
 $$ This then defines a monoidal product $◃$ on $\mathbf{Poly}$ with monoidal unit given by the identity functor `𝕪`:
 
 ```agda
-_◃_ : ∀ {ℓ ℓ' κ κ'} → Poly ℓ κ → Poly ℓ' κ' → Poly (ℓ ⊔ κ ⊔ ℓ') (κ ⊔ κ')
+_◃_ : ∀ {ℓ0 ℓ1 κ0 κ1} → Poly ℓ0 κ0 → Poly ℓ1 κ1 → Poly (ℓ0 ⊔ κ0 ⊔ ℓ1) (κ0 ⊔ κ1)
 (A , B) ◃ (C , D) = (Σ A (λ a → B a → C) , λ (a , f) → Σ (B a) (λ b → D (f b)))
 
-◃Lens : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
-        → (p : Poly ℓ κ) (p' : Poly ℓ' κ') 
-        → (q : Poly ℓ'' κ'') (q' : Poly ℓ''' κ''')
-        → p ⇆ p' → q ⇆ q' → (p ◃ q) ⇆ (p' ◃ q')
-◃Lens p p' q q' (f , g) (h , k) =
-    ((λ (a , c) → (f a , λ b' → h (c (g a b'))))
-    , λ (a , c) (b' , d') → ((g a b') , k (c (g a b')) d'))
+_◃◃[_]_ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+        → {p : Poly ℓ0 κ0} {q : Poly ℓ2 κ2} → p ⇆ q
+        → {r : Poly ℓ1 κ1} (s : Poly ℓ3 κ3) → r ⇆ s 
+        → (p ◃ r) ⇆ (q ◃ s)
+(f , f♯) ◃◃[ s ] (g , g♯) =
+    ((λ (a , γ) → (f a , λ b' → g (γ (f♯ a b'))))
+    , λ (a , γ) (b' , d') → ((f♯ a b') , g♯ (γ (f♯ a b')) d'))
+
 ```
 
 where `◃Lens` is the action of `◃` on lenses.
@@ -259,73 +271,89 @@ Similarly, the existence of a Cartesian lens $(η , η♯) : 𝕪 ⇆ 𝔲$ impl
 
 But then, what sorts of laws can we expect Cartesian lenses as above to obey, and is the existence of such a lens all that is needed to ensure that the natural model $𝔲$ has dependent pair types in the original sense of Awodey & Newstead's definition in terms of Cartesian (pseudo)monads, or is some further data required? And what about `Π` types, or other type formers? To answer these questions, we will need to study the structure of `◃`, along with some closely related functors, in a bit more detail. In particular, we shall see that the structure of `◃` as a monoidal product on $\mathbf{Poly}$ reflects many of the basic identities one expects to hold of `Σ` types.
 
-For instance, the associativity of `◃` corresponds to the associativity of `Σ`-types,
+For instance, the associativity of `◃` corresponds to the associativity of `Σ`-types.
 
 ```agda
-◃assoc : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
-         → (p : Poly ℓ κ) (q : Poly ℓ' κ') (r : Poly ℓ'' κ'')
-         → ((p ◃ q) ◃ r) ⇆ (p ◃ (q ◃ r))
-◃assoc p q r = 
-    ((λ ((a , f) , g) → (a , (λ b → (f b , λ d → g (b , d))))) 
-    , λ ((a , f) , g) (b , (d , x)) → ((b , d) , x))
+module ◃Assoc {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} (p : Poly ℓ0 κ0) 
+              (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2) where
 
-◃assocCart : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
-             → (p : Poly ℓ κ) (q : Poly ℓ' κ') (r : Poly ℓ'' κ'')
-             → isCartesian ((p ◃ q) ◃ r) (p ◃ (q ◃ r)) (◃assoc p q r)
-◃assocCart p q r (a , f) = 
-    Iso→isEquiv ( (λ ((b , d) , x) → b , d , x)
-                , ( (λ (b , d , x) → refl) 
-                  , λ ((b , d) , x) → refl))
+    ◃assoc : ((p ◃ q) ◃ r) ⇆ (p ◃ (q ◃ r))
+    ◃assoc = ( (λ ((a , γ) , δ) 
+                  → (a , (λ b → (γ b , λ d → δ (b , d))))) 
+             , (λ _ (b , (d , x)) → ((b , d) , x)) )
+    
+    ◃assoc⁻¹ : (p ◃ (q ◃ r)) ⇆ ((p ◃ q) ◃ r)
+    ◃assoc⁻¹ = ( (λ (a , γ) → ( (a , (λ x → fst (γ x))) 
+                              , (λ (x , y) → snd (γ x) y) ))
+               , λ _ ((x , y) , z) → (x , (y , z)) )
 
-◃assoc⁻¹ : ∀ {ℓ ℓ' ℓ'' κ κ' κ''}
-           → (p : Poly ℓ κ) (q : Poly ℓ' κ') (r : Poly ℓ'' κ'')
-           → (p ◃ (q ◃ r)) ⇆ ((p ◃ q) ◃ r)
-◃assoc⁻¹ p q r = 
-    ( (λ (a , h) → ( (a , (λ x → fst (h x))) 
-                   , (λ (x , y) → snd (h x) y) )) 
-    , λ (a , h) ((x , y) , z) → (x , (y , z)) )
+open ◃Assoc public
 ```
 
 while the left and right unitors of `◃` correspond to the fact that `⊤` is both a left and a right unit for `Σ`-types.
 
 ```agda
-◃unitl : ∀ {ℓ κ} (p : Poly ℓ κ) → (𝕪 ◃ p) ⇆ p
-◃unitl p = (λ (tt , a) → a tt) , λ (tt , a) x → tt , x
+module ◃LRUnit {ℓ κ} (p : Poly ℓ κ) where
 
-◃unitlCart : ∀ {ℓ κ} (p : Poly ℓ κ) 
-             → isCartesian (𝕪 ◃ p) p (◃unitl p)
-◃unitlCart p (tt , a) = 
-    Iso→isEquiv ( (λ (tt , b) → b) 
-                , (λ b' → refl) 
-                , (λ b' → refl) )
+    ◃unitl : (𝕪 ◃ p) ⇆ p
+    ◃unitl = ( (λ (_ , a) → a tt) , λ (_ , a) x → (tt , x) )
 
-◃unitr : ∀ {ℓ κ} (p : Poly ℓ κ) → (p ◃ 𝕪) ⇆ p
-◃unitr p = (λ (a , f) → a) , λ (a , f) b → b , tt
+    ◃unitl⁻¹ : p ⇆ (𝕪 ◃ p)
+    ◃unitl⁻¹ = ( (λ a → (tt , λ _ → a)) , (λ a (_ , b) → b ) )
 
-◃unitrCart : ∀ {ℓ κ} (p : Poly ℓ κ) 
-             → isCartesian (p ◃ 𝕪) p (◃unitr p)
-◃unitrCart p (a , f) =
-    Iso→isEquiv ( (λ (b , tt) → b) 
-                , (λ b → refl) 
-                , (λ (b , tt) → refl) )
+    ◃unitr : (p ◃ 𝕪) ⇆ p
+    ◃unitr = ( (λ (a , γ) → a) , (λ (a , γ) b → (b , tt)) )
 
-◃unitr⁻¹ : ∀ {ℓ κ} (p : Poly ℓ κ) → p ⇆ (p ◃ 𝕪)
-◃unitr⁻¹ p = (λ x → x , (λ _ → tt)) , (λ a (x , y) → x)
+    ◃unitr⁻¹ : p ⇆ (p ◃ 𝕪)
+    ◃unitr⁻¹ = ( (λ a → a , (λ _ → tt)) , (λ a (b , _) → b) )
+
+open ◃LRUnit public
 ```
 
-In fact, `◃` restricts to a monoidal product on $\mathbf{Poly^{Cart}}$, since the functorial action of `◃` on lenses preserves Cartesian lenses:
+n fact, `◃` restricts to a monoidal product on $\mathbf{Poly^{Cart}}$, since the functorial action of `◃` on lenses preserves Cartesian lenses,
 
 ```agda
-◃LensCart : ∀ {ℓ ℓ' ℓ'' ℓ''' κ κ' κ'' κ'''}
-            → (p : Poly ℓ κ) (q : Poly ℓ' κ')
-            → (r : Poly ℓ'' κ'') (s : Poly ℓ''' κ''')
-            → (f : p ⇆ q) (g : r ⇆ s)
-            → isCartesian p q f → isCartesian r s g
-            → isCartesian (p ◃ r) (q ◃ s)
-                          (◃Lens p q r s f g)
-◃LensCart p q r s (f , f♯) (g , g♯) cf cg (a , h) = 
-    pairEquiv (f♯ a) (λ x → g♯ (h (f♯ a x))) 
-              (cf a) (λ x → cg (h (f♯ a x)))
+◃◃Cart : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+         → {p : Poly ℓ0 κ0} (q : Poly ℓ2 κ2) {f : p ⇆ q}
+         → {r : Poly ℓ1 κ1} (s : Poly ℓ3 κ3) {g : r ⇆ s}
+         → isCartesian q f → isCartesian s g
+         → isCartesian (q ◃ s) (f ◃◃[ s ] g)
+◃◃Cart q {f = (f , f♯)} s {g = (g , g♯)} cf cg (a , γ) = 
+    pairEquiv (f♯ a) (λ x → g♯ (γ (f♯ a x))) 
+              (cf a) (λ x → cg (γ (f♯ a x)))
+```
+
+and all of the above-defined structure morphisms for `◃` are Cartesian.
+
+```agda
+module ◃AssocCart {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} (p : Poly ℓ0 κ0) 
+                  (q : Poly ℓ1 κ1) (r : Poly ℓ2 κ2) where
+
+    ◃assocCart : isCartesian (p ◃ (q ◃ r)) (◃assoc p q r)
+    ◃assocCart _ = 
+        Iso→isEquiv (snd (◃assoc⁻¹ p q r) _ , ((λ _ → refl) , (λ _ → refl)))
+    
+    ◃assoc⁻¹Cart : isCartesian ((p ◃ q) ◃ r) (◃assoc⁻¹ p q r)
+    ◃assoc⁻¹Cart _ = 
+        Iso→isEquiv (snd (◃assoc p q r) _ , ((λ _ → refl) , (λ _ → refl)))
+
+open ◃AssocCart public
+
+module ◃LRUnitCart {ℓ κ} (p : Poly ℓ κ) where
+
+    ◃unitlCart : isCartesian p (◃unitl p)
+    ◃unitlCart _ = Iso→isEquiv (snd (◃unitl⁻¹ p) _ , ((λ _ → refl) , (λ _ → refl)))
+
+    ◃unitl⁻¹Cart : isCartesian (𝕪 ◃ p) (◃unitl⁻¹ p)
+    ◃unitl⁻¹Cart _ = Iso→isEquiv (snd (◃unitl p) _ , ((λ _ → refl) , (λ _ → refl)))
+
+    ◃unitrCart : isCartesian p (◃unitr p)
+    ◃unitrCart _ = Iso→isEquiv (snd (◃unitr⁻¹ p) _ , ((λ _ → refl) , (λ _ → refl)))
+
+    ◃unitr⁻¹Cart : isCartesian (p ◃ 𝕪) (◃unitr⁻¹ p)
+    ◃unitr⁻¹Cart _ = Iso→isEquiv (snd (◃unitr p) _ , ((λ _ → refl) , (λ _ → refl)))
+
+open ◃LRUnitCart public
 ```
 
 We should expect, then, for these equivalences to be somehow reflected in the structure of a Cartesian lenses `η : 𝕪 ⇆ 𝔲` and `μ : 𝔲 ◃ 𝔲 ⇆ 𝔲`. This would be the case, e.g., if the following diagrams in $\mathbf{Poly^{Cart}}$ were to commute $$
@@ -350,4 +378,4 @@ $$
 
 One may recognize these as the usual diagrams for a monoid in a monoidal category, hence (since `◃` corresponds to composition of polynomial endofunctors) for a *monad* as typically defined. However, because of the higher-categorical structure of types in HoTT, we should not only ask for these diagrams to commute, but for the cells exhibiting that these diagrams commute to themselves be subject to higher coherences, and so on, giving `𝔲` not the structure of a (Cartesian) monad, but rather of a (Cartesian) *$\infty$-monad*.
 
-Yet demonstrating that $𝔲$ is an $\infty$-monad involves specifying a potentially infinite amount of coherence data. Have we therefore traded both the Scylla of equality-up-to-isomorphism and the Charybdis of strictness for an even worse fate of higher coherence hell? The answer to this question, surprisingly, is negative, as there is a way to implicitly derive all of this data from a single axiom, which corresponds to the characteristic axiom of HoTT itself: univalence. To show this, we now introduce the central concept of this paper – that of a *polynomial universe*.
+Yet demonstrating that $𝔲$ is an $\infty$-monad involves specifying a potentially infinite amount of coherence data. Have we therefore traded both the Scylla of equality-up-to-isomorphism and the Charybdis of strictness for an even worse fate of higher coherence hell? The answer to this question, surprisingly, is negative, as there is a way to implicitly derive all of this data from a single axiom, which corresponds to the characteristic axiom of HoTT itself: univalence. To show this, we now introduce the central concept of this paper – that of a *polynomial universe*. 

@@ -401,6 +401,10 @@ syml refl x = refl
 symr : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {a b : A}
        → (e : a ≡ b) (y : B b) → transp B e (transp B (sym e) y) ≡ y
 symr refl x = refl
+
+transpIsEquiv : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {a b : A} (e : a ≡ b)
+                → isEquiv {A = B a} {B = B b} (λ x → transp B e x)
+transpIsEquiv {B = B} e = Iso→isEquiv ((λ x → transp B (sym e) x) , (syml e , symr e))
 ```
 
 And...
@@ -545,4 +549,30 @@ pairEquiv f g ef eg =
                 (λ (x , y) → (x , g x y)) 
                 (pairEquiv1 f ef) 
                 (pairEquiv2 g eg)
+
+
+transpComp : ∀ {ℓ κ} {A : Type ℓ} {a b c : A} {B : A → Type κ}
+             → (e1 : a ≡ b) (e2 : b ≡ c) (x : B a)
+             → transp B e2 (transp B e1 x)
+               ≡ transp B (a ≡〈 e1 〉 e2) x
+transpComp refl refl x = refl
+
+_•_ : ∀ {ℓ} {A : Type ℓ} {a b c : A}
+      → (a ≡ b) → (b ≡ c) → (a ≡ c)
+refl • refl = refl
+
+comprewrite : ∀ {ℓ} {A : Type ℓ} {a b c : A}
+              → (e1 : a ≡ b) (e2 : b ≡ c)
+              → (a ≡〈 e1 〉 e2) ≡ (e1 • e2)
+comprewrite refl refl = refl
+
+{-# REWRITE comprewrite #-}
+
+transpCompSymr : ∀ {ℓ κ} {A : Type ℓ} {a b : A} {B : A → Type κ}
+                 → (e : a ≡ b) (x : B b)
+                 → (transpComp (sym e) e x) • 
+                     (ap (λ e' → transp B e' x) 
+                         (sym (≡siml e)))
+                   ≡ symr e x
+transpCompSymr refl x = refl
 ```
