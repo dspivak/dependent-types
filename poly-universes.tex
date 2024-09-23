@@ -470,6 +470,10 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\bic}[2]{{}_{#1}\Cat{Comod}_{#2}}
 
+\newcommand{\cnote}[1]{{\quad \color{red}$\lozenge$\;C.B.\ says:}~#1\;{\color{red}$\lozenge$}\quad}
+\newcommand{\dnote}[1]{{\quad \color{blue}$\lozenge$\;David says:}~#1\;{\color{blue}$\lozenge$}\quad}
+
+
 % ---- Changeable document parameters ---- %
 
 \linespread{1.1}
@@ -521,7 +525,7 @@ events will be described. For example, in the story arc of conditional
 probability, one may say ``now if the set \(P\) that we are asked to
 condition on happens to have measure zero, we must stop; but assuming
 that's not the case then the result will be a new probability
-measure.'\,' Here the story teller is saying that no terms will describe
+measure.'' Here the story teller is saying that no terms will describe
 what happens if \(P\) has measure zero, whereas otherwise the terms of
 standard probability will apply.
 
@@ -2559,6 +2563,13 @@ p & \to & q\\
 r & \leftarrow & s
 \end{array}
 \]
+\dnote{Are the $p$ and $q$ in the Agda matching the diagram above? In the diagram above, it appears that the twisted arrows are $p\to r$ and $q\to s$, but in the agda, things look different. Please make it consistent. If I'm understanding the code below, I feel like it should be
+\[
+\begin{tikzcd}[ampersand replacement=\&]
+	p\ar[r]\ar[d]\&p'\ar[d]\\
+	q\&q'\ar[l]
+\end{tikzcd}
+\]}
 
 \begin{Shaded}
 \begin{Highlighting}[]
