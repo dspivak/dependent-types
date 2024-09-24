@@ -1706,8 +1706,7 @@ monoidal unit given by the identity functor \texttt{𝕪}:
 \NormalTok{    , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{b\textquotesingle{} , d\textquotesingle{}}\OtherTok{)} \OtherTok{→} \OtherTok{((}\NormalTok{f♯ a b\textquotesingle{}}\OtherTok{)}\NormalTok{ , g♯ }\OtherTok{(}\NormalTok{γ }\OtherTok{(}\NormalTok{f♯ a b\textquotesingle{}}\OtherTok{))}\NormalTok{ d\textquotesingle{}}\OtherTok{))}
 \end{Highlighting}
 \end{Shaded}
-
-where \texttt{◃Lens} is the action of \texttt{◃} on lenses.
+where \texttt{◃Lens} is the action of \texttt{◃} on lenses.\dnote{Why is $s$ not implicit, when $p,q,r$ are? Perhaps say something about that?}
 
 By construction, the existence of a Cartesian lens
 \texttt{(σ\ ,\ σ♯)\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲} effectively shows that \texttt{𝔲}
@@ -2291,7 +2290,7 @@ precisely the subuniverse of types spanned by (Bishop) finite sets.
 \KeywordTok{open} \KeywordTok{import}\NormalTok{ part4v2}
 \end{Highlighting}
 \end{Shaded}
-\dnote{Either take this import stuff out, or add a footnote somewhere explaining what it does.}
+\dnote{We thought that you should either fix things so you don't need this import stuff, or add a footnote somewhere explaining what it does.}
 
 \chapter{\texorpdfstring{\(\Pi\)-Types \& Distributive
 Laws}{\textbackslash Pi-Types \& Distributive Laws}}\label{pi-types-distributive-laws}
@@ -2341,6 +2340,8 @@ momentarily, we define the functorial action
 on a lens \(f : p \leftrightarrows p'\) equipped with a left inverse
 \(f' : p' \leftrightarrows p\), i.e.~such that
 \(f' \circ f = \text{id}_p\).
+
+\dnote{Does the left inverse stuff really help us? I was wondering if it would make more sense to move directly into the twisted arrow stuff. But if you do keep the left inverse stuff, could you explain in the twisted arrow section how it fits into the larger picture?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2410,7 +2411,7 @@ namely a \emph{distributive law} of \texttt{𝔲} (viewed as a monad) over
 itself. Before that, however, we note some other key properties of
 \(\upuparrows\).
 
-Specifically, let \(\poly_{R}\) be the wide subcategory of
+Specifically, let \(\poly_{R}\) be the wide subcategory \dnote{This is not a subcategory: the same $f$ can have many left inverses.} of
 \(\poly\) spanned by morphisms equipped with left inverses.
 Straightforwardly, \(\triangleleft\) restricts to a monoidal product on
 \(\poly_R\), since it is functorial in both arguments and must
@@ -2550,13 +2551,15 @@ r & \leftarrow & s
 \end{array}
 \]
 
-\dnote{Are the $p$ and $q$ in the Agda matching the diagram above? In the diagram above, it appears that the twisted arrows are $p\to r$ and $q\to s$, but in the agda, things look different. Please make it consistent. If I'm understanding the code below, I feel like it should be
+\dnote{Are the $p$ and $q$ in the Agda matching the diagram above? In the diagram above, it appears that the twisted arrows are $p\to r$ and $q\to s$, but in the agda, things look different. Would you please make it consistent, to help out the reader? If I'm understanding the code below, I feel like it should be
 \[
 \begin{tikzcd}[ampersand replacement=\&]
 	p\ar[r]\ar[d]\&p'\ar[d]\\
 	q\&q'\ar[l]
 \end{tikzcd}
 \]}
+
+\dnote{Would the notation $(p\To\varphi p')\uparrow\uparrow q$ be neater than $p\uparrow\uparrow^{(p',\varphi)}q$?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2629,7 +2632,7 @@ transformations \[
 y {\upuparrows}[\text{id}_{y}] p \to p
 \] \[
 (p \triangleleft r) {\upuparrows}[f \triangleleft g] q \to p {\upuparrows}[f] (r {\upuparrows}[g] q)
-\] as follows:
+\] as follows:\dnote{Are these maps cartesian?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2649,7 +2652,8 @@ y {\upuparrows}[\text{id}_{y}] p \to p
 \end{Highlighting}
 \end{Shaded}
 
-And similarly, we have natural transformations \[
+And similarly, we have natural transformations \dnote{Are these cartesian?}
+\[
 p {\upuparrows}[f] y → y
 \] \[
 p {\upuparrows}[g \circ f] (r \triangleleft s) \to (p {\upuparrows}[f] r) \triangleleft (q {\upuparrows}[g] s)
@@ -2682,7 +2686,7 @@ which we call \emph{distributors}.
 
 Given polynomials \texttt{p,q,r,s}, a \emph{distributor} of \texttt{p,q}
 over \texttt{r,s} is a morphism of the form
-\texttt{(p\ ◃\ r)\ ⇆\ (s\ ◃\ q)} in \(\poly\). The name
+\texttt{(p\ ◃\ r)\ ⇆\ (s\ ◃\ q)} in \(\poly\). \dnote{Don't distributors in fact go $p\tri r\to s\otimes q$? Even if you don't want that to be the displayed form, I think a footnote would be worthwhile.} The name
 ``distributor'' is here drawn from the fact that, given polynomial
 monads \texttt{m,n} with \texttt{ηₘ\ :\ 𝕪\ ⇆\ m,\ ηₙ\ :\ 𝕪\ ⇆\ n} and
 \texttt{μₘ\ :\ (m\ ◃\ m)\ ⇆\ m,\ μₙ\ :\ (n\ ◃\ n)\ ⇆\ n}, a
