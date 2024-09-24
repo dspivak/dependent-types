@@ -2550,19 +2550,6 @@ r & \leftarrow & s
 \end{array}
 \]
 
-As a first step in this direction, we make a perhaps unexpected move of
-further generalizing the \(\upuparrows\) functor to a functor
-\(\mathsf{Tw}(\poly) \times \poly \to \poly\),
-where \(\mathsf{Tw}(\poly)\) is the \emph{twisted arrow
-category} of \(\poly\), i.e.~the category whose objects are
-lenses and whose morphisms are \emph{twisted} commuting squares of the
-form \[
-\begin{array}{ccc}
-p & \to & q\\
-\downarrow & & \downarrow\\
-r & \leftarrow & s
-\end{array}
-\]
 \dnote{Are the $p$ and $q$ in the Agda matching the diagram above? In the diagram above, it appears that the twisted arrows are $p\to r$ and $q\to s$, but in the agda, things look different. Please make it consistent. If I'm understanding the code below, I feel like it should be
 \[
 \begin{tikzcd}[ampersand replacement=\&]
