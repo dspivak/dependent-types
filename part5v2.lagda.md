@@ -283,6 +283,28 @@ Given polynomials `p,q,r,s`, a *distributor* of `p,q` over `r,s` is a morphism o
 
 By inspection, it can be seen that all the composite morphisms required to commute by the above diagrams are themselves distributors of various forms. Understanding the closure properties of such distributors that give rise to these diagrams, then, will be a central aim of this section.
 
+By function extensionality, we obtain the following type of equality proofs for distributors:
+
+```agda
+EqDistributor : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+                → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+                → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+                → (p ◃ r) ⇆ (s ◃ q) → (p ◃ r) ⇆ (s ◃ q)
+                → Type (ℓ0 ⊔ ℓ1 ⊔ ℓ2 ⊔ ℓ3 ⊔ κ0 ⊔ κ1 ⊔ κ2 ⊔ κ3)
+EqDistributor p q r s (f , f♯) (g , g♯) = 
+    (a : fst p) (γ : snd p a → fst r) 
+    → Σ (fst (f (a , γ)) ≡ fst (g (a , γ))) 
+        (λ e1 → (x : snd s (fst (f (a , γ))))
+                → Σ ((snd (f (a , γ)) x) 
+                    ≡ (snd (g (a , γ)) 
+                           (transp (snd s) e1 x))) 
+                    (λ e2 → (y : snd q (snd (f (a , γ)) x)) 
+                            → (f♯ (a , γ) (x , y)) 
+                              ≡ (g♯ (a , γ) 
+                                    ( (transp (snd s) e1 x) 
+                                    , (transp (snd q) e2 y)))))
+```
+
 Moreover, for any polynomial `u` with `π : (u ⇈ u) ⇆ u`, the morphism `distrLaw? u π` defined above is a distributor of `u,u` over itself. In fact, we can straightforwardly generalize the construction of `distrLaw?` to a transformation $$
 (p ~{\upuparrows}[q][f] r) \leftrightarrows s \implies (p \triangleleft r) \leftrightarrows (s \triangleleft q)
 $$ as follows:
@@ -310,9 +332,9 @@ $$
 module DistributorLens {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 ℓ7
                         κ0 κ1 κ2 κ3 κ4 κ5 κ6 κ7}
                        {p : Poly ℓ0 κ0} {p' : Poly ℓ4 κ4}
-                       {q : Poly ℓ1 κ1} {q' : Poly ℓ5 κ5}
-                       {r : Poly ℓ2 κ2} {r' : Poly ℓ6 κ6}
-                       {s : Poly ℓ3 κ3} {s' : Poly ℓ7 κ7}
+                       {q : Poly ℓ1 κ1} (q' : Poly ℓ5 κ5)
+                       (r : Poly ℓ2 κ2) {r' : Poly ℓ6 κ6}
+                       {s : Poly ℓ3 κ3} (s' : Poly ℓ7 κ7)
                        (g : p' ⇆ p) (h : q ⇆ q') 
                        (k : r' ⇆ r) (l : s ⇆ s') where
 
@@ -343,7 +365,7 @@ $$
 open DistributorLens public
 ```
 
-Similarly, there are two distinct ways of composing jump morphisms: 
+Similarly, there are two distinct ways of composing distributors: 
 
 1. Given jump morphisms $j1 : s \xleftarrow{p \xleftarrow{f} q} t$ and $j2 : u \xleftarrow{q \xrightarrow{g} r} v$, we obtain a Jump structure $s \triangleleft u \xleftarrow{p \xrightarrow{g \circ f} r} t \triangleleft v$ on the composite $$
 p ◃ (s \triangleleft u) \simeq (p \triangleleft s) \triangleleft u \xrightarrow{j1 \triangleleft u} (t \triangleleft q) \triangleleft u \simeq t \traingleleft (q \triangleleft u) \xrightarrow{j2} t \triangleleft (v \triangleleft r) \simeq (t \triangleleft v) \triangleleft r
@@ -351,9 +373,9 @@ $$
 
 ```agda
 module DistributorComp1 {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
-                        {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} {r : Poly ℓ2 κ2}
+                        {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2)
                         {s : Poly ℓ3 κ3} {t : Poly ℓ4 κ4}
-                        {u : Poly ℓ5 κ5} {v : Poly ℓ6 κ6} where
+                        (u : Poly ℓ5 κ5) {v : Poly ℓ6 κ6} where
 
     distrComp1 : (p ◃ s) ⇆ (t ◃ q) → (q ◃ u) ⇆ (v ◃ r)
                  → (p ◃ (s ◃ u)) ⇆ ((t ◃ v) ◃ r)
@@ -388,10 +410,200 @@ $$
 open DistributorComp1 public
 ```
 
-2. Given jump morphisms $j1 : t \xleftarrow{p \xrightarrow{f} q} u$ and $j2 : s \xleftarrow{r \xrightarrow{g} s} t$, we obtain a jump structure $s \xleftarrow{p \triangleleft r \xrightarrow{f \triangleleft g} q \triangleleft s} u$ on the composite $$
-(p \triangleleft r) \triangleleft s \simeq p \triangleleft (r \triangleleft s) \xrightarrow{p \triangleleft j2} p \triangleleft (t \triangleleft s) \simeq (p \triangleleft t) \triangleleft s \xrightarrow{j1} (u \triangleleft q) \triangleleft s \simeq u \triangleleft (q \triangleleft s)
+2. Given distributors $p \triangleleft u \leftrightarrows v \triangleleft q$ and $r \triangleleft t \leftrightarrows u \triangleleft s$, we obtain a distributor $(p \triangleleft r) \triangleleft t \leftrightarrows v \triangleleft (q \triangleleft s)$ as the composite $$
+(p \triangleleft r) \triangleleft t \simeq p \triangleleft (r \triangleleft t) \leftrightarrows p \triangleleft (u \triangleleft s) \simeq (p \triangleleft u) \triangleleft s \leftrightarrows (v \triangleleft q) \triangleleft s \simeq v \triangleleft (q \triangleleft s)
 $$
 
 ```agda
+module DistributorComp2 
+           {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+           {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} 
+           {r : Poly ℓ2 κ2} (s : Poly ℓ3 κ3)
+           (t : Poly ℓ4 κ4) {u : Poly ℓ5 κ5} 
+           {v : Poly ℓ6 κ6} where 
 
+    distrComp2 : (r ◃ t) ⇆ (u ◃ s) → (p ◃ u) ⇆ (v ◃ q)
+                 → ((p ◃ r) ◃ t) ⇆ (v ◃ (q ◃ s))
+    distrComp2 h k =
+        comp (v ◃ (q ◃ s)) (◃assoc p r t) 
+             (comp (v ◃ (q ◃ s))  ((id p) ◃◃[ u ◃ s ] h) 
+               (comp (v ◃ (q ◃ s)) (◃assoc⁻¹ p u s) 
+                     (comp (v ◃ (q ◃ s)) (k ◃◃[ s ] (id s)) 
+                           (◃assoc v q s))))
 ```
+
+The corresponding construction on morphisms `(p ⇈[ q ][ f ] u) ⇆ v` and `(r ⇈[ s ][ g ] t) ⇆ u` is to form the following composite with the morphism `⇈[]Curry` defined above: $$
+(p \triangleleft r) {\upuparrows}[q \triangleleft s][f \triangleleft g] t \leftrightarrows p {\upuparrows}[q][f] (r {\upuparrows}[s][g] t) \leftrightarrows p {\upuparrows}[q][f] u \leftrightarrows v
+$$
+
+```agda
+    ⇈→DistributorComp2 : {f : p ⇆ q} {g : r ⇆ s}
+        → (r ⇈[ s ][ g ] t) ⇆ u → (p ⇈[ q ][ f ] u) ⇆ v
+        → ((p ◃ r) ⇈[ (q ◃ s) ][ f ◃◃[ s ] g ] t) ⇆ v
+    ⇈→DistributorComp2 {f = f} {g = g} h k =
+        comp v (⇈[]Curry p q r s t f g) 
+             (comp v (⇈[]Lens q u f f 
+                              (id p) (id q) h 
+                              ( (λ a → refl) 
+                              , (λ a d → refl))) 
+                   k)
+    
+    ⇈→DistributorComp2≡ : {f : p ⇆ q} {g : r ⇆ s}
+        → (h : (r ⇈[ s ][ g ] t) ⇆ u) (k : (p ⇈[ q ][ f ] u) ⇆ v)
+        → (distrComp2 (⇈→Distributor s t h) 
+                      (⇈→Distributor q u k)) 
+          ≡ ⇈→Distributor (q ◃ s) t 
+                          (⇈→DistributorComp2 h k)
+    ⇈→DistributorComp2≡ h k = refl
+
+open DistributorComp2 public
+```
+
+Likewise, there are two corresponding notions of "identity distributor" on a polynomial `p`, the first of which is given by the following composition of unitors for `◃`: $$
+p \triangleleft y \simeq p \simeq y \triangleleft p
+$$ and the second of which is given by the inverse such composition $$
+y \triangleleft p \simeq p \simeq p \triangleleft y
+$$
+
+```agda
+module DistributorId {ℓ κ} (p : Poly ℓ κ) where
+
+    distrId1 : (p ◃ 𝕪) ⇆ (𝕪 ◃ p)
+    distrId1 = comp (𝕪 ◃ p) (◃unitr p) (◃unitl⁻¹ p)
+
+    distrId2 : (𝕪 ◃ p) ⇆ (p ◃ 𝕪)
+    distrId2 = comp (p ◃ 𝕪) (◃unitl p) (◃unitr⁻¹ p)
+```
+
+The corresponding morphisms `p ⇈[ p ][ id p ] 𝕪 ⇆ 𝕪` and `𝕪 ⇈[ 𝕪 ][ id 𝕪 ] p ⇆ p` are precisely the maps `⇈[]𝕪` and `𝕪⇈[]` defined above, respectively:
+
+```agda
+    ⇈→DistributorId1≡ : distrId1 ≡ ⇈→Distributor p 𝕪 (⇈[]𝕪 p p (id p))
+    ⇈→DistributorId1≡ = refl
+
+    ⇈→DistributorId2≡ : distrId2 ≡ ⇈→Distributor 𝕪 p (𝕪⇈[] p)
+    ⇈→DistributorId2≡ = refl
+
+open DistributorId public
+```
+
+It can thus be seen that the above operations defined on distributors are preicsely those occurring in the diagrams for a distributive law given above, and moreover, these all have corresponding constructions on morphisms out of `_⇈[_][_]_`, all of which preserve Cartesian morphisms. Hence if `π : 𝔲 ⇈ 𝔲 ⇆ 𝔲` is Cartesian, all of the morphisms involving `_⇈[_][_]_` corresponding to those required to commute in order for `distrLaw? 𝔲 π` to be a distributive law will be Cartesian, and so if `𝔲` is a polynomial universe, these will all automatically be equal to one another.
+
+```agda
+ap⇈→Distributor : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+                  → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+                  → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+                  → (f : p ⇆ q)
+                  → (h k : (p ⇈[ q ][ f ] r) ⇆ s)
+                  → EqLens s h k 
+                  → EqDistributor p q r s
+                        (⇈→Distributor q r h)
+                        (⇈→Distributor q r k)
+ap⇈→Distributor p q r s f h k (e , e♯) a γ = 
+    ( e (a , γ) 
+    , λ x → ( refl 
+            , (λ y → pairEq refl 
+                        (coAp (e♯ (a , γ) x) y)) ) )
+
+module DistrLaw {ℓ κ} (𝔲 : Poly ℓ κ) (univ : isUnivalent 𝔲)
+                (η : 𝕪 ⇆ 𝔲) (cη : isCartesian 𝔲 η)
+                (σ : (𝔲 ◃ 𝔲) ⇆ 𝔲) (cσ : isCartesian 𝔲 σ)
+                (π : (𝔲 ⇈ 𝔲) ⇆ 𝔲) (cπ : isCartesian 𝔲 π) where
+    
+    distrLaw1 : EqDistributor 𝔲 𝔲 (𝔲 ◃ 𝔲) 𝔲
+                    (distrLens 𝔲 (𝔲 ◃ 𝔲) 𝔲 (id 𝔲) (id 𝔲) (id (𝔲 ◃ 𝔲)) σ 
+                               (distrComp1 𝔲 𝔲 (distrLaw? 𝔲 π) 
+                                               (distrLaw? 𝔲 π))) 
+                    (distrLens 𝔲 𝔲 𝔲 (id 𝔲) (id 𝔲) σ (id 𝔲) 
+                               (distrLaw? 𝔲 π))
+    distrLaw1 = ap⇈→Distributor 𝔲 𝔲 (𝔲 ◃ 𝔲) 𝔲 (id 𝔲)
+                    (comp 𝔲 (comp (𝔲 ◃ 𝔲) (⇈Distr 𝔲 𝔲 𝔲) (π ◃◃[ 𝔲 ] π)) σ)
+                    (comp 𝔲 (⇈[]Lens 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) σ ((λ a → refl) , (λ a d → refl))) π)
+                    (univ (compCartesian 𝔲 
+                                (compCartesian (𝔲 ◃ 𝔲) 
+                                    (⇈DistrCart 𝔲 𝔲 𝔲) 
+                                    (◃◃Cart 𝔲 𝔲 cπ cπ)) 
+                                cσ) 
+                          (compCartesian 𝔲 
+                            (⇈[]LensCart 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) σ 
+                                ((λ a → refl) , (λ a d → refl)) 
+                                (idCart 𝔲) cσ) 
+                            cπ))
+    
+    distrLaw2 : EqDistributor (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲
+                    (distrLens 𝔲 𝔲 𝔲 (id (𝔲 ◃ 𝔲)) σ (id 𝔲) (id 𝔲) 
+                               (distrComp2 𝔲 𝔲 (distrLaw? 𝔲 π) 
+                                               (distrLaw? 𝔲 π))) 
+                    (distrLens 𝔲 𝔲 𝔲 σ (id 𝔲) (id 𝔲) (id 𝔲) 
+                               (distrLaw? 𝔲 π))
+    distrLaw2 = ap⇈→Distributor (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲 σ
+                    (comp 𝔲 
+                        (comp (𝔲 ⇈ 𝔲) 
+                            (comp (𝔲 ⇈ (𝔲 ⇈ 𝔲)) 
+                                (⇈[]Lens 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) 
+                                    (id (𝔲 ◃ 𝔲)) σ (id 𝔲) 
+                                    ((λ a → refl) , (λ a d → refl))) 
+                                (⇈Curry 𝔲 𝔲 𝔲)) 
+                            (⇈Lens 𝔲 𝔲 (id 𝔲) (id 𝔲) 
+                                   ((λ a → refl) , (λ a d → refl)) 
+                                   π)) 
+                        π)
+                    (comp 𝔲 (⇈[]Lens 𝔲 𝔲 σ (id 𝔲) σ (id 𝔲) (id 𝔲) 
+                                     ((λ a → refl) , (λ a d → refl))) 
+                            π)
+                    (univ (compCartesian 𝔲 
+                            (compCartesian (𝔲 ⇈ 𝔲) 
+                                (compCartesian (𝔲 ⇈ (𝔲 ⇈ 𝔲)) 
+                                    (⇈[]LensCart 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) 
+                                        (id (𝔲 ◃ 𝔲)) σ (id 𝔲) 
+                                        ((λ a → refl) , (λ a d → refl)) 
+                                        cσ (idCart 𝔲)) 
+                                    (⇈CurryCart 𝔲 𝔲 𝔲)) 
+                                (⇈[]LensCart 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) π
+                                             ((λ a → refl) , (λ a d → refl)) 
+                                             (idCart 𝔲) cπ)) 
+                            cπ)
+                          (compCartesian 𝔲 
+                            (⇈[]LensCart 𝔲 𝔲 σ (id 𝔲) σ (id 𝔲) (id 𝔲) 
+                                ((λ a → refl) , (λ a d → refl)) 
+                                (idCart 𝔲) (idCart 𝔲)) 
+                            cπ))
+    
+    distrLaw3 : EqDistributor 𝔲 𝔲 𝕪 𝔲 
+                    (distrLens 𝔲 𝕪 𝔲 (id 𝔲) (id 𝔲) (id 𝕪) η (distrId1 𝔲)) 
+                    (distrLens 𝔲 𝔲 𝔲 (id 𝔲) (id 𝔲) η (id 𝔲) (distrLaw? 𝔲 π))
+    distrLaw3 = 
+        ap⇈→Distributor 𝔲 𝔲 𝕪 𝔲 (id 𝔲)
+            (comp 𝔲 (⇈𝕪 𝔲) η) 
+            (comp 𝔲 (⇈Lens 𝔲 𝔲 (id 𝔲) (id 𝔲) ((λ a → refl) , (λ a d → refl)) η) π)
+            (univ (compCartesian 𝔲 (⇈𝕪Cart 𝔲) cη) 
+                  (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) η 
+                                 ((λ a → refl) , (λ a d → refl)) 
+                                 (idCart 𝔲) cη) 
+                    cπ))
+    
+    distrLaw4 : EqDistributor 𝕪 𝔲 𝔲 𝔲
+                    (distrLens 𝔲 𝔲 𝔲 (id 𝕪) η (id 𝔲) (id 𝔲) (distrId2 𝔲)) 
+                    (distrLens 𝔲 𝔲 𝔲 η (id 𝔲) (id 𝔲) (id 𝔲) (distrLaw? 𝔲 π))
+    distrLaw4 =
+        ap⇈→Distributor 𝕪 𝔲 𝔲 𝔲 η 
+            (comp 𝔲 (⇈[]Lens 𝔲 𝔲 η (id 𝕪) (id 𝕪) η (id 𝔲) 
+                             ((λ a → refl) , (λ a d → refl))) 
+                    (𝕪⇈ 𝔲))
+            (comp 𝔲 (⇈[]Lens 𝔲 𝔲 η (id 𝔲) η (id 𝔲) (id 𝔲)
+                             ((λ a → refl) , (λ a d → refl))) 
+                    π) 
+            (univ (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 η (id 𝕪) (id 𝕪) η (id 𝔲) 
+                                 ((λ a → refl) , (λ a d → refl)) 
+                                 cη (idCart 𝔲)) 
+                    (𝕪⇈Cart 𝔲)) 
+                  (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 η (id 𝔲) η (id 𝔲) (id 𝔲) 
+                                 ((λ a → refl) , (λ a d → refl)) 
+                                 (idCart 𝔲) (idCart 𝔲)) 
+                    cπ))
+```
+
+Hence `distrLaw? 𝔲 π` is a distributive law, as desired (and moreover, all of the higher coherences of an $\infty$-distributive law could be demonstrated, following this same method.)

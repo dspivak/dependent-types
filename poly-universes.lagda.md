@@ -26,7 +26,7 @@ The central idea of dependent type theory (c.f. \cite{martin-lof1975intuitionist
 
 Dependent types form a logical system with syntax, rules of computation, and robust categorical semantics. In \cite{awodey2014natural,awodey2018polynomial}, Awodey and later Newstead show that there is a strong connection between dependent type theory and polynomial functors, via their concept of *natural models*, which cleanly solve the problem of *strictififying* certain identities that typically hold only up to isomorphism in arbitrary categories, but must hold *strictly* in order for these to soundly model dependent type theory. The solution to this problem offered by Awodey and Newstead makes use of the type-theoretic concept of a *universe*. Such universes then turn out to naturally be regarded as polynomial functors on a suitably-chosen category of presheaves, satisfying a certain *representability* condition.
 
-Although the elementary structure of natural models is thus straightforwardly described by considering them as objects in a category of polynomial functors, Awodey and Newstead were ultimately led outside of this category in order to fully explicate those parts of natural models that require identities to hold only *up to isomorphism*, rather than strictly. There is thus an evident tension between *strict* and *weak* identities that has not yet been fully resolved in the story of natural models. In the present work, we build on Awodey and Newstead's work to fully resolve this impasse by showing how type universes can be fully axiomatized in terms of polynomial functors, by working with polynomial functors internally in the language of *Homotopy Type Theory* (HoTT). We thus come full circle from Awodey's original motivation to develop natural models *of* Homotopy Type Theory, to describing natural models *in* Homotopy Type Theory.
+Although the elementary structure of natural models is thus straightforwardly described by considering them as objects in a category of polynomial functors, Awodey and Newstead were ultimately led outside of this category in order to fully explicate those parts of natural models that require identities to hold only *up to isomorphism*, rather than strictly. There is thus an evident tension between *strict* and *weak* identities that has not yet been fully resolved in the story of natural models. In the present work, we build on Awodey and Newstead's work to fully resolve this impasse by showing how type universes can be fully axiomatized in terms of polynomial functors, by working with polynomial functors internally in the language of *Homotopy Type Theory* (HoTT) \cite{Voevodsky:2013a}. We thus come full circle from Awodey's original motivation to develop natural models *of* Homotopy Type Theory, to describing natural models *in* Homotopy Type Theory.
 
 The ability for us to tell the story of natural models as set entirely in the category of polynomial functors has a great simplifying effect upon the resultant theory, and reveals many additional structures, both of polynomial universes, and of the category of polynomial functors as a whole. As an illustration of this, we show how every polynomial universe $u$, regarded as a polynomial pseudomonad with additional structure, gives rise to self-distributive law $u\tri u\to u\tri u$, which in particular witnesses the usual distributive law of dependent products over dependent sums.
 
@@ -34,7 +34,7 @@ Moreover, the move from set theory to HoTT as a setting in which to tell this st
 
 ```agda
 {-# OPTIONS --without-K --rewriting #-}
-module part1v2 where
+module poly-universes where
 ```
 
 The structure of this paper is as follows:
@@ -46,10 +46,6 @@ The structure of this paper is as follows:
 * In Section 6, we conclude the paper by sketching how this theory may be further developed to handle identity types, inductive types, and other key concepts from dependent type theory.
 
 ```agda
-{-# OPTIONS --without-K --rewriting #-}
-module part2v2 where
-
-open import part1v2
 open import Agda.Primitive
 open import Agda.Builtin.Sigma
 open import Agda.Builtin.Unit
@@ -89,7 +85,7 @@ A × B = Σ A (λ _ → B)
 ```
 
 In more traditional type-theoretic notation, one might see the rules for these types written as follows: $$ 
-\inferrule{}{\Gamma \vdash \top : \mathsf{Type}} \qquad \inferrule{}{\Gamma \vdash \mathsf{tt} : \top} \qquad \inferrule{\Gamma \vdash x : \top}{\Gamma \vdash x = tt}
+\inferrule{~}{\Gamma \vdash \top : \mathsf{Type}} \qquad \inferrule{~}{\Gamma \vdash \mathsf{tt} : \top} \qquad \inferrule{\Gamma \vdash x : \top}{\Gamma \vdash x = tt}
 $$ $$
 \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] : \mathsf{Type}}{\Gamma \vdash \Pi x : A . B[x] : \mathsf{Type}} \qquad \inferrule{\Gamma \vdash A : \mathsf{Type}\\ \Gamma, x : A \vdash B[x] : \mathsf{Type}}{\Gamma \vdash \Sigma x : A . B[x] : \mathsf{Type}}
 $$ $$
@@ -130,7 +126,7 @@ So far, we have told a pleasingly straightforward story of how to interpret the 
 
 ## Natural Models
 
-The key insight of Awodey in formulating the notion of a natural model is that the problem of strictness in the semantics of type theory has, in a sense, already been solved by the notion of *type universes*, such as `Type` as introduced above. Given a universe of types $\mathcal{U}$, rather than representing dependent types as display maps, and substitution as pullback, we can simply represent a family of types $B[x]$ dependent upon a type $A$ as a function $A \to \mathcal{U}$, with substitution then given by precomposition, which is automatically strictly associative.
+The key insight of Awodey \cite{awodey2014natural} in formulating the notion of a natural model is that the problem of strictness in the semantics of type theory has, in a sense, already been solved by the notion of *type universes*, such as `Type` as introduced above. Given a universe of types $\mathcal{U}$, rather than representing dependent types as display maps, and substitution as pullback, we can simply represent a family of types $B[x]$ dependent upon a type $A$ as a function $A \to \mathcal{U}$, with substitution then given by precomposition, which is automatically strictly associative.
 
 To interpret the syntax of dependent type theory in a category $\mathcal{C}$ of contexts and substitutions, it therefore suffices to *embed* $\mathcal{C}$ into a category whose type-theoretic internal language posesses such a universe whose types correspond to those of $\mathcal{C}$. For this purpose, we work in the category of *prehseaves* $\mathbf{Set}^{\mathcal{C}^{op}}$, with the embedding $\mathcal{C} \hookrightarrow \mathbf{Set}^{\mathcal{C}^{op}}$ being nothing other than the Yoneda embedding.
 
@@ -179,7 +175,7 @@ open import Agda.Builtin.Equality
 open import Agda.Builtin.Equality.Rewrite
 ```
 
-The core insight of Homotopy Type Theory is that the presence of (intensional) identity types in a system of dependent type theory endows each type with the structure of an $\infty$-groupoid, and endows each function between types with the structure of a functor between $\infty$-groupoids, etc. This allows a wealth of higher-categorical properties and structures to be defined and studied *internally* in the language of dependent type theory.
+The core insight of Homotopy Type Theory \cite{Voevodsky:2013a} is that the presence of (intensional) identity types in a system of dependent type theory endows each type with the structure of an $\infty$-groupoid, and endows each function between types with the structure of a functor between $\infty$-groupoids, etc. This allows a wealth of higher-categorical properties and structures to be defined and studied *internally* in the language of dependent type theory.
 
 Since an invocation of reflexivity typically occurs at the end of an equality proof, we introduce the notation `□` as a shorthand for `refl` as follows:
 
@@ -196,7 +192,7 @@ transp : ∀ {ℓ κ} {A : Type ℓ} (B : A → Type κ) {a a' : A}
 transp B refl b = b
 ```
 
-Transitivity of equality then follows in the usual way.[^1]:
+Transitivity of equality then follows in the usual way.[^2]:
 
 ```agda
 _•_ : ∀ {ℓ} {A : Type ℓ} {a b c : A}
@@ -204,7 +200,7 @@ _•_ : ∀ {ℓ} {A : Type ℓ} {a b c : A}
 e • refl = e
 ```
 
-[^1]: We also take advantage of Agda's support for mixfix notation to present transitivity in such a way as to streamline both the reading and writing of equality proofs:
+[^2]: We also take advantage of Agda's support for mixfix notation to present transitivity in such a way as to streamline both the reading and writing of equality proofs:
 
 ```agda
 _≡〈_〉_ : ∀ {ℓ} {A : Type ℓ} (a : A) {b c : A} 
@@ -247,7 +243,8 @@ We additionally have the following "dependent" form of `ap` as above, allowing u
 ```agda
 apd : ∀ {ℓ0 ℓ1 κ} {A : Type ℓ0} {B : Type ℓ1} {f : A → B}
       → (C : B → Type κ) {a a' : A}
-      → (g : (x : A) → C (f x)) → (e : a ≡ a') → transp C (ap f e) (g a) ≡ g a'
+      → (g : (x : A) → C (f x)) → (e : a ≡ a') 
+      → transp C (ap f e) (g a) ≡ g a'
 apd B f refl = refl
 ```
 
@@ -264,10 +261,12 @@ module PairEq {ℓ κ} {A : Type ℓ} {B : A → Type κ}
 We then have the following laws governing equality proofs for pairs.
 
 ```agda
-    pairEqβ1 : (e : a ≡ a') (e' : transp B e b ≡ b') → ap fst (pairEq e e') ≡ e
+    pairEqβ1 : (e : a ≡ a') (e' : transp B e b ≡ b') 
+               → ap fst (pairEq e e') ≡ e
     pairEqβ1 refl refl = refl
 
-    pairEqη : (e : (a , b) ≡ (a' , b')) → pairEq (ap fst e) (apd B snd e) ≡ e
+    pairEqη : (e : (a , b) ≡ (a' , b')) 
+              → pairEq (ap fst e) (apd B snd e) ≡ e
     pairEqη refl = refl
 
 open PairEq public
@@ -315,7 +314,7 @@ Iso {A = A} {B = B} f =
                     × ((b : B) → f (g b) ≡ b)))
 ```
 
-One might be inclined to wonder, then, why we bother to define equivalence via the seemingly more complicated notion of having both a left and a right inverse when the familiar notion of isomorphism can just as well be defined, as above. The full reasons for this are beyond the scope of this paper, though see \cite{hottbook} for further discussion. Suffice it to say that, for subtle reasons due to the higher-categorical structure of types in HoTT, the plain notion of isomorphism given above is not a *good* notion of equivalence, whereas that of bi-invertible maps is. In particular, the type `Iso f` is not necessarily a proposition for arbitrary `f`, whereas `isEquiv f` is.
+One might be inclined to wonder, then, why we bother to define equivalence via the seemingly more complicated notion of having both a left and a right inverse when the familiar notion of isomorphism can just as well be defined, as above. The full reasons for this are beyond the scope of this paper, though see \cite{Voevodsky:2013a} for further discussion. Suffice it to say that, for subtle reasons due to the higher-categorical structure of types in HoTT, the plain notion of isomorphism given above is not a *good* notion of equivalence, whereas that of bi-invertible maps is. In particular, the type `Iso f` is not necessarily a proposition for arbitrary `f`, whereas `isEquiv f` is.
 
 We may nonetheless move more-or-less freely back and forth between the notions of equivalence and isomorphism given above, thanks to the following functions, which allow us to convert isomorphisms to equivalences and vice versa:
 
@@ -355,7 +354,8 @@ open InvEquiv public
 We note that, for each type family `B : A → Type`, the map `B a → B a'` induced by transport along `e : a ≡ a'` for any `a, a' : A` is an equivalence with inverse given by transport along `sym e`, as follows:
 
 ```agda
-module TranspEquiv {ℓ κ} {A : Type ℓ} {B : A → Type κ} {a b : A} (e : a ≡ b) where
+module TranspEquiv {ℓ κ} {A : Type ℓ} {B : A → Type κ} 
+                   {a b : A} (e : a ≡ b) where
 
     syml : (x : B a) → transp B (sym e) (transp B e x) ≡ x
     syml x rewrite e = refl
@@ -364,7 +364,8 @@ module TranspEquiv {ℓ κ} {A : Type ℓ} {B : A → Type κ} {a b : A} (e : a 
     symr y rewrite e = refl
 
     transpIsEquiv : isEquiv {A = B a} {B = B b} (λ x → transp B e x)
-    transpIsEquiv = Iso→isEquiv ((λ x → transp B (sym e) x) , (syml , symr))
+    transpIsEquiv = 
+        Iso→isEquiv ((λ x → transp B (sym e) x) , (syml , symr))
 
 open TranspEquiv public
 ```
@@ -395,7 +396,8 @@ postulate
     ∥_∥ : ∀ {ℓ} (A : Type ℓ) → Type lzero
     in∥-∥ : ∀ {ℓ} {A : Type ℓ} → A → ∥ A ∥
     ∥-∥IsProp : ∀ {ℓ} {A : Type ℓ} → isProp (∥ A ∥)
-    ∥-∥≡Contr : ∀ {ℓ} {A : Type ℓ} {a b : ∥ A ∥} {e : a ≡ b} → ∥-∥IsProp ≡ e
+    ∥-∥≡Contr : ∀ {ℓ} {A : Type ℓ} {a b : ∥ A ∥} {e : a ≡ b} 
+               → ∥-∥IsProp ≡ e
     ∥-∥Rec : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ}
             → isProp B → (A → B) → ∥ A ∥ → B
 ```
@@ -473,20 +475,6 @@ open EMFactor public
 
 Some additional facts about the identity type, that will be used in formalizing the results of this paper, are given in Appendix A.
 
-```agda
-{-# OPTIONS --without-K --rewriting --lossy-unification #-}
-module part3v2 where
-
-open import part1v2
-open import Agda.Primitive
-open import Agda.Builtin.Sigma
-open import Agda.Builtin.Unit
-open import Agda.Builtin.Equality
-open import Agda.Builtin.Equality.Rewrite
-open import part2v2
-open import appendixA
-```
-
 # Polynomials in HoTT
 
 ## Basics
@@ -556,11 +544,11 @@ comp r (f , f♯) (g , g♯) =
      ( (λ a → g (f a)) , λ a z → f♯ a (g♯ (f a) z) )
 ```
 
-Hence we have a category $\mathbf{Poly}$ of polynomial functors and lenses between them. Our goal, then, is to show how the type-theoretic structure of a natural model naturally arises from the structure of this category. In fact, $\mathbf{Poly}$ is replete with categorical structures of all kinds, of which we now mention but a few:
+Hence we have a category $\mathbf{Poly}$ of polynomial functors and lenses between them. Our goal, then, is to show how the type-theoretic structure of a natural model naturally arises from the structure of this category. In fact, $\mathbf{Poly}$ is replete with categorical structures of all kinds, of which we now mention but a few: 
 
 ## The Vertical-Cartesian Factorization System on $\mathbf{Poly}$
 
-We say that a lens `(f , f♯) : (A , B) ⇆ (C , D)` is *vertical* if `f : A → C` is an equivalence, and Cartesian if for every `a : A`, the map `f♯ a : D[f a] → B a` is an equivalence.
+We say that a lens `(f , f♯) : (A , B) ⇆ (C , D)` is *vertical* if `f : A → C` is an equivalence, and Cartesian if for every `a : A`, the map `f♯ a : D[f a] → B a` is an equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{spivak2022poly}}
 
 ```agda
 module Vert-Cart {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0} 
@@ -678,15 +666,16 @@ module CartEMFactorization {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0}
 open CartEMFactorization public
 ```
 
-We note in passing that the vertical embeddings are indeed the monomorphisms in $\mathbf{Poly}^{\mathbf{Cart}}$, i.e. if `f : q ⇆ r` is a both Cartesian and a vertical embedding, then for any Cartesian `g h : p ⇆ q` such that `f ∘ g ≡ f ∘ h`, we have `g = h`.[^1]
+We note in passing that the vertical embeddings are indeed the monomorphisms in $\mathbf{Poly}^{\mathbf{Cart}}$, i.e. if `f : q ⇆ r` is a both Cartesian and a vertical embedding, then for any Cartesian `g h : p ⇆ q` such that `f ∘ g ≡ f ∘ h`, we have `g = h`.
 
 ```agda
-VertEmbedding→PolyCartMono : ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} {p : Poly ℓ0 κ0}
-                             {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2) {f : q ⇆ r}
-                             → isCartesian r f → isVerticalEmbedding r f
-                             → {g h : p ⇆ q} → isCartesian q g → isCartesian q h
-                             → EqLens r (comp r g f) (comp r h f)
-                             → EqLens q g h
+VertEmbedding→PolyCartMono : 
+    ∀ {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} {p : Poly ℓ0 κ0}
+    → {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2) {f : q ⇆ r}
+    → isCartesian r f → isVerticalEmbedding r f
+    → {g h : p ⇆ q} → isCartesian q g → isCartesian q h
+    → EqLens r (comp r g f) (comp r h f)
+    → EqLens q g h
 VertEmbedding→PolyCartMono {p = p} {q = q} r {f = (f , f♯)} cf vef 
                            {g = (g , g♯)} {h = (h , h♯)} cg ch (e , e♯) = 
     ( (λ a → inv vef (e a)) 
@@ -714,8 +703,11 @@ As endofunctors on $\mathbf{Type}$, polynomial functors may straightforwardly be
 $$ This then defines a monoidal product $◃$ on $\mathbf{Poly}$ with monoidal unit given by the identity functor `𝕪`:
 
 ```agda
-_◃_ : ∀ {ℓ0 ℓ1 κ0 κ1} → Poly ℓ0 κ0 → Poly ℓ1 κ1 → Poly (ℓ0 ⊔ κ0 ⊔ ℓ1) (κ0 ⊔ κ1)
-(A , B) ◃ (C , D) = (Σ A (λ a → B a → C) , λ (a , f) → Σ (B a) (λ b → D (f b)))
+_◃_ : ∀ {ℓ0 ℓ1 κ0 κ1} → Poly ℓ0 κ0 → Poly ℓ1 κ1 
+      → Poly (ℓ0 ⊔ κ0 ⊔ ℓ1) (κ0 ⊔ κ1)
+(A , B) ◃ (C , D) = 
+    ( Σ A (λ a → B a → C) 
+    , λ (a , f) → Σ (B a) (λ b → D (f b)) )
 
 _◃◃[_]_ : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
         → {p : Poly ℓ0 κ0} {q : Poly ℓ2 κ2} → p ⇆ q
@@ -744,7 +736,7 @@ Similarly, the existence of a Cartesian lens $(η , η♯) : 𝕪 ⇆ 𝔲$ impl
 * However, since this trivial elimination rule has an inverse `η♯⁻¹ tt : ⊤ → u (η tt)`, it follows that there is a (unique) element `η♯⁻¹ tt tt : u (η tt)`, which corresponds to the introduction rule for $\top$: $$\inferrule{~}{\Gamma \vdash \mathsf{tt} : \top}$$
 * Moreover, the uniqueness of this element corresponds to the $\eta$-law for $\top$: $$\frac{\Gamma \vdash x : \top}{\Gamma \vdash x = \mathsf{tt}}$$
 
-But then, what sorts of laws can we expect Cartesian lenses as above to obey, and is the existence of such a lens all that is needed to ensure that the natural model $𝔲$ has dependent pair types in the original sense of Awodey & Newstead's definition in terms of Cartesian (pseudo)monads, or is some further data required? And what about `Π` types, or other type formers? To answer these questions, we will need to study the structure of `◃`, along with some closely related functors, in a bit more detail. In particular, we shall see that the structure of `◃` as a monoidal product on $\mathbf{Poly}$ reflects many of the basic identities one expects to hold of `Σ` types.
+But then, what sorts of laws can we expect Cartesian lenses as above to obey, and is the existence of such a lens all that is needed to ensure that the natural model $𝔲$ has dependent pair types in the original sense of Awodey & Newstead's definition in terms of Cartesian (pseudo)monads \cite{awodey2014natural,awodey2018polynomial}, or is some further data required? And what about `Π` types, or other type formers? To answer these questions, we will need to study the structure of `◃`, along with some closely related functors, in a bit more detail. In particular, we shall see that the structure of `◃` as a monoidal product on $\mathbf{Poly}$ reflects many of the basic identities one expects to hold of `Σ` types.
 
 For instance, the associativity of `◃` corresponds to the associativity of `Σ`-types.
 
@@ -806,27 +798,43 @@ module ◃AssocCart {ℓ0 ℓ1 ℓ2 κ0 κ1 κ2} (p : Poly ℓ0 κ0)
 
     ◃assocCart : isCartesian (p ◃ (q ◃ r)) (◃assoc p q r)
     ◃assocCart _ = 
-        Iso→isEquiv (snd (◃assoc⁻¹ p q r) _ , ((λ _ → refl) , (λ _ → refl)))
+        Iso→isEquiv 
+            ( snd (◃assoc⁻¹ p q r) _ 
+            , ( (λ _ → refl) , (λ _ → refl) ) )
     
     ◃assoc⁻¹Cart : isCartesian ((p ◃ q) ◃ r) (◃assoc⁻¹ p q r)
     ◃assoc⁻¹Cart _ = 
-        Iso→isEquiv (snd (◃assoc p q r) _ , ((λ _ → refl) , (λ _ → refl)))
+        Iso→isEquiv 
+            ( snd (◃assoc p q r) _ 
+            , ( (λ _ → refl) , (λ _ → refl) ) )
 
 open ◃AssocCart public
 
 module ◃LRUnitCart {ℓ κ} (p : Poly ℓ κ) where
 
     ◃unitlCart : isCartesian p (◃unitl p)
-    ◃unitlCart _ = Iso→isEquiv (snd (◃unitl⁻¹ p) _ , ((λ _ → refl) , (λ _ → refl)))
+    ◃unitlCart _ = 
+        Iso→isEquiv 
+            ( snd (◃unitl⁻¹ p) _ 
+            , ((λ _ → refl) , (λ _ → refl)) )
 
     ◃unitl⁻¹Cart : isCartesian (𝕪 ◃ p) (◃unitl⁻¹ p)
-    ◃unitl⁻¹Cart _ = Iso→isEquiv (snd (◃unitl p) _ , ((λ _ → refl) , (λ _ → refl)))
+    ◃unitl⁻¹Cart _ = 
+        Iso→isEquiv 
+            ( snd (◃unitl p) _ 
+            , ((λ _ → refl) , (λ _ → refl)) )
 
     ◃unitrCart : isCartesian p (◃unitr p)
-    ◃unitrCart _ = Iso→isEquiv (snd (◃unitr⁻¹ p) _ , ((λ _ → refl) , (λ _ → refl)))
+    ◃unitrCart _ = 
+        Iso→isEquiv 
+            ( snd (◃unitr⁻¹ p) _ 
+            , ((λ _ → refl) , (λ _ → refl)) )
 
     ◃unitr⁻¹Cart : isCartesian (p ◃ 𝕪) (◃unitr⁻¹ p)
-    ◃unitr⁻¹Cart _ = Iso→isEquiv (snd (◃unitr p) _ , ((λ _ → refl) , (λ _ → refl)))
+    ◃unitr⁻¹Cart _ = 
+        Iso→isEquiv 
+            ( snd (◃unitr p) _ 
+            , ((λ _ → refl) , (λ _ → refl)) )
 
 open ◃LRUnitCart public
 ```
@@ -851,24 +859,9 @@ We should expect, then, for these equivalences to be somehow reflected in the st
 \end{tikzcd}
 $$
 
-One may recognize these as the usual diagrams for a monoid in a monoidal category, hence (since `◃` corresponds to composition of polynomial endofunctors) for a *monad* as typically defined. However, because of the higher-categorical structure of types in HoTT, we should not only ask for these diagrams to commute, but for the cells exhibiting that these diagrams commute to themselves be subject to higher coherences, and so on, giving `𝔲` not the structure of a (Cartesian) monad, but rather of a (Cartesian) *$\infty$-monad*.
+One may recognize these as the usual diagrams for a monoid in a monoidal category, hence (since `◃` corresponds to composition of polynomial endofunctors) for a *monad* as typically defined. However, because of the higher-categorical structure of types in HoTT, we should not only ask for these diagrams to commute, but for the cells exhibiting that these diagrams commute to themselves be subject to higher coherences, and so on, giving `𝔲` not the structure of a (Cartesian) monad, but rather of a (Cartesian) *$\infty$-monad*. 
 
-Yet demonstrating that $𝔲$ is an $\infty$-monad involves specifying a potentially infinite amount of coherence data. Have we therefore traded both the Scylla of equality-up-to-isomorphism and the Charybdis of strictness for an even worse fate of higher coherence hell? The answer to this question, surprisingly, is negative, as there is a way to implicitly derive all of this data from a single axiom, which corresponds to the characteristic axiom of HoTT itself: univalence. To show this, we now introduce the central concept of this paper – that of a *polynomial universe*. 
-
-```agda
-{-# OPTIONS --without-K --rewriting --lossy-unification #-}
-module part4v2 where
-
-open import part1v2
-open import Agda.Primitive
-open import Agda.Builtin.Sigma
-open import Agda.Builtin.Unit
-open import Agda.Builtin.Equality
-open import Agda.Builtin.Equality.Rewrite
-open import part2v2
-open import appendixA
-open import part3v2
-```
+Yet demonstrating that $𝔲$ is an $\infty$-monad involves specifying a potentially infinite amount of coherence data. Have we therefore traded both the Scylla of equality-up-to-isomorphism and the Charybdis of strictness for an even worse fate of higher coherence hell? The answer to this question, surprisingly, is negative, as there is a way to implicitly derive all of this data from a single axiom, which corresponds to the characteristic axiom of HoTT itself: univalence. To show this, we now introduce the central concept of this paper – that of a *polynomial universe*.
 
 # Polynomial Universes
 
@@ -919,7 +912,8 @@ module UnivMonad {ℓ κ} (𝔲 : Poly ℓ κ) (univ : isUnivalent 𝔲)
                                   (comp 𝔲 ((id 𝔲) ◃◃[ 𝔲 ] μ) μ))
     univ◃assoc = univ (compCartesian 𝔲 (◃◃Cart 𝔲 𝔲 cμ (idCart 𝔲)) cμ)
                       (compCartesian 𝔲 (◃assocCart 𝔲 𝔲 𝔲)
-                                       (compCartesian 𝔲 (◃◃Cart 𝔲 𝔲 (idCart 𝔲) cμ) cμ))
+                                       (compCartesian 𝔲 
+                                         (◃◃Cart 𝔲 𝔲 (idCart 𝔲) cμ) cμ))
 
 open UnivMonad public
 ```
@@ -947,13 +941,11 @@ module PolyCartUniv {ℓ κ} (p : Poly ℓ κ) where
 In other words, every polynomial functor `p` is classified by some polynomial universe. Moreover, if the classifying morphism `p ⇆ (Type κ , λ X → X)` is a Vertical embedding (i.e. a monomorphism in $\mathbf{Poly}^{\mathbf{Cart}}$), then `p` itself is also a polynomial universe – for any pair of Cartesian morphisms `f g : q ⇆ p`, since `(Type κ , λ X → X)` is univalent, we have `classifier ∘ f ≡ classifier ∘ g`, but then since `classifier` is assumed to be a monomorphism, this implies that `f ≡ g`.
 
 ```agda
-    polyCartUniv : isVerticalEmbedding (Type κ , λ X → X) classifier → isUnivalent p
+    polyCartUniv : isVerticalEmbedding (Type κ , λ X → X) classifier 
+                   → isUnivalent p
     polyCartUniv veclassifier cf cg = 
         VertEmbedding→PolyCartMono
-            (Type κ , λ X → X) 
-            classifierCart 
-            veclassifier
-            cf cg 
+            (Type κ , λ X → X) classifierCart veclassifier cf cg 
             (ua (compCartesian _ cf classifierCart) 
                 (compCartesian _ cg classifierCart))
 
@@ -968,24 +960,28 @@ module SubUniv {ℓ κ} (P : Type ℓ → Type κ) where
     subUniv : Poly (lsuc ℓ) ℓ
     subUniv = (Σ (Type ℓ) (λ X → ∥ P X ∥) , λ (X , _) → X)
 
-    subUnivClassifierIsVerticalEmbedding :
+    subUnivClassifierVertEmb :
         isVerticalEmbedding (Type ℓ , λ X → X) (classifier subUniv)
-    subUnivClassifierIsVerticalEmbedding = 
-        Iso→isEquiv ( (λ e → pairEq e ∥-∥IsProp) 
-                    , ( (λ e → (pairEq (ap (fst (classifier subUniv)) e) ∥-∥IsProp) 
-                               ≡〈 ap (λ e' → pairEq (ap (fst (classifier subUniv)) e) e') ∥-∥≡Contr 〉 
-                               ( _ 
-                               ≡〈 (pairEqη e) 〉 
-                               (e □))) 
-                      , (λ e → pairEqβ1 e ∥-∥IsProp) ) )
+    subUnivClassifierVertEmb = 
+        Iso→isEquiv 
+            ( (λ e → pairEq e ∥-∥IsProp) 
+            , ( ( λ e → (pairEq (ap (fst (classifier subUniv)) e) 
+                                ∥-∥IsProp) 
+                       ≡〈 ap (λ e' → 
+                                 pairEq (ap (fst (classifier subUniv)) 
+                                            e) e') 
+                              ∥-∥≡Contr 〉 ( _ 
+                       ≡〈 (pairEqη e) 〉 
+                       (e □))) 
+                , (λ e → pairEqβ1 e ∥-∥IsProp) ) )
     
     subUnivIsUniv : isUnivalent subUniv
-    subUnivIsUniv = polyCartUniv subUniv subUnivClassifierIsVerticalEmbedding
+    subUnivIsUniv = polyCartUniv subUniv subUnivClassifierVertEmb
 
 open SubUniv public
 ```
 
-As a first example of a polynomial universe other than `(Type , λ X → X)`, then, we may consider the polynomial universe of *propositions* `ℙ`:
+As a first example of a polynomial universe other than `(Type , λ X → X)`, then, we may consider the polynomial universe of *propositions* `ℙ`: 
 
 ```agda
 module PropUniv where
@@ -1000,15 +996,15 @@ $$ This endofunctor (in fact it is a monad) is well-known in type theory by anot
 
 If we return to the original example of the polynomial universe `(Type , λ X → X)` we see that the associated polynomial endofunctor (which, by the above argument, is also a monad) has a similar form. $$
 y \mapsto \sum_{X : \mathbf{Type}} y^X
-$$ In this case, we can think of this as a "proof relevant" partiality monad `M`, such that a function `f : A → M B` associates to each element `a : A` a *type* `Def f a` of proofs that `f` is defined at `a`, and a function `val : Def f a → B`.[^1]
+$$ In this case, we can think of this as a "proof relevant" partiality monad `M`, such that a function `f : A → M B` associates to each element `a : A` a *type* `Def f a` of proofs that `f` is defined at `a`, and a function `val : Def f a → B`.[^4]
 
-[^1]: the conception of the monad determined by `(Type , λ X → X)` as a "proof relevant" partiality monad was communicated to the first author during private conversations with Jonathan Sterling.
+[^4]: the conception of the monad determined by `(Type , λ X → X)` as a "proof relevant" partiality monad was communicated to the first author during private conversations with Jonathan Sterling.
 
 More generally, we can say that, for any polynomial universe closed under dependent pair types, the associated monad will be a kind of (potentially proof-relevant) partiality monad, where the structure of the polynomial universe serves to dictate which types can count as *evidence* for whether or not a value is defined.
 
 #### Rezk Completion
 
-In fact, we can show that for *any* polynomial functor, there exists a corresponding polynomial universe, using a familiar construct from the theory of categories in HoTT – the *Rezk Completion.* We will show that this construction allows us to quotient any polynomial functor to a corresponding polynomial universe.
+In fact, we can show that for *any* polynomial functor, there exists a corresponding polynomial universe, using a familiar construct from the theory of categories in HoTT – the *Rezk Completion.* \cite{ahrens2015univalent} We will show that this construction allows us to quotient any polynomial functor to a corresponding univalent polynomial, i.e. a polynomial universe. 
 
 We obtain the Rezk completion of `p` as the image factorization in $\mathbf{Poly^{Cart}}$ of the classifying morphism of `p`:
 
@@ -1016,13 +1012,16 @@ We obtain the Rezk completion of `p` as the image factorization in $\mathbf{Poly
 module RezkCompletion {ℓ κ} (p : Poly ℓ κ) where
 
     Rezk : Poly (lsuc κ) κ
-    Rezk = cartIm (Type κ , λ X → X) (classifier p) (classifierCart p)
+    Rezk = cartIm (Type κ , λ X → X) 
+            (classifier p) (classifierCart p)
 
     →Rezk : p ⇆ Rezk
-    →Rezk = factorcart1 (Type κ , λ X → X) (classifier p) (classifierCart p)
+    →Rezk = factorcart1 (Type κ , λ X → X) 
+                (classifier p) (classifierCart p)
 
     Rezk→ : Rezk ⇆ (Type κ , λ X → X)
-    Rezk→ = factorcart2 (Type κ , λ X → X) (classifier p) (classifierCart p)
+    Rezk→ = factorcart2 (Type κ , λ X → X) 
+                (classifier p) (classifierCart p)
 ```
 
 The polynomial `Rezk` defined above can be seen to have the same form as a subuniverse of `(Type , λ X → X)`; hence it is a polynomial universe, as desired.
@@ -1076,27 +1075,11 @@ As defined, $\omega$ is not a polynomial universe; the type `Nat` is a set, and 
 
 If we write out an explicit description of `𝔽in`, we see that it is the subuniverse of types `X` that are merely equivalent to some `Fin n`. In constructive mathematics, these types (they are necessarily sets) are known as *Bishop finite sets*. Hence the polynomial universe obtained by Rezk completion of the list monad is precisely the subuniverse of types spanned by (Bishop) finite sets.
 
-```agda
-{-# OPTIONS --without-K --rewriting #-}
-module part5v2 where
-
-open import part1v2
-open import Agda.Primitive
-open import Agda.Builtin.Sigma
-open import Agda.Builtin.Unit
-open import Agda.Builtin.Equality
-open import Agda.Builtin.Equality.Rewrite
-open import part2v2
-open import appendixA
-open import part3v2
-open import part4v2
-```
-
 # $\Pi$-Types & Distributive Laws
 
 We have so far considered how polynomial universes may be equipped with structure to interpret the unit type and dependent pair types. We have not yet, however, said much in the way of *dependent function types.* In order to rectify this omission, it will first be prudent to consider some additional structure on the category of polynomial functors – specifically a new functor ${\upuparrows}[\_] : \mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}$ that plays a similar role for `Π` types as the composition $\triangleleft : \mathbf{Poly} \times \mathbf{Poly} \to \mathbf{Poly}$ played for `Σ` types, and which in turn bears a close connection to *distributive laws* in $\mathbf{Poly}$.
 
-## The $\upuparrows$ and ${\upuparrows}[\_]$ Functors
+## The $\upuparrows$ and ${\upuparrows}[\_][\_]$ Functors
 
 The $\upuparrows$ functor can be loosely defined as the solution to the following problem: given a polynomial universe `𝔲`, find `𝔲 ⇈ 𝔲` such that `𝔲` classifies `𝔲 ⇈ 𝔲` if and only if `𝔲` has the structure to interpret `Π` types (in the same way that `𝔲` classifies `𝔲 ◃ 𝔲` if and only if `𝔲` has the structure to interpret `Σ` types). Generalizing this to arbitrary pairs of polynomials $p = (A , B), ~ q = (C , D)$ then yields the following formula for $p \upuparrows q$: $$
 p \upuparrows q = \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\prod_{b : B(a)} D(f(b))}
@@ -1110,8 +1093,13 @@ _⇈_ : ∀ {ℓ0 ℓ1 κ0 κ1} → Poly ℓ0 κ0 → Poly ℓ1 κ1
     , (λ (a , f) → (b : B a) → D (f b)))
 ```
 
-Note that this construction is straightforwardly functorial with respect to arbitrary lenses in its 2nd argument. Functoriality of the 1st argument is trickier, however. For reasons that will become apparent momentarily, we define the functorial action $p \upuparrows q \leftrightarrows p' \upuparrows q$ of $\upuparrows$ on a lens $f : p \leftrightarrows p'$ equipped with a left inverse $f' : p' \leftrightarrows p$, i.e. such that $f' \circ f = \text{id}_p$.
-
+Note that this construction is straightforwardly functorial with respect to arbitrary lenses in its 2nd argument. Functoriality of the 1st argument is trickier, however. For reasons that will become apparent momentarily, we define the functorial action $p \upuparrows q \leftrightarrows p' \upuparrows q$ of $\upuparrows$ on a lens $f : p \leftrightarrows p'$ equipped with a left inverse $f' : p' \leftrightarrows p$, i.e. such that $f' \circ f = \text{id}_p$. \footnote{To see why this is the right choice of morphism for which `⇈` is functorial in its first argument, we note that pairs consisting of a morphism and a left inverse for it are equivalently the morphisms between identity morphisms in the *twisted arrow category* of $\poly$, i.e. diagrams of the following form: $$
+\begin{array}{ccc}
+p & \to & q\\
+= & & =\\
+p & \leftarrow & q
+\end{array}
+$$}
 ```agda
 ⇈Lens : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
         → {p : Poly ℓ0 κ0} (r : Poly ℓ2 κ2)
@@ -1143,8 +1131,8 @@ $$
 
 Although it is clear enough that the $\upuparrows$ functor serves its intended purpose of characterizing `Π` types in polynomial universes, its construction seems somewhat more ad hoc than that of $\triangleleft$, which similarly characterized `Σ` types in polynomial universes while arising quite naturally from composition of polynomial functors. We would like to better understand what additional properties $\upuparrows$ must satisfy, and how these in turn are reflected as properties of polynomial universes with `Π` types. In fact, we will ultimately show that this construction is intimately linked with a quite simple structure on polynomial universes `𝔲`, namely a *distributive law* of `𝔲` (viewed as a monad) over itself. Before that, however, we note some other key properties of $\upuparrows$.
 
-Specifically, let $\mathbf{Poly}_{R}$ be the wide subcategory of $\mathbf{Poly}$ spanned by morphisms equipped with left inverses. Straightforwardly, $\triangleleft$ restricts to a monoidal product on $\mathbf{Poly}_R$, since it is functorial in both arguments and must preserve left/right inverses. Hence $\upuparrows$ can be viewed as a functor $\mathbf{Poly}_R \times \mathbf{Poly} \to \mathbf{Poly}$. Then $\upuparrows$ moreover naturally carries the structure of an *action* on $\mathbf{Poly}$ of the monoidal category $\mathbf{Poly}_R$ equipped with $\triangleleft$, in that there are natural transformations $$
-y \upuparrows p \to p $$ $$
+Specifically, let $\mathbf{Poly}_{R}$ be the category whose objects are polynomials and whose morphisms are lenses equipped with left inverses. Straightforwardly, $\triangleleft$ restricts to a monoidal product on $\mathbf{Poly}_R$, since it is functorial in both arguments and must preserve left/right inverses. Hence $\upuparrows$ can be viewed as a functor $\mathbf{Poly}_R \times \mathbf{Poly} \to \mathbf{Poly}$. Then $\upuparrows$ moreover naturally carries the structure of an *action* on $\mathbf{Poly}$ of the monoidal category $\mathbf{Poly}_R$ equipped with $\triangleleft$, in that there are natural transformations $$
+y \upuparrows p \to p \quad \text{and} \quad
 (p \triangleleft q) \upuparrows r \to p \upuparrows (q \upuparrows r)
 $$ which are moreover *Cartesian*:
 
@@ -1185,8 +1173,7 @@ The fact that `⇈Curry` is Cartesian corresponds to the usual currying isomorph
 $$
 
 Similarly, $\upuparrows$ is colax with respect to $\triangleleft$ in its second argument, in that there are Cartesian natural transformations $$
-p \upuparrows y \to y
-$$ $$
+p \upuparrows y \to y \quad \text{and} \quad
 p \upuparrows (q \triangleleft r) \to (p \upuparrows q) \triangleleft (p \upuparrows r)
 $$
 
@@ -1239,17 +1226,9 @@ The question then becomes whether this morphism has the structure of a distribut
 
 As a first step in this direction, we make a perhaps unexpected move of further generalizing the $\upuparrows$ functor to a functor $\mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}$, where $\mathsf{Tw}(\mathbf{Poly})$ is the *twisted arrow category* of $\mathbf{Poly}$, i.e. the category whose objects are lenses and whose morphisms are *twisted* commuting squares of the form $$
 \begin{array}{ccc}
-p & \to & q\\
+p & \to & p'\\
 \downarrow & & \downarrow\\
-r & \leftarrow & s
-\end{array}
-$$
-
-As a first step in this direction, we make a perhaps unexpected move of further generalizing the $\upuparrows$ functor to a functor $\mathsf{Tw}(\mathbf{Poly}) \times \mathbf{Poly} \to \mathbf{Poly}$, where $\mathsf{Tw}(\mathbf{Poly})$ is the *twisted arrow category* of $\mathbb{Poly}$, i.e. the category whose objects are lenses and whose morphisms are *twisted* commuting squares of the form $$
-\begin{array}{ccc}
-p & \to & q\\
-\downarrow & & \downarrow\\
-r & \leftarrow & s
+q & \leftarrow & q'
 \end{array}
 $$
 
@@ -1307,9 +1286,8 @@ open ⇈[]Functor public
 ```
 
 Moreover, all the properties of `_⇈_` noted above generalize to `_⇈[_][_]_`. For instance, we now have natural transformations $$
-y {\upuparrows}[\text{id}_{y}] p \to p
-$$ $$
-(p \triangleleft r) {\upuparrows}[f \triangleleft g] q \to p {\upuparrows}[f] (r {\upuparrows}[g] q)
+y {\upuparrows}[y][\text{id}_{y}] p \to p \quad \text{and} \quad
+(p \triangleleft r) {\upuparrows}[q ◃ s][f \triangleleft g] t \to p {\upuparrows}[q][f] (r {\upuparrows}[s][g] t)
 $$ as follows:
 
 ```agda
@@ -1318,8 +1296,7 @@ $$ as follows:
 
 ⇈[]Curry : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 κ0 κ1 κ2 κ3 κ4}
            → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1) 
-           → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
-           → (t : Poly ℓ4 κ4)
+           → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3) (t : Poly ℓ4 κ4)
            → (f : p ⇆ q) (g : r ⇆ s)
            → ((p ◃ r) ⇈[ q ◃ s ][ f ◃◃[ s ] g ] t) 
              ⇆ (p ⇈[ q ][ f ] (r ⇈[ s ][ g ] t))
@@ -1328,10 +1305,9 @@ $$ as follows:
     , λ ((a , h) , k) Ϝ (b , d) → Ϝ b d)
 ```
 
-And similarly, we have natural transformations $$
-p {\upuparrows}[f] y → y
-$$ $$
-p {\upuparrows}[g \circ f] (r \triangleleft s) \to (p {\upuparrows}[f] r) \triangleleft (q {\upuparrows}[g] s)
+\noindent And similarly, we have natural transformations $$
+p {\upuparrows}[q][f] y \to y \quad \text{and} \quad
+p {\upuparrows}[r][g \circ f] (s \triangleleft t) \to (p {\upuparrows}[q][f] s) \triangleleft (q {\upuparrows}[r][g] t)
 $$
 
 ```agda
@@ -1347,19 +1323,85 @@ $$
            → (p ⇈[ r ][ comp r f g ] (s ◃ t)) 
              ⇆ ((p ⇈[ q ][ f ] s) ◃ (q ⇈[ r ][ g ] t))
 ⇈[]Distr p q r s t (f , f♯) (g , g♯) = 
-    ( (λ (a , h) → (a , (λ x → fst (h x))) , λ k1 → f a , λ x → snd (h (f♯ a x)) (k1 x)) 
-    , λ (a , h) (k1 , k2) d → (k1 (g♯ (f a) d)) , k2 d )
+    ( (λ (a , h) → ( (a , (λ x → fst (h x))) 
+                   , (λ k1 → ( f a , λ x → snd (h (f♯ a x)) 
+                                               (k1 x) )) )) 
+    , (λ (a , h) (k1 , k2) d → ( (k1 (g♯ (f a) d)) , k2 d )) )
 ```
 
 As we shall now see, these structures on `_⇈[_][_]_` are intimately connected to a class of morphisms in $\mathbf{Poly}$, which we call *distributors*.
 
 ## Distributors
 
-Given polynomials `p,q,r,s`, a *distributor* of `p,q` over `r,s` is a morphism of the form `(p ◃ r) ⇆ (s ◃ q)` in $\mathbf{Poly}$. The name "distributor" is here drawn from the fact that, given polynomial monads `m,n` with `ηₘ : 𝕪 ⇆ m, ηₙ : 𝕪 ⇆ n` and `μₘ : (m ◃ m) ⇆ m, μₙ : (n ◃ n) ⇆ n`, a *distributive law* of `m` over `n` consists of a distributor of `n,n` over `n,n` (i.e. a morphism `(n ◃ m) ⇆ (m ◃ n)`) such that the following diagrams commute:
-
-...
+Given polynomials `p,q,r,s`, a *distributor* of `p,q` over `r,s` is a morphism of the form `(p ◃ r) ⇆ (s ◃ q)` in $\mathbf{Poly}$. The name "distributor" is here drawn from the fact that, given polynomial monads `m,n` with `ηₘ : 𝕪 ⇆ m, ηₙ : 𝕪 ⇆ n` and `μₘ : (m ◃ m) ⇆ m, μₙ : (n ◃ n) ⇆ n`, a *distributive law* of `m` over `n` consists of a distributor of `n,n` over `n,n` (i.e. a morphism `δ : (n ◃ m) ⇆ (m ◃ n)`) such that the following diagrams commute: $$
+\footnotesize \begin{tikzcd} 
+	{n \triangleleft (m \triangleleft m)} & {(n \triangleleft m) \triangleleft m} & {(m \triangleleft n) \triangleleft m} & {m \triangleleft (n \triangleleft m)} & {m \triangleleft (m \triangleleft n)} & {(m \triangleleft m) \triangleleft n} \\
+	{n \triangleleft m} &&&&& {m \triangleleft n}
+	\arrow["\simeq"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["{n \triangleleft \mu_m}"{description}, from=1-1, to=2-1]
+	\arrow["{\delta \triangleleft m}", from=1-2, to=1-3]
+	\arrow["\simeq"{description}, draw=none, from=1-3, to=1-4]
+	\arrow["{m \triangleleft \delta}", from=1-4, to=1-5]
+	\arrow["\simeq"{description}, draw=none, from=1-5, to=1-6]
+	\arrow["{\mu_m \triangleleft n}"{description}, from=1-6, to=2-6]
+	\arrow["\delta", from=2-1, to=2-6]
+\end{tikzcd}
+$$ $$
+\footnotesize \begin{tikzcd}
+	{(n \triangleleft n) \triangleleft m} & {n \triangleleft (n \triangleleft m)} & {n \triangleleft (m \triangleleft n)} & {(n \triangleleft m) \triangleleft n} & {(m \triangleleft n) \triangleleft n} & {m \triangleleft (n \triangleleft n)} \\
+	{n \triangleleft m} &&&&& {m \triangleleft n}
+	\arrow["\simeq"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["{\mu_n \triangleleft n}"{description}, from=1-1, to=2-1]
+	\arrow["{n \triangleleft \delta}", from=1-2, to=1-3]
+	\arrow["\simeq"{description}, draw=none, from=1-3, to=1-4]
+	\arrow["{\delta \triangleleft n}", from=1-4, to=1-5]
+	\arrow["\simeq"{description}, draw=none, from=1-5, to=1-6]
+	\arrow["{m \triangleleft \mu_n}"{description}, from=1-6, to=2-6]
+	\arrow["\delta", from=2-1, to=2-6]
+\end{tikzcd}
+$$ $$
+\footnotesize \begin{tikzcd}
+	{n \triangleleft y} & n & {y \triangleleft n} \\
+	{n \triangleleft m} && {m \triangleleft n}
+	\arrow["\simeq"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["{n \triangleleft \eta_m}"{description}, from=1-1, to=2-1]
+	\arrow["\simeq"{description}, draw=none, from=1-2, to=1-3]
+	\arrow["{\eta_m \triangleleft n}"{description}, from=1-3, to=2-3]
+	\arrow["\delta", from=2-1, to=2-3]
+\end{tikzcd} \qquad \begin{tikzcd}
+	{y \triangleleft m} & m & {m \triangleleft y} \\
+	{n \triangleleft m} && {m \triangleleft n}
+	\arrow["\simeq"{description}, draw=none, from=1-1, to=1-2]
+	\arrow["{\eta_n \triangleleft m}"{description}, from=1-1, to=2-1]
+	\arrow["\simeq"{description}, draw=none, from=1-2, to=1-3]
+	\arrow["{m \triangleleft \eta_n}"{description}, from=1-3, to=2-3]
+	\arrow["\delta", from=2-1, to=2-3]
+\end{tikzcd}
+$$
 
 By inspection, it can be seen that all the composite morphisms required to commute by the above diagrams are themselves distributors of various forms. Understanding the closure properties of such distributors that give rise to these diagrams, then, will be a central aim of this section.
+
+By function extensionality, we obtain the following type of equality proofs for distributors:
+
+```agda
+EqDistributor : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+                → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+                → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+                → (p ◃ r) ⇆ (s ◃ q) → (p ◃ r) ⇆ (s ◃ q)
+                → Type (ℓ0 ⊔ ℓ1 ⊔ ℓ2 ⊔ ℓ3 ⊔ κ0 ⊔ κ1 ⊔ κ2 ⊔ κ3)
+EqDistributor p q r s (f , f♯) (g , g♯) = 
+    (a : fst p) (γ : snd p a → fst r) 
+    → Σ (fst (f (a , γ)) ≡ fst (g (a , γ))) 
+        (λ e1 → (x : snd s (fst (f (a , γ))))
+                → Σ ((snd (f (a , γ)) x) 
+                    ≡ (snd (g (a , γ)) 
+                           (transp (snd s) e1 x))) 
+                    (λ e2 → (y : snd q (snd (f (a , γ)) x)) 
+                            → (f♯ (a , γ) (x , y)) 
+                              ≡ (g♯ (a , γ) 
+                                    ( (transp (snd s) e1 x) 
+                                    , (transp (snd q) e2 y)))))
+```
 
 Moreover, for any polynomial `u` with `π : (u ⇈ u) ⇆ u`, the morphism `distrLaw? u π` defined above is a distributor of `u,u` over itself. In fact, we can straightforwardly generalize the construction of `distrLaw?` to a transformation $$
 (p ~{\upuparrows}[q][f] r) \leftrightarrows s \implies (p \triangleleft r) \leftrightarrows (s \triangleleft q)
@@ -1388,9 +1430,9 @@ $$
 module DistributorLens {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 ℓ7
                         κ0 κ1 κ2 κ3 κ4 κ5 κ6 κ7}
                        {p : Poly ℓ0 κ0} {p' : Poly ℓ4 κ4}
-                       {q : Poly ℓ1 κ1} {q' : Poly ℓ5 κ5}
-                       {r : Poly ℓ2 κ2} {r' : Poly ℓ6 κ6}
-                       {s : Poly ℓ3 κ3} {s' : Poly ℓ7 κ7}
+                       {q : Poly ℓ1 κ1} (q' : Poly ℓ5 κ5)
+                       (r : Poly ℓ2 κ2) {r' : Poly ℓ6 κ6}
+                       {s : Poly ℓ3 κ3} (s' : Poly ℓ7 κ7)
                        (g : p' ⇆ p) (h : q ⇆ q') 
                        (k : r' ⇆ r) (l : s ⇆ s') where
 
@@ -1406,8 +1448,9 @@ p' ~ {\upuparrows}[q'][h \circ f \circ g] ~ r' \leftrightarrows p {\upuparrows}[
 $$
 
 ```agda
-    ⇈→DistributorLens : {f : p ⇆ q} → (p ⇈[ q ][ f ] r) ⇆ s 
-                        → (p' ⇈[ q' ][ comp q' g (comp q' f h) ] r') ⇆ s'
+    ⇈→DistributorLens : 
+        {f : p ⇆ q} → (p ⇈[ q ][ f ] r) ⇆ s 
+        → (p' ⇈[ q' ][ comp q' g (comp q' f h) ] r') ⇆ s'
     ⇈→DistributorLens {f = f} j = 
         comp s' (⇈[]Lens q' r (comp q' g (comp q' f h)) f 
                          g h k ((λ a → refl) , (λ a d → refl))) 
@@ -1423,15 +1466,15 @@ open DistributorLens public
 
 Similarly, there are two distinct ways of composing distributors: 
 
-1. Given distributors $p \triangleleft s \leftrightarrows t \triangleleft q$ and $q \triangleleft u \leftrightarrows v \triangleleft r$, we obtain a distributor $p \triangleleft (s \triangleleft u) \leftrightarrows (t \triangleleft v) \triangleleft r$ as the composite $$
-p ◃ (s \triangleleft u) \simeq (p \triangleleft s) \triangleleft u \leftrightarrows (t \triangleleft q) \triangleleft u \simeq t \triangleleft (q \triangleleft u) \leftrightarrows t \triangleleft (v \triangleleft r) \simeq (t \triangleleft v) \triangleleft r
+1. Given distributors `p ◃ s ⇆ t ◃ q` and `q ◃ u ⇆ v ◃ r$, we obtain a distributor `p ◃ (s ◃ u) ⇆ (t ◃ v) ◃ r` as the composite $$
+p ◃ (s \triangleleft u) \simeq (p \triangleleft s) \triangleleft u \xrightarrow{} (t \triangleleft q) \triangleleft u \simeq t \triangleleft (q \triangleleft u) \xrightarrow{} t \triangleleft (v \triangleleft r) \simeq (t \triangleleft v) \triangleleft r
 $$
 
 ```agda
 module DistributorComp1 {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
-                        {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} {r : Poly ℓ2 κ2}
+                        {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} (r : Poly ℓ2 κ2)
                         {s : Poly ℓ3 κ3} {t : Poly ℓ4 κ4}
-                        {u : Poly ℓ5 κ5} {v : Poly ℓ6 κ6} where
+                        (u : Poly ℓ5 κ5) {v : Poly ℓ6 κ6} where
 
     distrComp1 : (p ◃ s) ⇆ (t ◃ q) → (q ◃ u) ⇆ (v ◃ r)
                  → (p ◃ (s ◃ u)) ⇆ ((t ◃ v) ◃ r)
@@ -1448,19 +1491,21 @@ p {\upuparrows}[r][g \circ f] (s \triangleleft u) \leftrightarrows (p {\upuparro
 $$
 
 ```agda
-    ⇈→DistributorComp1 : {f : p ⇆ q} {g : q ⇆ r} 
-                         → (p ⇈[ q ][ f ] s) ⇆ t 
-                         → (q ⇈[ r ][ g ] u) ⇆ v
-                         → (p ⇈[ r ][ comp r f g ] (s ◃ u)) ⇆ (t ◃ v)
+    ⇈→DistributorComp1 : 
+        {f : p ⇆ q} {g : q ⇆ r} 
+        → (p ⇈[ q ][ f ] s) ⇆ t 
+        → (q ⇈[ r ][ g ] u) ⇆ v
+        → (p ⇈[ r ][ comp r f g ] (s ◃ u)) ⇆ (t ◃ v)
     ⇈→DistributorComp1 {f = f} {g = g} h k = 
         comp (t ◃ v) (⇈[]Distr p q r s u f g) 
              (h ◃◃[ v ] k)
 
-    ⇈→DistributorComp1≡ : {f : p ⇆ q} {g : q ⇆ r} 
-                          (h : (p ⇈[ q ][ f ] s) ⇆ t)
-                          (k : (q ⇈[ r ][ g ] u) ⇆ v)
-                          → distrComp1 (⇈→Distributor q s h) (⇈→Distributor r u k)
-                            ≡ ⇈→Distributor r (s ◃ u) (⇈→DistributorComp1 h k)
+    ⇈→DistributorComp1≡ : 
+        {f : p ⇆ q} {g : q ⇆ r} 
+        (h : (p ⇈[ q ][ f ] s) ⇆ t)
+        (k : (q ⇈[ r ][ g ] u) ⇆ v)
+        → distrComp1 (⇈→Distributor q s h) (⇈→Distributor r u k)
+          ≡ ⇈→Distributor r (s ◃ u) (⇈→DistributorComp1 h k)
     ⇈→DistributorComp1≡ h k = refl
     
 open DistributorComp1 public
@@ -1469,3 +1514,518 @@ open DistributorComp1 public
 2. Given distributors $p \triangleleft u \leftrightarrows v \triangleleft q$ and $r \triangleleft t \leftrightarrows u \triangleleft s$, we obtain a distributor $(p \triangleleft r) \triangleleft t \leftrightarrows v \triangleleft (q \triangleleft s)$ as the composite $$
 (p \triangleleft r) \triangleleft t \simeq p \triangleleft (r \triangleleft t) \leftrightarrows p \triangleleft (u \triangleleft s) \simeq (p \triangleleft u) \triangleleft s \leftrightarrows (v \triangleleft q) \triangleleft s \simeq v \triangleleft (q \triangleleft s)
 $$
+
+```agda
+module DistributorComp2 
+           {ℓ0 ℓ1 ℓ2 ℓ3 ℓ4 ℓ5 ℓ6 κ0 κ1 κ2 κ3 κ4 κ5 κ6}
+           {p : Poly ℓ0 κ0} {q : Poly ℓ1 κ1} 
+           {r : Poly ℓ2 κ2} (s : Poly ℓ3 κ3)
+           (t : Poly ℓ4 κ4) {u : Poly ℓ5 κ5} 
+           {v : Poly ℓ6 κ6} where 
+
+    distrComp2 : (r ◃ t) ⇆ (u ◃ s) → (p ◃ u) ⇆ (v ◃ q)
+                 → ((p ◃ r) ◃ t) ⇆ (v ◃ (q ◃ s))
+    distrComp2 h k =
+        comp (v ◃ (q ◃ s)) (◃assoc p r t) 
+             (comp (v ◃ (q ◃ s))  ((id p) ◃◃[ u ◃ s ] h) 
+               (comp (v ◃ (q ◃ s)) (◃assoc⁻¹ p u s) 
+                     (comp (v ◃ (q ◃ s)) (k ◃◃[ s ] (id s)) 
+                           (◃assoc v q s))))
+```
+
+The corresponding construction on morphisms `(p ⇈[ q ][ f ] u) ⇆ v` and `(r ⇈[ s ][ g ] t) ⇆ u` is to form the following composite with the morphism `⇈[]Curry` defined above: $$
+(p \triangleleft r) {\upuparrows}[q \triangleleft s][f \triangleleft g] t \leftrightarrows p {\upuparrows}[q][f] (r {\upuparrows}[s][g] t) \leftrightarrows p {\upuparrows}[q][f] u \leftrightarrows v
+$$
+
+```agda
+    ⇈→DistributorComp2 : 
+        {f : p ⇆ q} {g : r ⇆ s}
+        → (r ⇈[ s ][ g ] t) ⇆ u 
+        → (p ⇈[ q ][ f ] u) ⇆ v
+        → ((p ◃ r) ⇈[ (q ◃ s) ][ f ◃◃[ s ] g ] t) ⇆ v
+    ⇈→DistributorComp2 {f = f} {g = g} h k =
+        comp v (⇈[]Curry p q r s t f g) 
+             (comp v (⇈[]Lens q u f f 
+                              (id p) (id q) h 
+                              ( (λ a → refl) 
+                              , (λ a d → refl))) 
+                   k)
+    
+    ⇈→DistributorComp2≡ : 
+        {f : p ⇆ q} {g : r ⇆ s}
+        → (h : (r ⇈[ s ][ g ] t) ⇆ u) 
+        → (k : (p ⇈[ q ][ f ] u) ⇆ v)
+        → (distrComp2 (⇈→Distributor s t h) 
+                      (⇈→Distributor q u k)) 
+          ≡ ⇈→Distributor (q ◃ s) t 
+                          (⇈→DistributorComp2 h k)
+    ⇈→DistributorComp2≡ h k = refl
+
+open DistributorComp2 public
+```
+
+Likewise, there are two corresponding notions of "identity distributor" on a polynomial `p`, the first of which is given by the following composition of unitors for `◃`: $$
+p \triangleleft y \simeq p \simeq y \triangleleft p
+$$ and the second of which is given by the inverse such composition $$
+y \triangleleft p \simeq p \simeq p \triangleleft y
+$$
+
+```agda
+module DistributorId {ℓ κ} (p : Poly ℓ κ) where
+
+    distrId1 : (p ◃ 𝕪) ⇆ (𝕪 ◃ p)
+    distrId1 = comp (𝕪 ◃ p) (◃unitr p) (◃unitl⁻¹ p)
+
+    distrId2 : (𝕪 ◃ p) ⇆ (p ◃ 𝕪)
+    distrId2 = comp (p ◃ 𝕪) (◃unitl p) (◃unitr⁻¹ p)
+```
+
+The corresponding morphisms `p ⇈[ p ][ id p ] 𝕪 ⇆ 𝕪` and `𝕪 ⇈[ 𝕪 ][ id 𝕪 ] p ⇆ p` are precisely the maps `⇈[]𝕪` and `𝕪⇈[]` defined above, respectively:
+
+```agda
+    ⇈→DistributorId1≡ : distrId1 ≡ ⇈→Distributor p 𝕪 (⇈[]𝕪 p p (id p))
+    ⇈→DistributorId1≡ = refl
+
+    ⇈→DistributorId2≡ : distrId2 ≡ ⇈→Distributor 𝕪 p (𝕪⇈[] p)
+    ⇈→DistributorId2≡ = refl
+
+open DistributorId public
+```
+
+It can thus be seen that the above operations defined on distributors are preicsely those occurring in the diagrams for a distributive law given above, and moreover, these all have corresponding constructions on morphisms out of `_⇈[_][_]_`, all of which preserve Cartesian morphisms. Hence if `π : 𝔲 ⇈ 𝔲 ⇆ 𝔲` is Cartesian, all of the morphisms involving `_⇈[_][_]_` corresponding to those required to commute in order for `distrLaw? 𝔲 π` to be a distributive law will be Cartesian, and so if `𝔲` is a polynomial universe, these will all automatically be equal to one another.
+
+```agda
+ap⇈→Distributor : ∀ {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+                  → (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+                  → (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3) (f : p ⇆ q)
+                  → (h k : (p ⇈[ q ][ f ] r) ⇆ s) → EqLens s h k 
+                  → EqDistributor p q r s (⇈→Distributor q r h)
+                                          (⇈→Distributor q r k)
+ap⇈→Distributor p q r s f h k (e , e♯) a γ = 
+    ( e (a , γ) 
+    , λ x → ( refl , (λ y → pairEq refl (coAp (e♯ (a , γ) x) y)) ) )
+
+module DistrLaw {ℓ κ} (𝔲 : Poly ℓ κ) (univ : isUnivalent 𝔲)
+                (η : 𝕪 ⇆ 𝔲) (cη : isCartesian 𝔲 η)
+                (σ : (𝔲 ◃ 𝔲) ⇆ 𝔲) (cσ : isCartesian 𝔲 σ)
+                (π : (𝔲 ⇈ 𝔲) ⇆ 𝔲) (cπ : isCartesian 𝔲 π) where
+    
+    distrLaw1 : EqDistributor 𝔲 𝔲 (𝔲 ◃ 𝔲) 𝔲
+                    (distrLens 𝔲 (𝔲 ◃ 𝔲) 𝔲 (id 𝔲) (id 𝔲) (id (𝔲 ◃ 𝔲)) σ 
+                               (distrComp1 𝔲 𝔲 (distrLaw? 𝔲 π) 
+                                               (distrLaw? 𝔲 π))) 
+                    (distrLens 𝔲 𝔲 𝔲 (id 𝔲) (id 𝔲) σ (id 𝔲) 
+                               (distrLaw? 𝔲 π))
+    distrLaw1 = 
+        ap⇈→Distributor 𝔲 𝔲 (𝔲 ◃ 𝔲) 𝔲 (id 𝔲)
+            (comp 𝔲 (comp (𝔲 ◃ 𝔲) (⇈Distr 𝔲 𝔲 𝔲) (π ◃◃[ 𝔲 ] π)) σ)
+            (comp 𝔲 (⇈[]Lens 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) σ 
+                             ((λ a → refl) , (λ a d → refl))) 
+                  π)
+            (univ (compCartesian 𝔲 
+                        (compCartesian (𝔲 ◃ 𝔲) 
+                            (⇈DistrCart 𝔲 𝔲 𝔲) 
+                            (◃◃Cart 𝔲 𝔲 cπ cπ)) 
+                        cσ) 
+                  (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) σ 
+                        ((λ a → refl) , (λ a d → refl)) 
+                        (idCart 𝔲) cσ) 
+                    cπ))
+    
+    distrLaw2 : EqDistributor (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲
+                    (distrLens 𝔲 𝔲 𝔲 (id (𝔲 ◃ 𝔲)) σ (id 𝔲) (id 𝔲) 
+                               (distrComp2 𝔲 𝔲 (distrLaw? 𝔲 π) 
+                                               (distrLaw? 𝔲 π))) 
+                    (distrLens 𝔲 𝔲 𝔲 σ (id 𝔲) (id 𝔲) (id 𝔲) 
+                               (distrLaw? 𝔲 π))
+    distrLaw2 = 
+        ap⇈→Distributor (𝔲 ◃ 𝔲) 𝔲 𝔲 𝔲 σ
+            (comp 𝔲 
+                (comp (𝔲 ⇈ 𝔲) 
+                    (comp (𝔲 ⇈ (𝔲 ⇈ 𝔲)) 
+                        (⇈[]Lens 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) 
+                            (id (𝔲 ◃ 𝔲)) σ (id 𝔲) 
+                            ((λ a → refl) , (λ a d → refl))) 
+                        (⇈Curry 𝔲 𝔲 𝔲)) 
+                    (⇈Lens 𝔲 𝔲 (id 𝔲) (id 𝔲) 
+                           ((λ a → refl) , (λ a d → refl)) 
+                           π)) 
+                π)
+            (comp 𝔲 (⇈[]Lens 𝔲 𝔲 σ (id 𝔲) σ (id 𝔲) (id 𝔲) 
+                             ((λ a → refl) , (λ a d → refl))) 
+                    π)
+            (univ (compCartesian 𝔲 
+                    (compCartesian (𝔲 ⇈ 𝔲) 
+                        (compCartesian (𝔲 ⇈ (𝔲 ⇈ 𝔲)) 
+                            (⇈[]LensCart 𝔲 𝔲 σ (id (𝔲 ◃ 𝔲)) 
+                                (id (𝔲 ◃ 𝔲)) σ (id 𝔲) 
+                                ((λ a → refl) , (λ a d → refl)) 
+                                cσ (idCart 𝔲)) 
+                            (⇈CurryCart 𝔲 𝔲 𝔲)) 
+                        (⇈[]LensCart 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) π
+                                     ((λ a → refl) , (λ a d → refl)) 
+                                     (idCart 𝔲) cπ)) 
+                    cπ)
+                  (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 σ (id 𝔲) σ (id 𝔲) (id 𝔲) 
+                        ((λ a → refl) , (λ a d → refl)) 
+                        (idCart 𝔲) (idCart 𝔲)) 
+                    cπ))
+    
+    distrLaw3 : EqDistributor 𝔲 𝔲 𝕪 𝔲 
+                    (distrLens 𝔲 𝕪 𝔲 (id 𝔲) (id 𝔲) (id 𝕪) η 
+                               (distrId1 𝔲)) 
+                    (distrLens 𝔲 𝔲 𝔲 (id 𝔲) (id 𝔲) η (id 𝔲) 
+                               (distrLaw? 𝔲 π))
+    distrLaw3 = 
+        ap⇈→Distributor 𝔲 𝔲 𝕪 𝔲 (id 𝔲)
+            (comp 𝔲 (⇈𝕪 𝔲) η) 
+            (comp 𝔲 (⇈Lens 𝔲 𝔲 (id 𝔲) (id 𝔲) 
+                           ((λ a → refl) , (λ a d → refl)) η) π)
+            (univ (compCartesian 𝔲 (⇈𝕪Cart 𝔲) cη) 
+                  (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 (id 𝔲) (id 𝔲) (id 𝔲) (id 𝔲) η 
+                                 ((λ a → refl) , (λ a d → refl)) 
+                                 (idCart 𝔲) cη) 
+                    cπ))
+    
+    distrLaw4 : EqDistributor 𝕪 𝔲 𝔲 𝔲
+                    (distrLens 𝔲 𝔲 𝔲 (id 𝕪) η (id 𝔲) (id 𝔲) 
+                               (distrId2 𝔲)) 
+                    (distrLens 𝔲 𝔲 𝔲 η (id 𝔲) (id 𝔲) (id 𝔲) 
+                               (distrLaw? 𝔲 π))
+    distrLaw4 =
+        ap⇈→Distributor 𝕪 𝔲 𝔲 𝔲 η 
+            (comp 𝔲 (⇈[]Lens 𝔲 𝔲 η (id 𝕪) (id 𝕪) η (id 𝔲) 
+                             ((λ a → refl) , (λ a d → refl))) 
+                    (𝕪⇈ 𝔲))
+            (comp 𝔲 (⇈[]Lens 𝔲 𝔲 η (id 𝔲) η (id 𝔲) (id 𝔲)
+                             ((λ a → refl) , (λ a d → refl))) 
+                    π) 
+            (univ (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 η (id 𝕪) (id 𝕪) η (id 𝔲) 
+                                 ((λ a → refl) , (λ a d → refl)) 
+                                 cη (idCart 𝔲)) 
+                    (𝕪⇈Cart 𝔲)) 
+                  (compCartesian 𝔲 
+                    (⇈[]LensCart 𝔲 𝔲 η (id 𝔲) η (id 𝔲) (id 𝔲) 
+                                 ((λ a → refl) , (λ a d → refl)) 
+                                 (idCart 𝔲) (idCart 𝔲)) 
+                    cπ))
+```
+
+Hence `distrLaw? 𝔲 π` is a distributive law, as desired (and moreover, all of the higher coherences of an $\infty$-distributive law could be demonstrated, following this same method.)
+
+# Further Structures on Polynomial Universes
+
+In closing, we turn to briefly consider whether and how some additional type-theoretic constructs may be defined for natural models / polynomial universes in the language of polynomial functors, starting with the concept of a universe itself.
+
+## The Shift Operator & Universes
+
+Throughout this paper, we have made extensive use of universes of types. A natural question to ask, then, is when the type theory presented by a polynomial universe itself contains another such universe as a type within itself.
+
+For this purpose, let `𝔳 , 𝔲` be polynomial universes with `𝔳 = (𝓥 , El𝓥)` and `𝔲 = (𝓤 , El𝓤)`. If there is a (necessarily unique) Cartesian morphism `𝔳 ⇆ 𝔲`, then it follows that every type family classified by `𝔳` is also classified by `𝔲`, by composition of Cartesian morphisms. However, what we want in this case is the stronger property that `𝔳` is somehow represented as a type within `𝔲`.
+
+For this purpose, we define the following *shift* operation that takes a polynomial `p = (A , B)` to the polynomial `shift p = (⊤ , λ _ → A)`n`:
+
+```agda
+shift : ∀ {ℓ κ} → Poly ℓ κ → Poly lzero ℓ
+shift (A , _) = (⊤ , λ _ → A)
+```
+
+By construction, then, if there is a Cartesian morphism `(v , v♯) : shift (𝓥 , El𝓥) ⇆ (𝓤 , El𝓤)`, it follows that:
+
+* There is a type `v tt : 𝓤`; type theoretically, this corresponds to a type formation rule of the form $$
+\inferrule{~}{\Gamma \vdash \mathcal{V} ~ \mathsf{Type}}
+$$ We think of `𝓥` as a type whose elements are "codes" for other types.
+* There is a function `v♯ tt : El𝓤 (v tt) → 𝓥`, corresponding to the rule $$
+\inferrule{\Gamma \vdash e : 𝓥}{\Gamma \vdash \lceil e \rceil ~ \mathsf{Type}}
+$$ which decodes a code contained in `𝓥` to its corresponding type.
+* There is a function `v♯⁻¹ tt : 𝓥 → El𝓤 (v tt)`, corresponding to the rule $$
+\inferrule{\Gamma \vdash A ~ \mathsf{Type}\\ T ~ \text{is classifed by} ~ \mathfrak{v}}{\Gamma \vdash \lfloor A \rfloor : \mathcal{V}}
+$$ that assigns a code to each type classified by `𝔳` (note that this restriction to types classified by `𝔳` is necessary to avoid the paradoxes that would arise from having a type universe that contained itself.)
+* Such that the following equations hold $$
+\lceil \lfloor A \rfloor \rceil = A \qquad e = \lfloor \lceil e \rceil \rfloor
+$$
+
+## The $(-)^=$ Operator & Extensional Identity Types
+
+Another key construct of dependent type theory which has figured prominently in the foregoing development of polynomial universes, but which we have not yet shown how to internalize in such universes, is the construction of *identity types*. To some extent, this choice has been deliberate, as the theory of identity types is arguably one of the most complex aspects of dependent type theory, as evidenced by the fact that research into this topic ultimately precipitated the development of homotopy type theory. For this very reason, however, an account of the semantics of dependent type theory without at least some indication of its application to the theory of identity types would be incomplete.
+
+Readers familiar with dependent type theory may be aware that an initial complication posed by the theory of identity types is that these types come in two flavors: extensional and intensional. Extensional identity types reflect propositional equality (i.e. the existence of an inhabitant for the type `a ≡ b`) into judgmental equality (i.e. the metatheoretic proposition that `a = b`) and additionally regard all such proofs of identity as themselves identical. It follows that these identity types carry none of the homotopical information afforded by the alternative – intensional identity types, which are the sort which we have so far used in this paper. However, when working within such a homotopical framework, wherein metatheoretic equality need not be a mere proposition, there exists the possibility of defining extensional identity types in a polynomial universe so as to enable the aforementioned reflection while still allowing proofs of identity to carry higher-dimensional data.
+
+For this purpose, let `𝔲 = (𝓤 , El)` be a polynomial universe. We wish to establish under what conditions `𝔲` would be closed under the formation of "identity types" for the types classified by it. Solving this problem in essentially the same manner as led to the definiiton of the `⇈` functor in the previous section yields the following construction, that maps `p = (A , B)` to the polynomial `p⁼ = (Σ A (λ a → B a × B a) , λ (_ , (b1 , b2)) → b1 ≡ b2)`.
+
+```agda
+_⁼ : ∀ {ℓ κ} → Poly ℓ κ → Poly (ℓ ⊔ κ) κ
+(A , B)⁼ = (Σ A (λ a → B a × B a) , λ (_ , (b1 , b2)) → b1 ≡ b2)
+```
+
+If there is a Cartesian morphism `(ε , ε♯) : 𝔲⁼ ⇆ 𝔲` then:
+
+* For each type `A : 𝓤` with elements `a₀ , a₁ : El A`, there is a type `Eq(A, a₀, a₁) : 𝓤`. Type theoretically, this corresponds to the type formation rule $$
+\inferrule{\Gamma \vdash A ~ \mathsf{Type}\\ \Gamma \vdash a_0 : A\\ \Gamma \vdash a_1 : A}{\Gamma \vdash a_0 \equiv_A a_1 ~ \mathsf{Type}}
+$$
+* For each `A : 𝓤` and `a₀ , a₁ : El A` as above, there is a function `El Eq(A, a₀, a₁) → a₀ ≡ a₁` corresponding to the *reflection rule* $$
+\inferrule{\Gamma \vdash e : a_0 \equiv_A a_1}{\Gamma \vdash a_0 = a_1}
+$$ that converts an inhabitant of the propositional equality into a proof of the corresponding judgmental equality.
+* Likewise, there is a function `a₀ ≡ a₁ → El Eq(A, a₀, a₁)` corresponding to the *reflexivity rule* $$
+\inferrule{\Gamma \vdash a_0 = a_1}{\Gamma \vdash \mathsf{refl} : a_0 \equiv_A a_1}
+$$ that produces an inhabitant of the propositional equality given a proof of the corresponding judgmental equality.
+* Such that the above two functions/rules are mutually inverse.
+
+What is missing from the above description of extensional identity types is the following rule $$
+\inferrule{\Gamma \vdash e_1 : a_0 \equiv_A a_1\\ \Gamma \vdash e_2 : a_0 \equiv_A a_1}{\Gamma \vdash e_1 = e_2}
+$$ which says that all inhabitants of the identity type are themselves identical (i.e. the identity type is a *mere proposition*). This rule would be validated if we additionally required `𝔲` to have the property that, for all types `A : 𝓤`, the type `El A` is a set (hence for any `a b : El A`, the type `a ≡ b` is a mere proposition.) However, if we do not make this requirement, this opens the possibility of having a model of extensional type theory, modulo the above rule, wherein proofs of equality still carry homotopical information – a potentially new direction in research on the semantics of identity types.
+
+### A Note on Intensional Identity Types & Inductive Types
+
+Attempting to account for *intensional* rather than *extensional* identity types in the language of polynomial functors is rather more complicated, however. As mentioned in Section 2, the inhabitants of intensional identity types are inductively generated from the constructor `refl`, corresponding to reflexivity. The problem with such inductive generation of data from constructors -- from the point of view taken in this paper -- is that it characterizes types in terms of their introduction forms, rather than their elimination forms. In type theoretic jargon, we say that intensional identity types, and inductive types more generally are *positive,* whereas all of the types we have considered so far are *negative,* in that they are characterized by their elimination forms. The universal properties of such negative types are therefore *mapping-in* properties, which are naturally described in terms of presheaves, which we have taken as our intended model for the development of this paper. By contrast, however, the universal properties of positive types are given by *mapping-out* properties, which are rather described in terms of (the opposite category of) *co-presheaves.*
+
+As an illustrative example, let us consider the rather simpler case of (binary) coproducts, which are naturally regarded as positive types characterized by the left and right injections `A → A + B` and `B → A + B`. one might think to define binary coproducts on a polynomial universe `𝔲` in the following way:
+
+The *product* of two polynomial functors $p = \sum_{a : A} y^{B[a]}$ and $q = \sum_{c : C} y^{D[c]}$ can be calculated as follows: $$
+\begin{array}{rl} & \left( \sum_{a : A} y^{B[a]} \right) \times \left( \sum_{c : C} y^{D[c]} \right)\\
+\simeq & \sum_{(a , c) : A \times C} y^{B[a]} \times y^{D[c]}\\
+\simeq & \sum_{(a , c) : A \times C} y^{B[a] + D[c]}
+\end{array}
+$$ Hence one might think to define binary coproducts on a polynomial universe `𝔲 = (𝓤 , El)` by asking there to be a Cartesian morphism `𝔲 × 𝔲 ⇆ 𝔲`, since this would mean that for every pair of types `(A , B) : 𝓤 × 𝓤`, there is a type `plus(A , B) : 𝓤` such that  `El(plus(A , B)) ≃ El A + El B`.
+
+However, from the perspective of natural models, this condition is too strong. Given a category of contexts $\mathcal{C}$, the category $\mathbf{Set}^{\mathcal{C}^{op}}$ of presheaves on $\mathcal{C}$ is the free cocompletion of $\mathcal{C}$, which means that requiring $\mathcal{C}$ to be closed under taking binary coproducts of representables in $\mathbf{Set}^{\mathcal{C}^{op}}$ means not only that $\mathcal{C}$ has all binary coproducts, but that in fact all such coproducts in $\mathcal{C}$ are *free.*
+
+Hence it remains to be seen if there can be found a general way of correctly expressing such "positive" type-theoretic concepts as for polynomial universes and natural models in the language of polynomial functors. We hope to continue investigations into these and related questions in future work.
+
+## Conclusion
+
+In this paper, we have advanced a simplified and unified account of the categorical semantics of dependent type theory by expressing the core concepts of natural models entirely within the framework of polynomial functors in HoTT. By utilizing HoTT, we have been able strike an ideal balance between issues of strictness and higher-dimensional coherence that have bedeviled previous accounts. This shift not only streamlines the presentation of the semantics of dependent type theory, but also reveals additional structures thereof, such as the self-distributive law governing the interaction between dependent products and sums.
+
+However, there remain many open questions regarding the further development of this framework, particularly with respect to *positive* type-theoretic constructs such as coproducts, inductive types, and intensional identity types. Further work is needed to explore whether polynomial functors can provide a fully general account of these concepts. We look forward to continuing these investigations, with the aim of extending the unification presented here to encompass a wider range of type-theoretic phenomena.
+
+\printbibliography 
+
+# Appendix A
+
+```agda
+transpAp : ∀ {ℓ ℓ' κ} {A : Type ℓ} {A' : Type ℓ'} {a b : A}
+           → (B : A' → Type κ) (f : A → A') (e : a ≡ b) (x : B (f a))
+           → transp (λ x → B (f x)) e x ≡ transp B (ap f e) x
+transpAp B f refl x = refl
+
+•invr : ∀ {ℓ} {A : Type ℓ} {a b : A}
+        → (e : a ≡ b) → (sym e) • e ≡ refl
+•invr refl = refl
+
+≡siml : ∀ {ℓ} {A : Type ℓ} {a b : A}
+        → (e : a ≡ b) → refl ≡ (b ≡〈 sym e 〉 e)
+≡siml refl = refl
+
+≡idr : ∀ {ℓ} {A : Type ℓ} {a b : A}
+       → (e : a ≡ b) → e ≡ (a ≡〈 refl 〉 e)
+≡idr refl = refl
+
+conj : ∀ {ℓ} {A : Type ℓ} {a b c d : A}
+       → (e1 : a ≡ b) (e2 : a ≡ c) (e3 : b ≡ d) (e4 : c ≡ d)
+       → (a ≡〈 e1 〉 e3) ≡ (a ≡〈 e2 〉 e4)
+       → e3 ≡ (b ≡〈 sym e1 〉(a ≡〈 e2 〉 e4))
+conj e1 e2 refl refl refl = ≡siml e1
+
+nat : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ} {f g : A → B} {a b : A}
+      → (α : (x : A) → f x ≡ g x) (e : a ≡ b)
+      → ((f a) ≡〈 α a 〉 (ap g e)) ≡ ((f a) ≡〈 ap f e 〉 (α b))
+nat {a = a} α refl = ≡idr (α a)
+
+cancel : ∀ {ℓ} {A : Type ℓ} {a b c : A}
+         → (e1 e2 : a ≡ b) (e3 : b ≡ c)
+         → (a ≡〈 e1 〉 e3) ≡ (a ≡〈 e2 〉 e3)
+         → e1 ≡ e2
+cancel e1 e2 refl refl = refl
+
+apId : ∀ {ℓ} {A : Type ℓ} {a b : A}
+       → (e : a ≡ b) → ap (λ x → x) e ≡ e
+apId refl = refl
+
+apComp : ∀ {ℓ ℓ' ℓ''} {A : Type ℓ} {B : Type ℓ'} {C : Type ℓ''} {a b : A}
+         → (f : A → B) (g : B → C) (e : a ≡ b)
+         → ap (λ x → g (f x)) e ≡ ap g (ap f e)
+apComp f g refl = refl
+
+apHtpy : ∀ {ℓ} {A : Type ℓ} {a : A}
+         → (i : A → A) (α : (x : A) → i x ≡ x)
+         → ap i (α a) ≡ α (i a)
+apHtpy {a = a} i α = 
+    cancel (ap i (α a)) (α (i a)) (α a) 
+           ((i (i a) ≡〈 ap i (α a) 〉 α a) 
+           ≡〈 sym (nat α (α a)) 〉 
+           ((i (i a) ≡〈 α (i a) 〉 ap (λ z → z) (α a)) 
+           ≡〈 ap (λ e → i (i a) ≡〈 α (i a) 〉 e) (apId (α a)) 〉 
+           ((i (i a) ≡〈 α (i a) 〉 α a) □)))
+
+HAdj : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ}
+       → (A → B) → Set (ℓ ⊔ κ)
+HAdj {A = A} {B = B} f =
+    Σ (B → A) (λ g → 
+      Σ ((x : A) → g (f x) ≡ x) (λ η → 
+        Σ ((y : B) → f (g y) ≡ y) (λ ε → 
+          (x : A) → ap f (η x) ≡ ε (f x))))
+
+Iso→HAdj : ∀ {ℓ κ} {A : Type ℓ} {B : Type κ} {f : A → B}
+           → Iso f → HAdj f
+Iso→HAdj {f = f} (g , η , ε) =
+    g , (η 
+    , ( (λ y → 
+           f (g y)         ≡〈 sym (ε (f (g y))) 〉 
+          (f (g (f (g y))) ≡〈 ap f (η (g y)) 〉 
+          (f (g y)         ≡〈 ε y 〉 
+          (y               □)))) 
+      , λ x 
+          → conj (ε (f (g (f x)))) (ap f (η (g (f x)))) 
+              (ap f (η x)) (ε (f x)) 
+              (((f (g (f (g (f x)))) ≡〈 ε (f (g (f x))) 〉 ap f (η x))) 
+              ≡〈 nat (λ z → ε (f z)) (η x) 〉 
+              (((f (g (f (g (f x)))) 
+                ≡〈 ap (λ z → f (g (f z))) (η x) 〉 
+                ε (f x)))
+              ≡〈 ap (λ e → (f (g (f (g (f x)))) ≡〈 e 〉 ε (f x))) 
+                    ((ap (λ z → f (g (f z))) (η x)) 
+                     ≡〈 apComp (λ z → g (f z)) f (η x) 〉 
+                     ((ap f (ap (λ z → g (f z)) (η x))) 
+                     ≡〈 ap (ap f) (apHtpy (λ z → g (f z)) η) 〉 
+                     (ap f (η (g (f x))) □))) 〉 
+              (((f (g (f (g (f x)))) 
+                ≡〈 ap f (η (g (f x))) 〉
+                ε (f x))) □)))))
+
+pairEquiv1 : ∀ {ℓ ℓ' κ} {A : Type ℓ} {A' : Type ℓ'} {B : A' → Type κ}
+             → (f : A → A') → isEquiv f
+             → isEquiv {A = Σ A (λ x → B (f x))} {B = Σ A' B} 
+                       (λ (x , y) → (f x , y))
+pairEquiv1 {A = A} {A' = A'} {B = B} f ef =
+  Iso→isEquiv
+    ( (λ (x , y) → (g x , transp B (sym (ε x)) y))
+    , ( (λ (x , y) → pairEq (η x) (lemma x y)) 
+      , λ (x , y) → pairEq (ε x) (symr (ε x) y) ) )
+  where
+    g : A' → A
+    g = fst (Iso→HAdj (isEquiv→Iso ef))
+    η : (x : A) → g (f x) ≡ x
+    η = fst (snd (Iso→HAdj (isEquiv→Iso ef)))
+    ε : (y : A') → f (g y) ≡ y
+    ε = fst (snd (snd (Iso→HAdj (isEquiv→Iso ef))))
+    ρ : (x : A) → ap f (η x) ≡ ε (f x)
+    ρ = snd (snd (snd (Iso→HAdj (isEquiv→Iso ef))))
+    lemma : (x : A) (y : B (f x))
+            → transp (λ z → B (f z)) (η x)
+                     (transp B (sym (ε (f x))) y)
+              ≡ y
+    lemma x y = (transp (λ z → B (f z)) (η x) 
+                        (transp B (sym (ε (f x))) y)) 
+                ≡〈 transpAp B f (η x) 
+                            (transp B (sym (ε (f x))) y) 〉 
+                ( transp B (ap f (η x)) 
+                           (transp B (sym (ε (f x))) y) 
+                ≡〈 ap (λ e → transp B e 
+                                (transp B (sym (ε (f x))) y)) 
+                      (ρ x) 〉 
+                ( (transp B (ε (f x)) 
+                          (transp B (sym (ε (f x))) y)) 
+                ≡〈 (symr (ε (f x)) y) 〉 
+                (y □)))
+
+pairEquiv2 : ∀ {ℓ κ κ'} {A : Type ℓ} 
+             → {B : A → Type κ} {B' : A → Type κ'}
+             → (g : (x : A) → B x → B' x) → ((x : A) → isEquiv (g x))
+             → isEquiv {A = Σ A B} {B = Σ A B'}
+                       (λ (x , y) → (x , g x y))
+pairEquiv2 g eg =
+    let isog = (λ x → isEquiv→Iso (eg x)) 
+    in Iso→isEquiv ( (λ (x , y) → (x , fst (isog x) y)) 
+                   , ( (λ (x , y) → 
+                          pairEq refl (fst (snd (isog x)) y)) 
+                     , λ (x , y) → 
+                         pairEq refl (snd (snd (isog x)) y)))
+
+pairEquiv : ∀ {ℓ ℓ' κ κ'} {A : Type ℓ} {A' : Type ℓ'}
+            → {B : A → Type κ} {B' : A' → Type κ'}
+            → (f : A → A') (g : (x : A) → B x → B' (f x))
+            → isEquiv f → ((x : A) → isEquiv (g x))
+            → isEquiv {A = Σ A B} {B = Σ A' B'}
+                      (λ (x , y) → (f x , g x y))
+pairEquiv f g ef eg = 
+    compIsEquiv (pairEquiv1 f ef) 
+                (pairEquiv2 g eg)
+
+J : ∀ {ℓ κ} {A : Type ℓ} {a : A} (B : (x : A) → a ≡ x → Type κ)
+    → {a' : A} (e : a ≡ a') → B a refl → B a' e
+J B refl b = b
+
+transpPre : ∀ {ℓ0 ℓ1 κ0 κ1} {A : Type ℓ0} {a a' : A} {B : A → Type κ0}
+              {C : Type ℓ1} {D : C → Type κ1} {f : A → C}
+              (mf : isMono f) (g : (x : A) → B x → D (f x))
+              (e : f a ≡ f a') {b : B a}
+              → transp D e (g a b) ≡ g a' (transp B (inv mf e) b)
+transpPre {a = a} {a' = a'} {B = B} {D = D} {f = f} mf g e {b = b} = 
+    transp D e (g a b)  
+        ≡〈 ap (λ e' → transp D e' (g a b)) (sym (snd (snd mf) e)) 〉 
+    ( _ ≡〈 (J (λ x e' → transp D (ap f e') (g a b) ≡ g x (transp B e' b)) 
+               (inv mf e) refl) 〉 
+    ((g a' (transp B (inv mf e) b)) □))
+
+postulate
+    funext : ∀ {ℓ κ} {A : Type ℓ} 
+             → {B : A → Type κ} {f g : (x : A) → B x}
+             → ((x : A) → f x ≡ g x) → f ≡ g
+    funextr : ∀ {ℓ κ} {A : Type ℓ} 
+              → {B : A → Type κ} {f g : (x : A) → B x}
+              → (e : (x : A) → f x ≡ g x) → coAp (funext e) ≡ e
+    funextl : ∀ {ℓ κ} {A : Type ℓ} 
+              → {B : A → Type κ} {f g : (x : A) → B x}
+              → (e : f ≡ g) → funext (coAp e) ≡ e
+
+transpD : ∀ {ℓ κ} {A : Type ℓ} {B : A → Type κ} {a a' : A}
+          → (f : (x : A) → B x) (e : a ≡ a')
+          → transp B e (f a) ≡ f a'
+transpD f refl = refl
+
+transpHAdj : ∀ {ℓ ℓ' κ} {A : Type ℓ} {B : Type ℓ'} 
+            → {C : B → Type κ} {a : A}
+            → {g : A → B} {h : B → A} 
+            → (f : (x : A) → C (g x)) 
+            → (e : (y : B) → g (h y) ≡ y)
+            → (e' : (x : A) → h (g x) ≡ x)
+            → (e'' : (x : A) → e (g x) ≡ ap g (e' x))
+            → transp C (e (g a)) (f (h (g a))) ≡ f a
+transpHAdj {C = C} {a = a} {g = g} {h = h} f e e' e'' = 
+    transp C (e (g a)) (f (h (g a)))               
+        ≡〈 ap (λ ee → transp C ee (f (h (g a)))) (e'' a) 〉 
+    (transp C (ap g (e' a)) (f (h (g a))) 
+        ≡〈 sym (transpAp C g (e' a) (f (h (g a)))) 〉 
+    ((transp (λ x → C (g x)) (e' a) (f (h (g a)))) 
+        ≡〈 transpD f (e' a) 〉
+    ((f a) □)))
+
+PreCompEquiv : ∀ {ℓ ℓ' κ} {A : Type ℓ} 
+               → {B : Type ℓ'} {C : B → Type κ}
+               → (f : A → B) → isEquiv f 
+               → isEquiv {A = (b : B) → C b} 
+                         {B = (a : A) → C (f a)} 
+                         (λ g → λ a → g (f a))
+PreCompEquiv {C = C} f ef =
+    let (f⁻¹ , l , r , e) = Iso→HAdj (isEquiv→Iso ef) 
+    in Iso→isEquiv ( (λ g b → transp C (r b) (g (f⁻¹ b))) 
+                   , ( (λ g → funext (λ b → transpD g (r b))) 
+                     , λ g → funext (λ a → transpHAdj g r l 
+                                             (λ x → sym (e x)))))
+
+PostCompEquiv : ∀ {ℓ κ κ'} {A : Type ℓ} 
+                → {B : A → Type κ} {C : A → Type κ'}
+                → (f : (x : A) → B x → C x) → ((x : A) → isEquiv (f x))
+                → isEquiv {A = (x : A) → B x} 
+                          {B = (x : A) → C x}
+                          (λ g x → f x (g x))
+PostCompEquiv f ef = 
+    ( ( (λ g x → fst (fst (ef x)) (g x))
+      , λ g → funext (λ x → snd (fst (ef x)) (g x))))
+    , ( (λ g x → fst (snd (ef x)) (g x)) 
+      , λ g → funext (λ x → snd (snd (ef x)) (g x)))
+```
