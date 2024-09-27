@@ -175,7 +175,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 
 
 % biblatex %
-  \addbibresource{Library20211226.bib} 
+  \addbibresource{Library20240927.bib} 
 
 % hyperref %
   \hypersetup{final}
@@ -566,7 +566,9 @@ whole. As an illustration of this, we show how every polynomial universe
 \(u\), regarded as a polynomial pseudomonad with additional structure,
 gives rise to self-distributive law \(u\tri u\to u\tri u\), which in
 particular witnesses the usual distributive law of dependent products
-over dependent sums. In fact, just as polynomial universes closed under
+over dependent sums.%
+\footnote{A precursor to this story was attempted by the second-named author in a \href{https://topos.site/blog/2021-07-01-jump-monads/}{blog post}, which may be useful for readers seeking intuition. There a proposed self-distributive law $u\tri u\to u\tri u$ on $u=1+\yon+\yon^2+\cdots$ was claimed to witness dependent products. However, the author only later noticed that one of the four equations for distributive laws was doomed to fail \cite{zwart2022no} due to the 1-dimensionality of types in $u(1)$. The present project was inspired by this.} %
+In fact, just as polynomial universes closed under
 unit and dependent pair types can be characterized as Cartesian monads
 in the category \(\poly\) of polynomial endofunctors, so too can
 polynomial universes closed under unit, dependent pair, and dependent
@@ -2728,6 +2730,10 @@ forms. Understanding the closure properties of such distributors that
 give rise to these diagrams, then, will be a central aim of this
 section.
 
+\begin{remark}
+Distributors as above arise in $\Cat{EM}$-$\ccatsharp$ the Eilenberg-Moore completion \cite{lack2002formal} of the double category $\ccatsharp=\mathbb{C}\Cat{omod}(\poly)$ of polynomial comonads and bicomodules \cite{shapiro2024polynomial}. Indeed, there we find morphisms of the form $m\tri p\to p\tri n$ for polynomial monads $m,n$, and distributive laws between monads are the formal monads in $\Cat{EM}$-$\ccatsharp$. Distributors also arise in what Lynch et al.\ call \emph{effects handlers} \cite{lynch2023concepts}, where morphisms are of the form $s\tri c\to d\tri s$ for polynomial comonads $c,d\in\ccatsharp$.
+\end{remark}
+
 By function extensionality, we obtain the following type of equality
 proofs for distributors:
 
@@ -3007,7 +3013,7 @@ The corresponding morphisms
 \end{Shaded}
 
 It can thus be seen that the above operations defined on distributors
-are preicsely those occurring in the diagrams for a distributive law
+are precisely those occurring in the diagrams for a distributive law
 given above, and moreover, these all have corresponding constructions on
 morphisms out of \texttt{\_⇈{[}\_{]}{[}\_{]}\_}, all of which preserve
 Cartesian morphisms. Hence if \texttt{π\ :\ 𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲} is Cartesian,
@@ -3149,7 +3155,7 @@ could be demonstrated, following this same method.)
 
 As we have just seen, every polynomial universe \texttt{𝔲} equipped with
 unit, \(\Sigma\), and \(\Pi\) types -- given by Cartesian morphisms
-\texttt{y\ ⇆\ 𝔲}, \texttt{𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}, and \texttt{𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲},
+\texttt{y\ ⇆\ 𝔲} \texttt{𝔲\ ◃\ 𝔲\ ⇆\ 𝔲} and \texttt{𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲},
 respectively -- gives rise to a (Cartesian) monad structure on
 \texttt{𝔲} together with a distributive law of this monad over itself.
 Does the converse to this statement hold? That is, given a Cartesian
@@ -3164,15 +3170,10 @@ types from an arbitrary distributive law of the corresponding monad over
 itself. This can be seen from the fact that the distributive laws
 described above (i.e.~those in the image of \texttt{⇈→Distributor}) have
 a rather special form. For instance, such a distributive law
-\texttt{(δ\ ,\ δ♯)\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲\ ◃\ 𝔲} must satisfy the following
-identity:
-
-\begin{quote}
+\texttt{(δ\ ,\ δ♯)\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲\ ◃\ 𝔲} must satisfy
 \texttt{snd\ (δ\ (a\ ,\ γ))\ x\ ≡\ a} for all
-\texttt{a\ :\ fst\ 𝔲,\ γ\ :\ snd\ 𝔲\ a\ →\ fst\ 𝔲,\ x\ :\ snd\ 𝔲\ (fst\ (δ\ (a\ ,\ γ))}
-\end{quote}
-
-\noindent and this need not be the case for arbitrary distributive laws.
+\texttt{a\ :\ fst\ 𝔲,\ γ\ :\ snd\ 𝔲\ a\ →\ fst\ 𝔲,\ x\ :\ snd\ 𝔲\ (fst\ (δ\ (a\ ,\ γ))},
+and this need not be the case for arbitrary distributive laws.
 
 What is needed to make such a translation from distributive laws to
 \texttt{Π} types possible is some restriction of the space of possible
@@ -3196,7 +3197,7 @@ witnesses to the following equations:
 \begin{itemize}
 \tightlist
 \item
-  \texttt{snd\ (g\ (a\ ,\ γ))\ x\ ≡\ f\ a} for all
+  \texttt{snd\ (g\ (a\ ,\ γ))\ x\ =\ f\ a} for all
   \texttt{a\ :\ fst\ p,\ γ\ :\ snd\ p\ a\ →\ fst\ r,\ x\ :\ snd\ s\ (fst\ (g\ (a\ ,\ γ))}
 \item
   \texttt{fst\ (g♯\ (a\ ,\ γ)\ (x\ ,\ y))\ ≡\ f♯\ a\ y} for all
@@ -3247,13 +3248,13 @@ distributor \texttt{g\ :\ p\ ◃\ r\ ⇆\ s\ ◃\ q}, we obtain a morphism
 \NormalTok{    Jump→⇈ }\OtherTok{:} \OtherTok{(}\NormalTok{g }\OtherTok{:} \OtherTok{(}\NormalTok{p ◃ r}\OtherTok{)}\NormalTok{ ⇆ }\OtherTok{(}\NormalTok{s ◃ q}\OtherTok{))} \OtherTok{→}\NormalTok{ Jump g}
              \OtherTok{→} \OtherTok{(}\NormalTok{p ⇈[ q ][ f ] r}\OtherTok{)}\NormalTok{ ⇆ s}
 \NormalTok{    Jump→⇈ }\OtherTok{(}\NormalTok{g , g♯}\OtherTok{)} \OtherTok{(}\NormalTok{e , e♯}\OtherTok{)} \OtherTok{=}
-      \OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{→}\NormalTok{ fst }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)))} 
-\NormalTok{      , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)}\NormalTok{ x y }
-        \OtherTok{→}\NormalTok{ transp }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ snd r }\OtherTok{(}\NormalTok{γ z}\OtherTok{))}
-            \OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{))} 
-\NormalTok{                  ≡〈 e♯ a γ x }\OtherTok{(}\NormalTok{transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{)}\NormalTok{ 〉 }
-\NormalTok{                  ap }\OtherTok{(}\NormalTok{snd f a}\OtherTok{)} \OtherTok{(}\NormalTok{symr }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{)}\NormalTok{ y}\OtherTok{))}
-            \OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{)))} \OtherTok{)}
+        \OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{→}\NormalTok{ fst }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)))} 
+\NormalTok{        , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)}\NormalTok{ x y }
+          \OtherTok{→}\NormalTok{ transp }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ snd r }\OtherTok{(}\NormalTok{γ z}\OtherTok{))}
+                   \OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{))} 
+\NormalTok{                         ≡〈 e♯ a γ x }\OtherTok{(}\NormalTok{transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{)}\NormalTok{ 〉 }
+\NormalTok{                         ap }\OtherTok{(}\NormalTok{snd f a}\OtherTok{)} \OtherTok{(}\NormalTok{symr }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{)}\NormalTok{ y}\OtherTok{))}
+                   \OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{)))} \OtherTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3291,7 +3292,7 @@ law yields a Cartesian morphism \texttt{𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲} witnessing t
 From this we obtain the main theorem of this paper:
 
 \begin{theorem}
-A polynomial universe 𝔲 is closed under unit, Σ, and Π types if and only if there exists a Cartesian monad structure on 𝔲 together with a Cartesian distributive law of this monad over itself.
+A polynomial universe `𝔲` is closed under unit, `Σ`, and `Π` types if and only if there exists a Cartesian monad structure on `𝔲` together with a Cartesian distributive law of this monad over itself.
 \end{theorem}
 
 Since from any \texttt{𝔲} closed under these types we obtain a Cartesian
