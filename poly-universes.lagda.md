@@ -548,7 +548,7 @@ Hence we have a category $\mathbf{Poly}$ of polynomial functors and lenses betwe
 
 ## The Vertical-Cartesian Factorization System on $\mathbf{Poly}$
 
-We say that a lens `(f , f♯) : (A , B) ⇆ (C , D)` is *vertical* if `f : A → C` is an equivalence, and Cartesian if for every `a : A`, the map `f♯ a : D[f a] → B a` is an equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{spivak2022poly}}
+We say that a lens `(f , f♯) : (A , B) ⇆ (C , D)` is *vertical* if `f : A → C` is an equivalence, and Cartesian if for every `a : A`, the map `f♯ a : D[f a] → B a` is an equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{niu2024polynomial}}
 
 ```agda
 module Vert-Cart {ℓ0 ℓ1 κ0 κ1} {p : Poly ℓ0 κ0} 
@@ -1802,7 +1802,7 @@ Throughout this paper, we have made extensive use of universes of types. A natur
 
 For this purpose, let `𝔳 , 𝔲` be polynomial universes with `𝔳 = (𝓥 , El𝓥)` and `𝔲 = (𝓤 , El𝓤)`. If there is a (necessarily unique) Cartesian morphism `𝔳 ⇆ 𝔲`, then it follows that every type family classified by `𝔳` is also classified by `𝔲`, by composition of Cartesian morphisms. However, what we want in this case is the stronger property that `𝔳` is somehow represented as a type within `𝔲`.
 
-For this purpose, we define the following *shift* operation that takes a polynomial `p = (A , B)` to the polynomial `shift p = (⊤ , λ _ → A)`. Equivalently, this is $\left[ \begin{array}{c} p\\ y \end{array} \right]$, where $\left[ \begin{array}{c} -\\ - \end{array} \right]$ is the left coclosure of $\triangleleft$ defined in \cite{spivak2022poly}.
+For this purpose, we define the following *shift* operation that takes a polynomial `p = (A , B)` to the polynomial `shift p = (⊤ , λ _ → A)`. Equivalently, this is $\left[ \begin{array}{c} p\\ y \end{array} \right]$, where $\left[ \begin{array}{c} -\\ - \end{array} \right]$ is the left coclosure of $\triangleleft$ defined in \cite{niu2024polynomial}.
 
 ```agda
 shift : ∀ {ℓ κ} → Poly ℓ κ → Poly lzero ℓ
