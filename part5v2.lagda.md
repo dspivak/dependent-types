@@ -275,7 +275,7 @@ $$
 
 As we shall now see, these structures on `_⇈[_][_]_` are intimately connected to a class of morphisms in $\mathbf{Poly}$, which we call *distributors*.
 
-## Distributors
+## From $\Pi$-Types to Distributive Laws
 
 Given polynomials `p,q,r,s`, a *distributor* of `p,q` over `r,s` is a morphism of the form `(p ◃ r) ⇆ (s ◃ q)` in $\mathbf{Poly}$. The name "distributor" is here drawn from the fact that, given polynomial monads `m,n` with `ηₘ : 𝕪 ⇆ m, ηₙ : 𝕪 ⇆ n` and `μₘ : (m ◃ m) ⇆ m, μₙ : (n ◃ n) ⇆ n`, a *distributive law* of `m` over `n` consists of a distributor of `n,n` over `n,n` (i.e. a morphism `(n ◃ m) ⇆ (m ◃ n)`) such that the following diagrams commute:
 
@@ -607,3 +607,74 @@ module DistrLaw {ℓ κ} (𝔲 : Poly ℓ κ) (univ : isUnivalent 𝔲)
 ```
 
 Hence `distrLaw? 𝔲 π` is a distributive law, as desired (and moreover, all of the higher coherences of an $\infty$-distributive law could be demonstrated, following this same method.)
+
+## From Distributive Laws to $\Pi$-Types
+
+As we have just seen, every polynomial universe `𝔲` equipped with unit, $\Sigma$, and $\Pi$ types -- given by Cartesian morphisms `y ⇆ 𝔲` `𝔲 ◃ 𝔲 ⇆ 𝔲` and `𝔲 ⇈ 𝔲 ⇆ 𝔲`, respectively -- gives rise to a (Cartesian) monad structure on `𝔲` together with a distributive law of this monad over itself. Does the converse to this statement hold? That is, given a Cartesian monad structure with a self-distributive law on some polynomial universe, does this imply that the universe is closed under unit, $\Sigma$, and $\Pi$? We have already seen that the existence of a Cartesian monad structure on a polynomial universe corresponds precisely to the closure of the universe under unit and $\Sigma$. However, for $\Pi$-types, the situation is more complex -- we cannot in general obtain $\Pi$ types on a polynomial universe with unit and $\Sigma$ types from an arbitrary distributive law of the corresponding monad over itself. This can be seen from the fact that the distributive laws described above (i.e. those in the image of `⇈→Distributor`) have a rather special form. For instance, such a distributive law `(δ , δ♯) : 𝔲 ◃ 𝔲 ⇆ 𝔲 ◃ 𝔲` must satisfy `snd (δ (a , γ)) x ≡ a` for all `a : fst 𝔲, γ : snd 𝔲 a → fst 𝔲, x : snd 𝔲 (fst (δ (a , γ))`, and this need not be the case for arbitrary distributive laws.
+
+What is needed to make such a translation from distributive laws to `Π` types possible is some restriction of the space of possible distributive laws so as to make the closure of a polynomial universe under `Π` types equivalent to the existence of such a distributive law. Indeed, the closure of the universe under unit and `Σ` types corresponded not to the existence of an arbitrary monad, but rather of a *Cartesian* monad, so what we seek is an appropriate notion of *Cartesian* distributive law of Cartesian monads that will give rise to `Π` types on polynomial universes.
+
+For this purpose, we define the auxiliary notion of a *Jump structure* of a lens `(f , f♯) : p ⇆ q` on a distributor `(g , g♯) : p ◃ r ⇆ q ◃ s`. Intuitively, a jump structure of `(f , f♯)` on `(g , g♯)` witnesses that `(g , g♯)` "applies the action of `(f , f♯)` on `p` and `q` while jumping over its action on `r` and `s`." In concrete terms, this means that we must have witnesses to the following equations:
+
+* `snd (g (a , γ)) x = f a` for all `a : fst p, γ : snd p a → fst r, x : snd s (fst (g (a , γ))`
+* `fst (g♯ (a , γ) (x , y)) ≡ f♯ a y` for all `a, γ, x` as above and `y : snd q (f a)`.
+
+```agda
+module JumpDistr {ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}
+       (p : Poly ℓ0 κ0) (q : Poly ℓ1 κ1)
+       (r : Poly ℓ2 κ2) (s : Poly ℓ3 κ3)
+       (f : p ⇆ q) where
+
+    Jump : (p ◃ r) ⇆ (s ◃ q) → Set (ℓ0 ⊔ ℓ1 ⊔ ℓ2 ⊔ κ0 ⊔ κ1 ⊔ κ3)
+    Jump (g , g♯) =
+        Σ ((a : fst p) (γ : snd p a → fst r) 
+           (x : snd s (fst (g (a , γ)))) 
+            → snd (g (a , γ)) x ≡ fst f a) 
+           λ e → (a : fst p) (γ : snd p a → fst r) 
+                 (x : snd s (fst (g (a , γ))))
+                 (y : snd q (snd (g (a , γ)) x))
+                 → fst (g♯ (a , γ) (x , y))
+                   ≡ snd f a (transp (snd q) (e a γ x) y)
+```
+
+By construction, the distributive laws `𝔲 ◃ 𝔲 ⇆ 𝔲 ◃ 𝔲` defined above can be naturally equipped with Jump structures of `id 𝔲 : 𝔲 ⇆ 𝔲`. More generally, in fact, distributors `p ◃ r ⇆ s ◃ q` arising from morphisms `p ⇈[ q ][ f ] r ⇆ s` via `⇈→Distributor` as above naturally carry jump structures of `f : p ⇆ q`, as follows:
+
+```agda
+    ⇈→Jump : (g : (p ⇈[ q ][ f ] r) ⇆ s) → Jump (⇈→Distributor q r g)
+    ⇈→Jump g = ((λ a γ x → refl) , (λ a γ x y → refl))
+```
+
+Conversely, given a jump structure of `f : p ⇆ q` on a distributor `g : p ◃ r ⇆ s ◃ q`, we obtain a morphism `p ⇈[ q ][ f ] r ⇆ s` as follows:
+
+```agda
+    Jump→⇈ : (g : (p ◃ r) ⇆ (s ◃ q)) → Jump g
+             → (p ⇈[ q ][ f ] r) ⇆ s
+    Jump→⇈ (g , g♯) (e , e♯) =
+        ( (λ (a , γ) → fst (g (a , γ))) 
+        , λ (a , γ) x y 
+          → transp (λ z → snd r (γ z))
+                   (fst (g♯ (a , γ) (x , transp (snd q) (sym (e a γ x)) y)) 
+                         ≡〈 e♯ a γ x (transp (snd q) (sym (e a γ x)) y) 〉 
+                         ap (snd f a) (symr (e a γ x) y))
+                   (snd (g♯ (a , γ) (x , transp (snd q) (sym (e a γ x)) y))) )
+```
+
+We say that a distributor `g : p ◃ r ⇆ s ◃ q` equipped with a jump structure `j : Jump g` of `f : p ⇆ q` is *Cartesian* if the corresponding morphism `Jump→⇈ g : p ⇈[ q ][ f ] r ⇆ s` is Cartesian. In particular, given a Cartesian morphism `g : p ⇈[ q ][ f ] r ⇆ s`, it follows that the distributor `⇈→Distributor q r g : p ◃ r ⇆ s ◃ q` equipped with the jump structure `⇈→Jump g`, is Cartesian.
+
+```agda
+    JumpCart : (g : (p ⇈[ q ][ f ] r) ⇆ s) → isCartesian s g
+               → isCartesian s (Jump→⇈ (⇈→Distributor q r g) (⇈→Jump g))
+    JumpCart g cg = cg
+
+open JumpDistr
+```
+
+Hence we define a Cartesian distributive law of polynomial monads `m , n` as a distributive law `δ : n ◃ m ⇆ m ◃ n` of `m` over `n`, equipped with a jump structure of `id n : n ⇆ n` on `δ`, such that `δ` is Cartesian, in the above sense. It follows, then, that given a polynomial universe `𝔲` equipped with a Cartesian monad structure `η : y ⇆ 𝔲, μ : 𝔲 ◃ 𝔲 ⇆ 𝔲` and a Cartesian distributive law `δ : 𝔲 ◃ 𝔲 ⇆ 𝔲 ◃ 𝔲` of this monad over itself, applying `Jump→⇈` to this distributive law yields a Cartesian morphism `𝔲 ⇈ 𝔲 ⇆ 𝔲` witnessing that `𝔲` is closed under `Π` types.
+
+From this we obtain the main theorem of this paper:
+
+\begin{theorem}
+A polynomial universe `𝔲` is closed under unit, `Σ`, and `Π` types if and only if there exists a Cartesian monad structure on `𝔲` together with a Cartesian distributive law of this monad over itself.
+\end{theorem}
+
+Since from any `𝔲` closed under these types we obtain a Cartesian monad and Cartesian self-distributive law on `𝔲`, and from any Cartesian monad structure on `𝔲` and Cartesian distributive law of this monad over itself, we obtain Cartesian morphisms `y ⇆ 𝔲, 𝔲 ◃ 𝔲 ⇆ 𝔲, 𝔲 ⇈ 𝔲 ⇆ 𝔲` as above.

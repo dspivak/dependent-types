@@ -175,7 +175,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 
 
 % biblatex %
-  \addbibresource{Library20240927.bib} 
+  \addbibresource{Library20211226.bib} 
 
 % hyperref %
   \hypersetup{final}
@@ -566,8 +566,15 @@ whole. As an illustration of this, we show how every polynomial universe
 \(u\), regarded as a polynomial pseudomonad with additional structure,
 gives rise to self-distributive law \(u\tri u\to u\tri u\), which in
 particular witnesses the usual distributive law of dependent products
-over dependent sums.%
-\footnote{A precursor to this story was attempted by the second-named author in a \href{https://topos.site/blog/2021-07-01-jump-monads/}{blog post}, which may be useful for readers seeking intuition. There a proposed self-distributive law $u\tri u\to u\tri u$ on $u=1+\yon+\yon^2+\cdots$ was claimed to witness dependent products. However, the author only later noticed that one of the four equations for distributive laws was doomed to fail \cite{zwart2022no} due to the 1-dimensionality of types in $u(1)$. The present project was inspired by this.}
+over dependent sums. In fact, just as polynomial universes closed under
+unit and dependent pair types can be characterized as Cartesian monads
+in the category \(\poly\) of polynomial endofunctors, so too can
+polynomial universes closed under unit, dependent pair, and dependent
+product types be characterized as Cartesian monads in \(\poly\) that
+additionally carry a Cartesian distributive law of this monad over
+itself (for a suitable notion of \emph{Cartesian distributive law,}
+defined in Section 5.3). This characterization constitutes the main
+theorem of this paper.
 
 Moreover, the move from set theory to HoTT as a setting in which to tell
 this story enables new tools to be applied for its telling. In
@@ -1475,7 +1482,7 @@ We say that a lens \texttt{(f\ ,\ f♯)\ :\ (A\ ,\ B)\ ⇆\ (C\ ,\ D)} is
 \emph{vertical} if \texttt{f\ :\ A\ →\ C} is an equivalence, and
 Cartesian if for every \texttt{a\ :\ A}, the map
 \texttt{f♯\ a\ :\ D{[}f\ a{]}\ →\ B\ a} is an
-equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{niu2024polynomial}}
+equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{spivak2022poly}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2721,10 +2728,6 @@ forms. Understanding the closure properties of such distributors that
 give rise to these diagrams, then, will be a central aim of this
 section.
 
-\begin{remark}
-Distributors as above arise in $\Cat{EM}$-$\ccatsharp$ the Eilenberg-Moore completion \cite{lack2002formal} of the double category $\ccatsharp=\mathbb{C}\Cat{omod}(\poly)$ of polynomial comonads and bicomodules \cite{shapiro2024polynomial}. Indeed, there we find morphisms of the form $m\tri p\to p\tri n$ for polynomial monads $m,n$, and distributive laws between monads are the formal monads in $\Cat{EM}$-$\ccatsharp$. Distributors also arise in what Lynch et al.\ call \emph{effects handlers} \cite{lynch2023concepts}, where morphisms are of the form $s\tri c\to d\tri s$ for polynomial comonads $c,d\in\ccatsharp$.
-\end{remark}
-
 By function extensionality, we obtain the following type of equality
 proofs for distributors:
 
@@ -3141,6 +3144,157 @@ Hence \texttt{distrLaw?\ 𝔲\ π} is a distributive law, as desired (and
 moreover, all of the higher coherences of an \(\infty\)-distributive law
 could be demonstrated, following this same method.)
 
+\section{\texorpdfstring{From Distributive Laws to
+\(\Pi\)-Types}{From Distributive Laws to \textbackslash Pi-Types}}\label{from-distributive-laws-to-pi-types}
+
+As we have just seen, every polynomial universe \texttt{𝔲} equipped with
+unit, \(\Sigma\), and \(\Pi\) types -- given by Cartesian morphisms
+\texttt{y\ ⇆\ 𝔲} \texttt{𝔲\ ◃\ 𝔲\ ⇆\ 𝔲} and \texttt{𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲},
+respectively -- gives rise to a (Cartesian) monad structure on
+\texttt{𝔲} together with a distributive law of this monad over itself.
+Does the converse to this statement hold? That is, given a Cartesian
+monad structure with a self-distributive law on some polynomial
+universe, does this imply that the universe is closed under unit,
+\(\Sigma\), and \(\Pi\)? We have already seen that the existence of a
+Cartesian monad structure on a polynomial universe corresponds precisely
+to the closure of the universe under unit and \(\Sigma\). However, for
+\(\Pi\)-types, the situation is more complex -- we cannot in general
+obtain \(\Pi\) types on a polynomial universe with unit and \(\Sigma\)
+types from an arbitrary distributive law of the corresponding monad over
+itself. This can be seen from the fact that the distributive laws
+described above (i.e.~those in the image of \texttt{⇈→Distributor}) have
+a rather special form. For instance, such a distributive law
+\texttt{(δ\ ,\ δ♯)\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲\ ◃\ 𝔲} must satisfy
+\texttt{snd\ (δ\ (a\ ,\ γ))\ x\ ≡\ a} for all
+\texttt{a\ :\ fst\ 𝔲,\ γ\ :\ snd\ 𝔲\ a\ →\ fst\ 𝔲,\ x\ :\ snd\ 𝔲\ (fst\ (δ\ (a\ ,\ γ))},
+and this need not be the case for arbitrary distributive laws.
+
+What is needed to make such a translation from distributive laws to
+\texttt{Π} types possible is some restriction of the space of possible
+distributive laws so as to make the closure of a polynomial universe
+under \texttt{Π} types equivalent to the existence of such a
+distributive law. Indeed, the closure of the universe under unit and
+\texttt{Σ} types corresponded not to the existence of an arbitrary
+monad, but rather of a \emph{Cartesian} monad, so what we seek is an
+appropriate notion of \emph{Cartesian} distributive law of Cartesian
+monads that will give rise to \texttt{Π} types on polynomial universes.
+
+For this purpose, we define the auxiliary notion of a \emph{Jump
+structure} of a lens \texttt{(f\ ,\ f♯)\ :\ p\ ⇆\ q} on a distributor
+\texttt{(g\ ,\ g♯)\ :\ p\ ◃\ r\ ⇆\ q\ ◃\ s}. Intuitively, a jump
+structure of \texttt{(f\ ,\ f♯)} on \texttt{(g\ ,\ g♯)} witnesses that
+\texttt{(g\ ,\ g♯)} ``applies the action of \texttt{(f\ ,\ f♯)} on
+\texttt{p} and \texttt{q} while jumping over its action on \texttt{r}
+and \texttt{s}.'' In concrete terms, this means that we must have
+witnesses to the following equations:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{snd\ (g\ (a\ ,\ γ))\ x\ =\ f\ a} for all
+  \texttt{a\ :\ fst\ p,\ γ\ :\ snd\ p\ a\ →\ fst\ r,\ x\ :\ snd\ s\ (fst\ (g\ (a\ ,\ γ))}
+\item
+  \texttt{fst\ (g♯\ (a\ ,\ γ)\ (x\ ,\ y))\ ≡\ f♯\ a\ y} for all
+  \texttt{a,\ γ,\ x} as above and \texttt{y\ :\ snd\ q\ (f\ a)}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{module}\NormalTok{ JumpDistr }\OtherTok{\{}\NormalTok{ℓ0 ℓ1 ℓ2 ℓ3 κ0 κ1 κ2 κ3}\OtherTok{\}}
+       \OtherTok{(}\NormalTok{p }\OtherTok{:}\NormalTok{ Poly ℓ0 κ0}\OtherTok{)} \OtherTok{(}\NormalTok{q }\OtherTok{:}\NormalTok{ Poly ℓ1 κ1}\OtherTok{)}
+       \OtherTok{(}\NormalTok{r }\OtherTok{:}\NormalTok{ Poly ℓ2 κ2}\OtherTok{)} \OtherTok{(}\NormalTok{s }\OtherTok{:}\NormalTok{ Poly ℓ3 κ3}\OtherTok{)}
+       \OtherTok{(}\NormalTok{f }\OtherTok{:}\NormalTok{ p ⇆ q}\OtherTok{)} \KeywordTok{where}
+
+\NormalTok{    Jump }\OtherTok{:} \OtherTok{(}\NormalTok{p ◃ r}\OtherTok{)}\NormalTok{ ⇆ }\OtherTok{(}\NormalTok{s ◃ q}\OtherTok{)} \OtherTok{→} \DataTypeTok{Set} \OtherTok{(}\NormalTok{ℓ0 ⊔ ℓ1 ⊔ ℓ2 ⊔ κ0 ⊔ κ1 ⊔ κ3}\OtherTok{)}
+\NormalTok{    Jump }\OtherTok{(}\NormalTok{g , g♯}\OtherTok{)} \OtherTok{=}
+\NormalTok{        Σ }\OtherTok{((}\NormalTok{a }\OtherTok{:}\NormalTok{ fst p}\OtherTok{)} \OtherTok{(}\NormalTok{γ }\OtherTok{:}\NormalTok{ snd p a }\OtherTok{→}\NormalTok{ fst r}\OtherTok{)} 
+           \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ snd s }\OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{))))} 
+            \OtherTok{→}\NormalTok{ snd }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{))}\NormalTok{ x ≡ fst f a}\OtherTok{)} 
+           \OtherTok{λ}\NormalTok{ e }\OtherTok{→} \OtherTok{(}\NormalTok{a }\OtherTok{:}\NormalTok{ fst p}\OtherTok{)} \OtherTok{(}\NormalTok{γ }\OtherTok{:}\NormalTok{ snd p a }\OtherTok{→}\NormalTok{ fst r}\OtherTok{)} 
+                 \OtherTok{(}\NormalTok{x }\OtherTok{:}\NormalTok{ snd s }\OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{))))}
+                 \OtherTok{(}\NormalTok{y }\OtherTok{:}\NormalTok{ snd q }\OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{))}\NormalTok{ x}\OtherTok{))}
+                 \OtherTok{→}\NormalTok{ fst }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , y}\OtherTok{))}
+\NormalTok{                   ≡ snd f a }\OtherTok{(}\NormalTok{transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{e a γ x}\OtherTok{)}\NormalTok{ y}\OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+By construction, the distributive laws \texttt{𝔲\ ◃\ 𝔲\ ⇆\ 𝔲\ ◃\ 𝔲}
+defined above can be naturally equipped with Jump structures of
+\texttt{id\ 𝔲\ :\ 𝔲\ ⇆\ 𝔲}. More generally, in fact, distributors
+\texttt{p\ ◃\ r\ ⇆\ s\ ◃\ q} arising from morphisms
+\texttt{p\ ⇈{[}\ q\ {]}{[}\ f\ {]}\ r\ ⇆\ s} via \texttt{⇈→Distributor}
+as above naturally carry jump structures of \texttt{f\ :\ p\ ⇆\ q}, as
+follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    ⇈→Jump }\OtherTok{:} \OtherTok{(}\NormalTok{g }\OtherTok{:} \OtherTok{(}\NormalTok{p ⇈[ q ][ f ] r}\OtherTok{)}\NormalTok{ ⇆ s}\OtherTok{)} \OtherTok{→}\NormalTok{ Jump }\OtherTok{(}\NormalTok{⇈→Distributor q r g}\OtherTok{)}
+\NormalTok{    ⇈→Jump g }\OtherTok{=} \OtherTok{((λ}\NormalTok{ a γ x }\OtherTok{→}\NormalTok{ refl}\OtherTok{)}\NormalTok{ , }\OtherTok{(λ}\NormalTok{ a γ x y }\OtherTok{→}\NormalTok{ refl}\OtherTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Conversely, given a jump structure of \texttt{f\ :\ p\ ⇆\ q} on a
+distributor \texttt{g\ :\ p\ ◃\ r\ ⇆\ s\ ◃\ q}, we obtain a morphism
+\texttt{p\ ⇈{[}\ q\ {]}{[}\ f\ {]}\ r\ ⇆\ s} as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    Jump→⇈ }\OtherTok{:} \OtherTok{(}\NormalTok{g }\OtherTok{:} \OtherTok{(}\NormalTok{p ◃ r}\OtherTok{)}\NormalTok{ ⇆ }\OtherTok{(}\NormalTok{s ◃ q}\OtherTok{))} \OtherTok{→}\NormalTok{ Jump g}
+             \OtherTok{→} \OtherTok{(}\NormalTok{p ⇈[ q ][ f ] r}\OtherTok{)}\NormalTok{ ⇆ s}
+\NormalTok{    Jump→⇈ }\OtherTok{(}\NormalTok{g , g♯}\OtherTok{)} \OtherTok{(}\NormalTok{e , e♯}\OtherTok{)} \OtherTok{=}
+        \OtherTok{(} \OtherTok{(λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{→}\NormalTok{ fst }\OtherTok{(}\NormalTok{g }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)))} 
+\NormalTok{        , }\OtherTok{λ} \OtherTok{(}\NormalTok{a , γ}\OtherTok{)}\NormalTok{ x y }
+          \OtherTok{→}\NormalTok{ transp }\OtherTok{(λ}\NormalTok{ z }\OtherTok{→}\NormalTok{ snd r }\OtherTok{(}\NormalTok{γ z}\OtherTok{))}
+                   \OtherTok{(}\NormalTok{fst }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{))} 
+\NormalTok{                         ≡〈 e♯ a γ x }\OtherTok{(}\NormalTok{transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{)}\NormalTok{ 〉 }
+\NormalTok{                         ap }\OtherTok{(}\NormalTok{snd f a}\OtherTok{)} \OtherTok{(}\NormalTok{symr }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{)}\NormalTok{ y}\OtherTok{))}
+                   \OtherTok{(}\NormalTok{snd }\OtherTok{(}\NormalTok{g♯ }\OtherTok{(}\NormalTok{a , γ}\OtherTok{)} \OtherTok{(}\NormalTok{x , transp }\OtherTok{(}\NormalTok{snd q}\OtherTok{)} \OtherTok{(}\NormalTok{sym }\OtherTok{(}\NormalTok{e a γ x}\OtherTok{))}\NormalTok{ y}\OtherTok{)))} \OtherTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+We say that a distributor \texttt{g\ :\ p\ ◃\ r\ ⇆\ s\ ◃\ q} equipped
+with a jump structure \texttt{j\ :\ Jump\ g} of \texttt{f\ :\ p\ ⇆\ q}
+is \emph{Cartesian} if the corresponding morphism
+\texttt{Jump→⇈\ g\ :\ p\ ⇈{[}\ q\ {]}{[}\ f\ {]}\ r\ ⇆\ s} is Cartesian.
+In particular, given a Cartesian morphism
+\texttt{g\ :\ p\ ⇈{[}\ q\ {]}{[}\ f\ {]}\ r\ ⇆\ s}, it follows that the
+distributor \texttt{⇈→Distributor\ q\ r\ g\ :\ p\ ◃\ r\ ⇆\ s\ ◃\ q}
+equipped with the jump structure \texttt{⇈→Jump\ g}, is Cartesian.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    JumpCart }\OtherTok{:} \OtherTok{(}\NormalTok{g }\OtherTok{:} \OtherTok{(}\NormalTok{p ⇈[ q ][ f ] r}\OtherTok{)}\NormalTok{ ⇆ s}\OtherTok{)} \OtherTok{→}\NormalTok{ isCartesian s g}
+               \OtherTok{→}\NormalTok{ isCartesian s }\OtherTok{(}\NormalTok{Jump→⇈ }\OtherTok{(}\NormalTok{⇈→Distributor q r g}\OtherTok{)} \OtherTok{(}\NormalTok{⇈→Jump g}\OtherTok{))}
+\NormalTok{    JumpCart g cg }\OtherTok{=}\NormalTok{ cg}
+
+\KeywordTok{open}\NormalTok{ JumpDistr}
+\end{Highlighting}
+\end{Shaded}
+
+Hence we define a Cartesian distributive law of polynomial monads
+\texttt{m\ ,\ n} as a distributive law
+\texttt{δ\ :\ n\ ◃\ m\ ⇆\ m\ ◃\ n} of \texttt{m} over \texttt{n},
+equipped with a jump structure of \texttt{id\ n\ :\ n\ ⇆\ n} on
+\texttt{δ}, such that \texttt{δ} is Cartesian, in the above sense. It
+follows, then, that given a polynomial universe \texttt{𝔲} equipped with
+a Cartesian monad structure \texttt{η\ :\ y\ ⇆\ 𝔲,\ μ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲}
+and a Cartesian distributive law \texttt{δ\ :\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲\ ◃\ 𝔲} of
+this monad over itself, applying \texttt{Jump→⇈} to this distributive
+law yields a Cartesian morphism \texttt{𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲} witnessing that
+\texttt{𝔲} is closed under \texttt{Π} types.
+
+From this we obtain the main theorem of this paper:
+
+\begin{theorem}
+A polynomial universe `𝔲` is closed under unit, `Σ`, and `Π` types if and only if there exists a Cartesian monad structure on `𝔲` together with a Cartesian distributive law of this monad over itself.
+\end{theorem}
+
+Since from any \texttt{𝔲} closed under these types we obtain a Cartesian
+monad and Cartesian self-distributive law on \texttt{𝔲}, and from any
+Cartesian monad structure on \texttt{𝔲} and Cartesian distributive law
+of this monad over itself, we obtain Cartesian morphisms
+\texttt{y\ ⇆\ 𝔲,\ 𝔲\ ◃\ 𝔲\ ⇆\ 𝔲,\ 𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲} as above.
+
 \chapter{Further Structures on Polynomial
 Universes}\label{further-structures-on-polynomial-universes}
 
@@ -3170,7 +3324,7 @@ takes a polynomial \texttt{p\ =\ (A\ ,\ B)} to the polynomial
 \texttt{shift\ p\ =\ (⊤\ ,\ λ\ \_\ →\ A)}. Equivalently, this is
 \(\left[ \begin{array}{c} p\\ y \end{array} \right]\), where
 \(\left[ \begin{array}{c} -\\ - \end{array} \right]\) is the left
-coclosure of \(\triangleleft\) defined in \cite{niu2024polynomial}.
+coclosure of \(\triangleleft\) defined in \cite{spivak2022poly}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
