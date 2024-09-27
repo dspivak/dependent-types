@@ -11,6 +11,7 @@
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
+  \usepackage{thmtools}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
   \usepackage{unicode-math} % this also loads fontspec
@@ -487,7 +488,7 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 \hypersetup{
   pdftitle={Polynomial Universes and Dependent Types},
   pdfauthor={C.B. Aberlé; David I. Spivak},
-  hidelinks,
+  %hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
 \title{Polynomial Universes and Dependent Types}
@@ -573,10 +574,14 @@ polynomial universes closed under unit, dependent pair, and dependent
 product types be characterized as Cartesian monads in \(\poly\) that
 additionally carry a Cartesian distributive law of this monad over
 itself (for a suitable notion of \emph{Cartesian distributive law,}
-defined in Section 5.3). This characterization constitutes the main
+defined in \cref{from-distributive-laws-to-pi-types}). This characterization constitutes the main
 theorem of this paper.
+\begin{restatable}{theorem*}{mytheorem}
+\label{thm:main}
+A polynomial universe 𝔲 is closed under unit, Σ, and Π types if and only if there exists a Cartesian monad structure on 𝔲 together with a Cartesian distributive law of this monad over itself.
+\end{restatable}
 
-Moreover, the move from set theory to HoTT as a setting in which to tell
+The move from set theory to HoTT as a setting in which to tell
 this story enables new tools to be applied for its telling. In
 particular, the account of polynomial universes we develop is
 well-suited to formalization in a proof assistant, and we present such a
@@ -596,30 +601,30 @@ The structure of this paper is as follows:
 \begin{itemize}
 \tightlist
 \item
-  In Section 2, we give an introductory presentation of dependent type
+  In \cref{background-on-type-theory-natural-models-hott}, we give an introductory presentation of dependent type
   theory and natural models, followed by a recap the basics of HoTT that
   will be used throughout the rest of the paper.
 \item
-  In Section 3, we outline the basic theory of polynomial functors in
+  In \cref{polynomials-in-hott}, we outline the basic theory of polynomial functors in
   HoTT, culminating in a demonstration of how to model dependent pair
   types using polynomial functors. In order to show that these
   polynomial functors are in fact monads, however, we will need some
   additional technology, to which we devote the following section.
 \item
-  In Section 4, we introduce the key concept of a \emph{polynomial
+  In \cref{polynomial-universes}, we introduce the key concept of a \emph{polynomial
   universe} as a polynomial functor satisfying a certain
   \emph{univalence} condition, that allows us to straightforwardly
   derive the monad laws for polynomial universes equipped with the
   structure to interpret dependent pair types.
 \item
-  In Section 5, building on the ideas of the previous sections, we show
+  In \cref{pi-types-distributive-laws}, building on the ideas of the previous sections, we show
   how to model dependent function types with polynomial functors, and
   demonstrate that any polynomial universe equipped with this structure
   -- along with the aforementioned structure for interpreting dependent
   pair types -- gives rise to a self-distributive law of the
   corresponding monad.
 \item
-  In Section 6, we conclude the paper by sketching how this theory may
+  In \cref{further-structures-on-polynomial-universes}, we conclude the paper by sketching how this theory may
   be further developed to handle identity types, inductive types, and
   other key concepts from dependent type theory.
 \end{itemize}
@@ -1482,7 +1487,7 @@ We say that a lens \texttt{(f\ ,\ f♯)\ :\ (A\ ,\ B)\ ⇆\ (C\ ,\ D)} is
 \emph{vertical} if \texttt{f\ :\ A\ →\ C} is an equivalence, and
 Cartesian if for every \texttt{a\ :\ A}, the map
 \texttt{f♯\ a\ :\ D{[}f\ a{]}\ →\ B\ a} is an
-equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{spivak2022poly}}
+equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in \cref{natural-models}, see Chapter 5.5 of \cite{spivak2022poly}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3290,9 +3295,11 @@ law yields a Cartesian morphism \texttt{𝔲\ ⇈\ 𝔲\ ⇆\ 𝔲} witnessing t
 
 From this we obtain the main theorem of this paper:
 
-\begin{theorem}
-A polynomial universe 𝔲 is closed under unit, Σ, and Π types if and only if there exists a Cartesian monad structure on 𝔲 together with a Cartesian distributive law of this monad over itself.
-\end{theorem}
+\mytheorem
+
+%\begin{theorem}
+%A polynomial universe 𝔲 is closed under unit, Σ, and Π types if and only if there exists a Cartesian monad structure on 𝔲 together with a Cartesian distributive law of this monad over itself.
+%\end{theorem}
 
 Since from any \texttt{𝔲} closed under these types we obtain a Cartesian
 monad and Cartesian self-distributive law on \texttt{𝔲}, and from any
@@ -3464,7 +3471,7 @@ Types}\label{a-note-on-intensional-identity-types-inductive-types}
 
 Attempting to account for \emph{intensional} rather than
 \emph{extensional} identity types in the language of polynomial functors
-is rather more complicated, however. As mentioned in Section 2, the
+is rather more complicated, however. As mentioned in \cref{dependent-types-and-their-categorical-semantics}, the
 inhabitants of intensional identity types are inductively generated from
 the constructor \texttt{refl}, corresponding to reflexivity. The problem
 with such inductive generation of data from constructors -- from the
