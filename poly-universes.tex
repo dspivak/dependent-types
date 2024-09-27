@@ -473,6 +473,9 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\bic}[2]{{}_{#1}\Cat{Comod}_{#2}}
 
+\newcommand{\dnote}[1]{{\quad \color{blue}$\lozenge$\;David says:}~#1\;{\color{blue}$\lozenge$}\quad}
+
+
 % ---- Changeable document parameters ---- %
 
 \linespread{1.1}
@@ -2834,7 +2837,7 @@ Similarly, there are two distinct ways of composing distributors:
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
-\item
+\item\dnote{There is a stray \$ below that's not supposed to be there, right? Just checking that it isn't load bearing at all :)}
   Given distributors \texttt{p\ ◃\ s\ ⇆\ t\ ◃\ q} and
   \texttt{q\ ◃\ u\ ⇆\ v\ ◃\ r\$,\ we\ obtain\ a\ distributor}p ◃ (s ◃ u)
   ⇆ (t ◃ v) ◃ r` as the composite \[
@@ -3162,7 +3165,7 @@ However, what we want in this case is the stronger property that
 
 For this purpose, we define the following \emph{shift} operation that
 takes a polynomial \texttt{p\ =\ (A\ ,\ B)} to the polynomial
-\texttt{shift\ p\ =\ (⊤\ ,\ λ\ \_\ →\ A)}n`:
+\texttt{shift\ p\ =\ (⊤\ ,\ λ\ \_\ →\ A)}n`:\dnote{What is n`? Is this whole thing $p\mapsto\yon^{p(1)}=\lens{\yon}{p}$?}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3196,7 +3199,7 @@ that:
   \] that assigns a code to each type classified by \texttt{𝔳} (note
   that this restriction to types classified by \texttt{𝔳} is necessary
   to avoid the paradoxes that would arise from having a type universe
-  that contained itself.)
+  that contained itself.)\dnote{What is $T$ here?}
 \item
   Such that the following equations hold \[
   \lceil \lfloor A \rfloor \rceil = A \qquad e = \lfloor \lceil e \rceil \rfloor
@@ -3373,6 +3376,7 @@ range of type-theoretic phenomena.
 \printbibliography
 
 \chapter{Appendix A}\label{appendix-a}
+\dnote{Add some text about what this is about}
 
 \begin{Shaded}
 \begin{Highlighting}[]
