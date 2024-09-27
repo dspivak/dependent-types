@@ -175,7 +175,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 
 
 % biblatex %
-  \addbibresource{Library20211226.bib} 
+  \addbibresource{Library20240927.bib} 
 
 % hyperref %
   \hypersetup{final}
@@ -1474,7 +1474,7 @@ We say that a lens \texttt{(f\ ,\ f♯)\ :\ (A\ ,\ B)\ ⇆\ (C\ ,\ D)} is
 \emph{vertical} if \texttt{f\ :\ A\ →\ C} is an equivalence, and
 Cartesian if for every \texttt{a\ :\ A}, the map
 \texttt{f♯\ a\ :\ D{[}f\ a{]}\ →\ B\ a} is an
-equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{spivak2022poly}}
+equivalence.\footnote{For a proof that this notion of Cartesian morphism between polynomials is equivalent to the one given previously in Section 2.2, see Chapter 5.5 of \cite{niu2024polynomial}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2720,6 +2720,10 @@ forms. Understanding the closure properties of such distributors that
 give rise to these diagrams, then, will be a central aim of this
 section.
 
+\begin{remark}
+Distributors as above arise in $\Cat{EM}$-$\ccatsharp$ the Eilenberg-Moore completion \cite{lack2002formal} of the double category $\ccatsharp=\mathbb{C}\Cat{omod}(\poly)$ of polynomial comonads and bicomodules \cite{shapiro2024polynomial}. Indeed, there we find morphisms of the form $m\tri p\to p\tri n$ for polynomial monads $m,n$, and distributive laws between monads are the formal monads in $\Cat{EM}$-$\ccatsharp$. Distributors also arise in what Lynch et al.\ call \emph{effects handlers} \cite{lynch2023concepts}, where morphisms are of the form $s\tri c\to d\tri s$ for polynomial comonads $c,d\in\ccatsharp$.
+\end{remark}
+
 By function extensionality, we obtain the following type of equality
 proofs for distributors:
 
@@ -3165,7 +3169,7 @@ takes a polynomial \texttt{p\ =\ (A\ ,\ B)} to the polynomial
 \texttt{shift\ p\ =\ (⊤\ ,\ λ\ \_\ →\ A)}. Equivalently, this is
 \(\left[ \begin{array}{c} p\\ y \end{array} \right]\), where
 \(\left[ \begin{array}{c} -\\ - \end{array} \right]\) is the left
-coclosure of \(\triangleleft\) defined in \cite{spivak2022poly}.
+coclosure of \(\triangleleft\) defined in \cite{niu2024polynomial}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
