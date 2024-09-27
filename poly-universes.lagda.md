@@ -1729,7 +1729,7 @@ What is needed to make such a translation from distributive laws to `Π` types p
 
 For this purpose, we define the auxiliary notion of a *Jump structure* of a lens `(f , f♯) : p ⇆ q` on a distributor `(g , g♯) : p ◃ r ⇆ q ◃ s`. Intuitively, a jump structure of `(f , f♯)` on `(g , g♯)` witnesses that `(g , g♯)` "applies the action of `(f , f♯)` on `p` and `q` while jumping over its action on `r` and `s`." In concrete terms, this means that we must have witnesses to the following equations:
 
-* `snd (g (a , γ)) x = f a` for all `a : fst p, γ : snd p a → fst r, x : snd s (fst (g (a , γ))`
+* `snd (g (a , γ)) x ≡ f a` for all `a : fst p, γ : snd p a → fst r, x : snd s (fst (g (a , γ))`
 * `fst (g♯ (a , γ) (x , y)) ≡ f♯ a y` for all `a, γ, x` as above and `y : snd q (f a)`.
 
 ```agda
