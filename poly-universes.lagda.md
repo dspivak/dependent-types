@@ -1093,7 +1093,7 @@ _⇈_ : ∀ {ℓ0 ℓ1 κ0 κ1} → Poly ℓ0 κ0 → Poly ℓ1 κ1
     , (λ (a , f) → (b : B a) → D (f b)))
 ```
 
-Note that this construction is straightforwardly functorial with respect to arbitrary lenses in its 2nd argument. Functoriality of the 1st argument is trickier, however. For reasons that will become apparent momentarily, we define the functorial action $p \upuparrows q \leftrightarrows p' \upuparrows q$ of $\upuparrows$ on a lens $f : p \leftrightarrows p'$ equipped with a left inverse $f' : p' \leftrightarrows p$, i.e. such that $f' \circ f = \text{id}_p$. \footnote{To see why this is the right choice of morphism for which `⇈` is functorial in its first argument, we note that pairs consisting of a morphism and a left inverse for it are equivalently the morphisms between identity morphisms in the *twisted arrow category* of $\poly$, i.e. diagrams of the following form: $$
+Note that this construction is straightforwardly functorial with respect to arbitrary lenses in its 2nd argument. Functoriality of the 1st argument is trickier, however. For reasons that will become apparent momentarily, we define the functorial action $p \upuparrows q \leftrightarrows p' \upuparrows q$ of $\upuparrows$ on a lens $f : p \leftrightarrows p'$ equipped with a left inverse $f' : p' \leftrightarrows p$, i.e. such that $f' \circ f = \text{id}_p$. \footnote{To see why this is the right choice of morphism for which ⇈ is functorial in its first argument, we note that pairs consisting of a morphism and a left inverse for it are equivalently the morphisms between identity morphisms in the \emph{twisted arrow category} of $\poly$, i.e. diagrams of the following form: $$
 \begin{array}{ccc}
 p & \to & q\\
 = & & =\\
@@ -1466,7 +1466,7 @@ open DistributorLens public
 
 Similarly, there are two distinct ways of composing distributors: 
 
-1. Given distributors `p ◃ s ⇆ t ◃ q` and `q ◃ u ⇆ v ◃ r$, we obtain a distributor `p ◃ (s ◃ u) ⇆ (t ◃ v) ◃ r` as the composite $$
+1. Given distributors `p ◃ s ⇆ t ◃ q` and `q ◃ u ⇆ v ◃ r`, we obtain a distributor `p ◃ (s ◃ u) ⇆ (t ◃ v) ◃ r` as the composite $$
 p ◃ (s \triangleleft u) \simeq (p \triangleleft s) \triangleleft u \xrightarrow{} (t \triangleleft q) \triangleleft u \simeq t \triangleleft (q \triangleleft u) \xrightarrow{} t \triangleleft (v \triangleleft r) \simeq (t \triangleleft v) \triangleleft r
 $$
 
@@ -1727,7 +1727,7 @@ Throughout this paper, we have made extensive use of universes of types. A natur
 
 For this purpose, let `𝔳 , 𝔲` be polynomial universes with `𝔳 = (𝓥 , El𝓥)` and `𝔲 = (𝓤 , El𝓤)`. If there is a (necessarily unique) Cartesian morphism `𝔳 ⇆ 𝔲`, then it follows that every type family classified by `𝔳` is also classified by `𝔲`, by composition of Cartesian morphisms. However, what we want in this case is the stronger property that `𝔳` is somehow represented as a type within `𝔲`.
 
-For this purpose, we define the following *shift* operation that takes a polynomial `p = (A , B)` to the polynomial `shift p = (⊤ , λ _ → A)`n`:
+For this purpose, we define the following *shift* operation that takes a polynomial `p = (A , B)` to the polynomial `shift p = (⊤ , λ _ → A)`. Equivalently, this is $\left[ \begin{array}{c} p\\ y \end{array} \right]$, where $\left[ \begin{array}{c} -\\ - \end{array} \right]$ is the left coclosure of $\triangleleft$ defined in \cite{spivak2022poly}.
 
 ```agda
 shift : ∀ {ℓ κ} → Poly ℓ κ → Poly lzero ℓ
@@ -1743,7 +1743,7 @@ $$ We think of `𝓥` as a type whose elements are "codes" for other types.
 \inferrule{\Gamma \vdash e : 𝓥}{\Gamma \vdash \lceil e \rceil ~ \mathsf{Type}}
 $$ which decodes a code contained in `𝓥` to its corresponding type.
 * There is a function `v♯⁻¹ tt : 𝓥 → El𝓤 (v tt)`, corresponding to the rule $$
-\inferrule{\Gamma \vdash A ~ \mathsf{Type}\\ T ~ \text{is classifed by} ~ \mathfrak{v}}{\Gamma \vdash \lfloor A \rfloor : \mathcal{V}}
+\inferrule{\Gamma \vdash A ~ \mathsf{Type}\\ A ~ \text{is classifed by} ~ \mathfrak{v}}{\Gamma \vdash \lfloor A \rfloor : \mathcal{V}}
 $$ that assigns a code to each type classified by `𝔳` (note that this restriction to types classified by `𝔳` is necessary to avoid the paradoxes that would arise from having a type universe that contained itself.)
 * Such that the following equations hold $$
 \lceil \lfloor A \rfloor \rceil = A \qquad e = \lfloor \lceil e \rceil \rfloor
@@ -1805,6 +1805,8 @@ However, there remain many open questions regarding the further development of t
 \printbibliography 
 
 # Appendix A
+
+Some additional identities/theorems from HoTT used throughout this paper:
 
 ```agda
 transpAp : ∀ {ℓ ℓ' κ} {A : Type ℓ} {A' : Type ℓ'} {a b : A}

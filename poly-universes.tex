@@ -473,9 +473,6 @@ replacement=\&]{}\ar[r,tick, "{#1}"]\&{}\end{tikzcd}}
 
 \newcommand{\bic}[2]{{}_{#1}\Cat{Comod}_{#2}}
 
-\newcommand{\dnote}[1]{{\quad \color{blue}$\lozenge$\;David says:}~#1\;{\color{blue}$\lozenge$}\quad}
-
-
 % ---- Changeable document parameters ---- %
 
 \linespread{1.1}
@@ -2325,7 +2322,7 @@ momentarily, we define the functorial action
 on a lens \(f : p \leftrightarrows p'\) equipped with a left inverse
 \(f' : p' \leftrightarrows p\), i.e.~such that
 \(f' \circ f = \text{id}_p\).
-\footnote{To see why this is the right choice of morphism for which `⇈` is functorial in its first argument, we note that pairs consisting of a morphism and a left inverse for it are equivalently the morphisms between identity morphisms in the *twisted arrow category* of $\poly$, i.e. diagrams of the following form: $$
+\footnote{To see why this is the right choice of morphism for which ⇈ is functorial in its first argument, we note that pairs consisting of a morphism and a left inverse for it are equivalently the morphisms between identity morphisms in the \emph{twisted arrow category} of $\poly$, i.e. diagrams of the following form: $$
 \begin{array}{ccc}
 p & \to & q\\
 = & & =\\
@@ -2669,7 +2666,7 @@ over \texttt{r,s} is a morphism of the form
 monads \texttt{m,n} with \texttt{ηₘ\ :\ 𝕪\ ⇆\ m,\ ηₙ\ :\ 𝕪\ ⇆\ n} and
 \texttt{μₘ\ :\ (m\ ◃\ m)\ ⇆\ m,\ μₙ\ :\ (n\ ◃\ n)\ ⇆\ n}, a
 \emph{distributive law} of \texttt{m} over \texttt{n} consists of a
-distributor of \texttt{n,n} over \texttt{m,m} (i.e.~a morphism
+distributor of \texttt{n,n} over \texttt{n,n} (i.e.~a morphism
 \texttt{δ\ :\ (n\ ◃\ m)\ ⇆\ (m\ ◃\ n)}) such that the following diagrams
 commute: \[
 \footnotesize \begin{tikzcd} 
@@ -2837,10 +2834,10 @@ Similarly, there are two distinct ways of composing distributors:
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
-\item\dnote{There is a stray \$ below that's not supposed to be there, right? Just checking that it isn't load bearing at all :)}
+\item
   Given distributors \texttt{p\ ◃\ s\ ⇆\ t\ ◃\ q} and
-  \texttt{q\ ◃\ u\ ⇆\ v\ ◃\ r\$,\ we\ obtain\ a\ distributor}p ◃ (s ◃ u)
-  ⇆ (t ◃ v) ◃ r` as the composite \[
+  \texttt{q\ ◃\ u\ ⇆\ v\ ◃\ r}, we obtain a distributor
+  \texttt{p\ ◃\ (s\ ◃\ u)\ ⇆\ (t\ ◃\ v)\ ◃\ r} as the composite \[
   p ◃ (s \triangleleft u) \simeq (p \triangleleft s) \triangleleft u \xrightarrow{} (t \triangleleft q) \triangleleft u \simeq t \triangleleft (q \triangleleft u) \xrightarrow{} t \triangleleft (v \triangleleft r) \simeq (t \triangleleft v) \triangleleft r
   \]
 \end{enumerate}
@@ -3165,7 +3162,10 @@ However, what we want in this case is the stronger property that
 
 For this purpose, we define the following \emph{shift} operation that
 takes a polynomial \texttt{p\ =\ (A\ ,\ B)} to the polynomial
-\texttt{shift\ p\ =\ (⊤\ ,\ λ\ \_\ →\ A)}n`:\dnote{What is n`? Is this whole thing $p\mapsto\yon^{p(1)}=\lens{\yon}{p}$?}
+\texttt{shift\ p\ =\ (⊤\ ,\ λ\ \_\ →\ A)}. Equivalently, this is
+\(\left[ \begin{array}{c} p\\ y \end{array} \right]\), where
+\(\left[ \begin{array}{c} -\\ - \end{array} \right]\) is the left
+coclosure of \(\triangleleft\) defined in \cite{spivak2022poly}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3195,11 +3195,11 @@ that:
 \item
   There is a function \texttt{v♯⁻¹\ tt\ :\ 𝓥\ →\ El𝓤\ (v\ tt)},
   corresponding to the rule \[
-  \inferrule{\Gamma \vdash A ~ \mathsf{Type}\\ T ~ \text{is classifed by} ~ \mathfrak{v}}{\Gamma \vdash \lfloor A \rfloor : \mathcal{V}}
+  \inferrule{\Gamma \vdash A ~ \mathsf{Type}\\ A ~ \text{is classifed by} ~ \mathfrak{v}}{\Gamma \vdash \lfloor A \rfloor : \mathcal{V}}
   \] that assigns a code to each type classified by \texttt{𝔳} (note
   that this restriction to types classified by \texttt{𝔳} is necessary
   to avoid the paradoxes that would arise from having a type universe
-  that contained itself.)\dnote{What is $T$ here?}
+  that contained itself.)
 \item
   Such that the following equations hold \[
   \lceil \lfloor A \rfloor \rceil = A \qquad e = \lfloor \lceil e \rceil \rfloor
@@ -3376,7 +3376,9 @@ range of type-theoretic phenomena.
 \printbibliography
 
 \chapter{Appendix A}\label{appendix-a}
-\dnote{Add some text about what this is about}
+
+Some additional identities/theorems from HoTT used throughout this
+paper:
 
 \begin{Shaded}
 \begin{Highlighting}[]
