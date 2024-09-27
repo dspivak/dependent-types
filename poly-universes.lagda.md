@@ -1790,7 +1790,7 @@ From this we obtain the main theorem of this paper:
 A polynomial universe 𝔲 is closed under unit, Σ, and Π types if and only if there exists a Cartesian monad structure on 𝔲 together with a Cartesian distributive law of this monad over itself.
 \end{theorem}
 
-Since from any `𝔲` closed under these types we obtain a Cartesian monad and Cartesian self-distributive law on `𝔲`, and from any Cartesian monad structure on `𝔲` and Cartesian distributive law of this monad over itself, we obtain Cartesian morphisms `y ⇆ 𝔲, 𝔲 ◃ 𝔲 ⇆ 𝔲, 𝔲 ⇈ 𝔲 ⇆ 𝔲` as above.
+Since from any `𝔲` closed under these types we obtain a Cartesian monad and Cartesian self-distributive law on `𝔲`, and from any Cartesian monad structure on `𝔲` and Cartesian distributive law of this monad over itself, we obtain Cartesian morphisms `y ⇆ 𝔲, 𝔲 ◃ 𝔲 ⇆ 𝔲, 𝔲 ⇈ 𝔲 ⇆ 𝔲` as above. 
 
 # Further Structures on Polynomial Universes
 
