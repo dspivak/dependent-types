@@ -1763,13 +1763,13 @@ Conversely, given a jump structure of `f : p ⇆ q` on a distributor `g : p ◃ 
     Jump→⇈ : (g : (p ◃ r) ⇆ (s ◃ q)) → Jump g
              → (p ⇈[ q ][ f ] r) ⇆ s
     Jump→⇈ (g , g♯) (e , e♯) =
-        ( (λ (a , γ) → fst (g (a , γ))) 
-        , λ (a , γ) x y 
-          → transp (λ z → snd r (γ z))
-                   (fst (g♯ (a , γ) (x , transp (snd q) (sym (e a γ x)) y)) 
-                         ≡〈 e♯ a γ x (transp (snd q) (sym (e a γ x)) y) 〉 
-                         ap (snd f a) (symr (e a γ x) y))
-                   (snd (g♯ (a , γ) (x , transp (snd q) (sym (e a γ x)) y))) )
+      ( (λ (a , γ) → fst (g (a , γ))) 
+      , λ (a , γ) x y 
+        → transp (λ z → snd r (γ z))
+            (fst (g♯ (a , γ) (x , transp (snd q) (sym (e a γ x)) y)) 
+                  ≡〈 e♯ a γ x (transp (snd q) (sym (e a γ x)) y) 〉 
+                  ap (snd f a) (symr (e a γ x) y))
+            (snd (g♯ (a , γ) (x , transp (snd q) (sym (e a γ x)) y))) )
 ```
 
 We say that a distributor `g : p ◃ r ⇆ s ◃ q` equipped with a jump structure `j : Jump g` of `f : p ⇆ q` is *Cartesian* if the corresponding morphism `Jump→⇈ g : p ⇈[ q ][ f ] r ⇆ s` is Cartesian. In particular, given a Cartesian morphism `g : p ⇈[ q ][ f ] r ⇆ s`, it follows that the distributor `⇈→Distributor q r g : p ◃ r ⇆ s ◃ q` equipped with the jump structure `⇈→Jump g`, is Cartesian.
