@@ -1,15 +1,15 @@
-[2] Config.pm:307> INFO - This is Biber 2.19
-[5] Config.pm:310> INFO - Logfile is 'poly-universes.blg'
-[54] biber-darwin:340> INFO - === Fri Sep 27, 2024, 16:43:26
-[64] Biber.pm:419> INFO - Reading 'poly-universes.bcf'
-[111] Biber.pm:979> INFO - Found 10 citekeys in bib section 0
-[119] Biber.pm:4419> INFO - Processing section 0
-[124] Biber.pm:4610> INFO - Looking for bibtex file 'Library20240927.bib' for section 0
-[134] bibtex.pm:1713> INFO - LaTeX decoding ...
-[345] bibtex.pm:1519> INFO - Found BibTeX data source 'Library20240927.bib'
-[412] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[413] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[413] Biber.pm:4239> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
-[413] Biber.pm:4245> INFO - No sort tailoring available for locale 'en-US'
-[421] bbl.pm:660> INFO - Writing 'poly-universes.bbl' with encoding 'UTF-8'
-[425] bbl.pm:763> INFO - Output to poly-universes.bbl
+[0] Config.pm:307> INFO - This is Biber 2.19
+[0] Config.pm:310> INFO - Logfile is 'poly-universes.blg'
+[41] biber-darwin:340> INFO - === Sat Sep 28, 2024, 00:09:43
+[51] Biber.pm:419> INFO - Reading 'poly-universes.bcf'
+[99] Biber.pm:979> INFO - Found 10 citekeys in bib section 0
+[106] Biber.pm:4419> INFO - Processing section 0
+[113] Biber.pm:4610> INFO - Looking for bibtex file 'Library20240927.bib' for section 0
+[124] bibtex.pm:1713> INFO - LaTeX decoding ...
+[350] bibtex.pm:1519> INFO - Found BibTeX data source 'Library20240927.bib'
+[416] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[416] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[416] Biber.pm:4239> INFO - Sorting list 'anyt/global//global/global' of type 'entry' with template 'anyt' and locale 'en-US'
+[416] Biber.pm:4245> INFO - No sort tailoring available for locale 'en-US'
+[424] bbl.pm:660> INFO - Writing 'poly-universes.bbl' with encoding 'UTF-8'
+[428] bbl.pm:763> INFO - Output to poly-universes.bbl
