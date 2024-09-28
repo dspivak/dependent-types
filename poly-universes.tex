@@ -2329,7 +2329,19 @@ p \upuparrows q = \sum_{(a , f) : \sum_{a : A} C^{B(a)}} y^{\prod_{b : B(a)} D(f
 \end{Highlighting}
 \end{Shaded}
 
-Note that this construction is straightforwardly functorial with respect
+\begin{remark}
+While we will not use it explicitly, we pause here to mention that there is an application map
+\[
+p\tri q\ ⇆\ (p ⇈ q)\otimes p.
+\]
+Saying that $u$ classifies $u ⇈ u$ means having a map $(u ⇈ u)\ ⇆\ u$ which can be combined with the application map to give the composite
+\[
+u\tri u\  ⇆\  (u ⇈ u)\otimes u\ ⇆\ u\otimes u\ ⇆\ u\tri u.
+\]
+This will coincide with the distributive law we will construct below \eqref{eqn.dist_law_uu}.
+\end{remark}
+
+Note that the ⇈ construction is straightforwardly functorial with respect
 to arbitrary lenses in its 2nd argument. Functoriality of the 1st
 argument is trickier, however. For reasons that will become apparent
 momentarily, we define the functorial action
@@ -2514,10 +2526,12 @@ The fact that \texttt{⇈Distr} is Cartesian corresponds to the
 distributive law of \texttt{Π} types over \texttt{Σ} types, i.e.~\[
 \Pi x : A . \Sigma y : B[x] . C[x,y] \simeq \Sigma f : \Pi x : A . B[x] . \Pi x : A . C[x, f(x)]
 \] One may wonder, then, whether this distributive law is somehow
-related to a distributive law ofg the monad structure on a polynomial
+related to a distributive law of the monad structure on a polynomial
 universe 𝔲 given by Σ types (as discussed in the previous section) over
 itself, i.e.~a morphism
-\[ \mathfrak{u} \triangleleft \mathfrak{u} \leftrightarrows \mathfrak{u} \triangleleft \mathfrak{u} \]
+\begin{equation}\label{eqn.dist_law_uu}
+ \mathfrak{u} \triangleleft \mathfrak{u} \leftrightarrows \mathfrak{u} \triangleleft \mathfrak{u}
+ \end{equation}
 subject to certain laws. Indeed, given a Lens
 \texttt{π\ :\ (𝔲\ ⇈\ 𝔲)\ ⇆\ 𝔲} (intuitively -- corresponding to the
 structure of \texttt{Π} types in \texttt{𝔲}), one can define a morphism
