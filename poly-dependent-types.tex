@@ -42,7 +42,7 @@ citecolor=orange!50!black, urlcolor=orange!50!black, pdfencoding=unicode]{hyperr
 
 
 % biblatex %
-  \addbibresource{Library20211226.bib} 
+  \addbibresource{Library20240927.bib} 
 
 % hyperref %
   \hypersetup{final}
@@ -944,7 +944,7 @@ and we take it to be $(a,i,j)\mapsto(i,a i,j i)$.%
 
 Our goal in \cref{sec.main_thm} is to show that this definition satisfies the properties necessary to define a polynomial universe. 
 
-Note that oe can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the jump map $\jump_{p,q}\colon p\tri (u\tri q)\to u\otimes p\tri q$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
+Note that one can avoid the whole ``overflow'' issue by restricting the domain category throughout this paper to $\polycart_{<\kappa}\ss\polycart$, meaning that the jump map $\jump_{p,q}\colon p\tri (u\tri q)\to u\otimes p\tri q$ would be restricted only to those $p$ whose exponents have cardinality bounded by $\kappa$. We contemplated this move, but decided to allow arbitrary $p$ in order to imagine dependencies on ``real world'', or ``external'' parameters.
 
 %---- Section ----%
 \section{Main theorem}\label{sec.main_thm}
@@ -1002,7 +1002,7 @@ To prove that \eqref{eqn.key_large} commutes, suppose given $(I,A,B)\in p\tri(u\
   \qqand
 	A_2\cong\Sigma(\Pi(p[I],A),\Pi(p[I],B))
 \] 
-respectively, and these sets are isomorphic (hence equal in $C_\kappa$). So it remains to deal with the overflow situations.
+respectively, and these sets are isomorphic (hence equal in $C_\kappa$). {\color{red!50!black} Here we did not check that the maps back on directions are equal, and they're not in general. This is why we need to move to univalent (HoTT) polynomials.} So it remains to deal with the overflow situations.
 
 Note that $\Pi(p[I],\Sigma(A, B))\cong\Sigma(\Pi(p[I],A),\Pi(p[I],B))$ are bijective sets, so one overflows iff the other does. If they overflow then $\Pi(p[I],A\times B)\geq\kappa$ is too big, so $A_1=0$. In this case we also know that either $\Pi(p[I],A)\geq\kappa$ or $\Pi(p[I],Ba)\geq\kappa$ is too big, for some $a\in\Pi(p[I],A)$, by assumption on $\kappa$ (see \cref{def.sum_prod_set}). In the first case we will have $A_2=\Sigma(0,\Pi(p[I],B))$ and in the second case we will have $A_2=\Pi(p[I],\Sigma(A, 0))$; either way, the result is $0$. Hence the diagram commutes, completing the proof.
 \end{proof}
@@ -1074,7 +1074,7 @@ The double lines mean that there is a bijection between terms at the top and ter
 
 Recall that for any $p\in\polycart$ and $q\in\poly$, \cref{def.universe} defines a notion of jump transformation
 \[\jump_{p,q}\colon p\tri (u\otimes q)\to u\otimes p\tri q.\]
-Thus, given a dependent type $I\in p(1)$, a base type $A i:\U$ and a type $J i\in q(1)$ for each $i\in p[I]$, we obtain a type denoted $(I\to A):\U$, and we keep $I,J$ as before. In symbols,
+Thus, given a dependent type consisting of a type $I\in p(1)$ and, for each $i\in p[I]$ a base type $A i:\U$ and a type $J i\in q(1)$, we obtain a type denoted $(I\to A):\U$, and we keep $I,J$ as before. In symbols,
 \begin{equation*}
   \begin{prooftree}
     \Hypo{I\founds (A, J)}
