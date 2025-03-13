@@ -642,6 +642,9 @@ The structure of this paper is as follows:
 \end{Highlighting}
 \end{Shaded}
 
+\section*{Acknowledgments}
+Thanks to Owen Lynch for his careful reading of the paper and for identifying a typo.
+
 \chapter{Background on Type Theory, Natural Models \&
 HoTT}\label{background-on-type-theory-natural-models-hott}
 
@@ -1428,7 +1431,7 @@ following argument via Yoneda: \[
 & \int_{y \in \mathbf{Type}} \left( \sum_{a : A} y^{B(a)}  \right) \to \sum_{c : C} y^{D(c)}\\
 \simeq & \prod_{a : A} \int_{y \in \mathbf{Type}} y^{B(a)} \to \sum_{c : C} y^{D(c)}\\
 \simeq & \prod_{a : A} \sum_{c : C} B(a)^{D(c)}\\
-\simeq & \sum_{f : A \to C} \prod_{a : A} B(a)^{D(f(c))}
+\simeq & \sum_{f : A \to C} \prod_{a : A} B(a)^{D(f(a))}
 \end{array}
 \] We use the notation \(p \leftrightarrows q\) to denote the type of
 natural transformations from \(p\) to \(q\) (aka \emph{lenses} from
